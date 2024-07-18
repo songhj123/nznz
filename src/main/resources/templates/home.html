@@ -1,0 +1,31 @@
+home.html
+<!DOCTYPE html>
+<html layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>니집내집</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="search-bar">
+            <input type="text" placeholder="검색어를 입력하세요.">
+            <button type="submit">검색</button>
+        </div>
+        <main class="main-container">
+            <div class="container">
+                <section class="cards-container">
+                    <div class="card">원룸 / 투룸</div>
+                    <div class="card">오피스텔</div>
+                    <div class="card">아파트</div>
+                    <div class="card">주택 / 빌라</div>
+                </section>
+                <section class="tips-container">
+                    <div class="card">방 구하기 TIP!</div>
+                    <div class="card">매물 관리</div>
+                    <div class="card">찜한 방</div>
+                </section>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
