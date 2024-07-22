@@ -152,6 +152,7 @@
                     <p><strong>위치: </strong><span th:text="${property.propertyAddress != null ? property.propertyAddress : 'N/A'}"></span></p>
                     <p><strong>중개사: </strong><span th:text="${property.agency != null ? property.agency : 'N/A'}"></span></p>
                     <a th:if="${property.contact != null}" href="#" class="btn btn-primary">연락처 보기</a>
+                    <button class="btn btn-outline-secondary mt-2" th:onclick="'goToConsultationRequest(' + ${property.propertyId} + ')'">방문상담예약</button>
                     <button class="btn btn-outline-secondary mt-2">♥ <span th:text="${property.likes != null ? property.likes : 0}"></span></button>
                 </div>
             </div>
@@ -160,5 +161,11 @@
 
     <script th:src="@{/resource/js/bootstrap.bundle.min.js}"></script>
     <script th:src="@{/resource/js/kakaoMap.js}"></script>
+    <script>
+    function goToConsultationRequest(propertyId) {
+        window.location.href = `/consultationRequest/${propertyId}`;
+    }
+</script>
+
 </body>
 </html>

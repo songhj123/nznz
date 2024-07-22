@@ -15,11 +15,11 @@
 }
 
 body, html {
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden; /* 좌우 스크롤 막기 */
-            width: 100%;
-        }
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* 좌우 스크롤 막기 */
+    width: 100%;
+}
 
 body {
     font-family: Arial, sans-serif;
@@ -128,11 +128,8 @@ nav a:hover {
 }
 
 .main-container {
-    height: 440px;
     flex: 1;
-    display: flex;
-    justify-content: center;
-    padding: 10px;
+    padding: 20px;
 }
 
 .container {
@@ -154,7 +151,6 @@ nav a:hover {
     justify-content: center;
     transition: transform 0.2s;
 }
-
 
 footer {
     width: 100vw;
@@ -243,15 +239,15 @@ small.form-text {
 }
 
 .check-duplicate-button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px 20px;
-            text-align: center;
-            font-size: 16px;
-            margin: 10px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 20px;
+    text-align: center;
+    font-size: 16px;
+    margin: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
 .check-duplicate-button:hover {
