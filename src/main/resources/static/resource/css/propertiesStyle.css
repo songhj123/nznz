@@ -1,0 +1,55 @@
+
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+.map-container {
+    width: 100%;
+    height: 100vh;
+}
+
+.list-container {
+    width: 100%;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.list-container::-webkit-scrollbar {
+    width: 12px; /* Set the width of the scrollbar */
+}
+
+.list-container::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Set the track color */
+}
+
+.list-container::-webkit-scrollbar-thumb {
+    background-color: #888; /* Set the thumb color */
+    border-radius: 10px; /* Set the thumb border radius */
+    border: 3px solid #f1f1f1; /* Set the thumb border */
+}
+
+.list-container::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Change the thumb color on hover */
+}
+
+.card {
+    margin-bottom: 1rem;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+/* Footer styles */
+footer {
+    width: 100%;
+    background-color: #777;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}

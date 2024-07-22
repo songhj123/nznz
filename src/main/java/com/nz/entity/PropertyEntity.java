@@ -52,5 +52,8 @@ public class PropertyEntity {
 
     @OneToMany(mappedBy = "property", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<PropertyImageEntity> propertyImageList;
+    
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PropertyOptionEntity> propertyOptions;
 }
 

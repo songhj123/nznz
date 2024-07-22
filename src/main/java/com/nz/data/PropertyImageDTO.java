@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class PropertyImageDTO {
     private Long imageId;
+	private Long propertyId;
     private String imageOriginalName;
     private String imageStoredName;
 }

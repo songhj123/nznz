@@ -1,28 +1,47 @@
-home.html
 <!DOCTYPE html>
 <html layout:decorate="~{layout}">
 <head>
     <meta charset="UTF-8">
     <title>니집내집</title>
+    <style type="text/css">
+		.card:hover {
+			color: white;
+			text-decoration: none;
+			transform: translateY(-5px);
+		}
+    </style>
 </head>
 <body>
     <div layout:fragment="content">
-        <div class="search-bar">
-            <input type="text" placeholder="검색어를 입력하세요.">
-            <button type="submit">검색</button>
-        </div>
         <main class="main-container">
-            <div class="container">
-                <section class="cards-container">
-                    <div class="card">원룸 / 투룸</div>
-                    <div class="card">오피스텔</div>
-                    <div class="card">아파트</div>
-                    <div class="card">주택 / 빌라</div>
+            <div class="container mt-5">
+                <section class="row">
+                    <div class="col-md-6 mb-4">
+                        <a th:href="@{/properties}" class="card p-4 text-center d-block">원룸 / 투룸</a>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <a th:href="@{/properties}" class="card p-4 text-center d-block">오피스텔</a>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <a th:href="@{/properties}" class="card p-4 text-center d-block">아파트</a>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <a th:href="@{/properties}" class="card p-4 text-center d-block">주택 / 빌라</a>
+                    </div>
                 </section>
-                <section class="tips-container">
-                    <div class="card">방 구하기 TIP!</div>
-                    <div class="card">매물 관리</div>
-                    <div class="card">찜한 방</div>
+                <section class="row">
+                    <div class="col-md-4 mb-4">
+                        <a href="/tips" class="card p-4 text-center d-block" style="width: 100%;
+																				    /* background: url(/resource/image/karina.jpg) no-repeat center; */
+																				    background-size: cover;">
+    					방 구하기 TIP!</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="/management" class="card p-4 text-center d-block">매물 관리</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a href="/favorites" class="card p-4 text-center d-block">찜한 방</a>
+                    </div>
                 </section>
             </div>
         </main>

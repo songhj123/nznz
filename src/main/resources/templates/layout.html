@@ -4,22 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>니집내집</title>
-    <!-- 스타일시트 경로 수정 -->
-    <link rel="stylesheet" href="../resource/css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../resource/css/sstyle.css">
+    <link rel="stylesheet" th:href="@{/resource/css/propertiesStyle.css}">
 </head>
 <body>
+    <!-- 상단 네비게이션 바 -->
+    <div th:replace="~{navbar :: navUp}"></div>
     <!-- 네비게이션 바 포함 -->
-    <div th:replace="navbar :: navbar"></div>
+    <div th:replace="~{navbar :: navbar}"></div>
 
     <!-- 메인 콘텐츠 영역 -->
-    <main>
+    <main class="flex-fill">
         <div layout:fragment="content">
             <!-- 각 페이지에서 이 부분을 대체합니다 -->
         </div>
     </main>
 
-    <footer>
+    <footer class="text-white text-center py-2">
         <p>&copy; 2024 NZNZ. All Rights Reserved.</p>
     </footer>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

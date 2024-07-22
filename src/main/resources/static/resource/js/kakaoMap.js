@@ -60,33 +60,51 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function showPropertyDetails(property) {
-        document.getElementById('modalTitle').innerText = property.propertyNum || "No Title";
-        document.getElementById('modalAddress').innerText = '주소: ' + (property.propertyAddress || "No Address");
-        document.getElementById('modalPrice').innerText = '가격: ' + (property.price || "No Price");
+function showPropertyDetails(property) {
+    document.getElementById('modalTitle').innerText = property.propertyNum || "No Title";
+    document.getElementById('modalAddress').innerText = '주소: ' + (property.propertyAddress || "No Address");
+    document.getElementById('modalPrice').innerText = '가격: ' + (property.price || "No Price");
+    document.getElementById('propertyDetailsLink').href = `/property/${property.propertyId}`;
 
-        // Carousel 이미지 추가
-        var carouselInner = document.getElementById('carousel-inner');
-        carouselInner.innerHTML = ''; // 기존 이미지 초기화
+    // Carousel 이미지 추가
+    var carouselInner = document.getElementById('carousel-inner');
+    carouselInner.innerHTML = ''; // 기존 이미지 초기화
 
-        if (property.propertyImageList && property.propertyImageList.length > 0) {
-            property.propertyImageList.forEach((image, index) => {
-                var div = document.createElement('div');
-                div.className = 'carousel-item' + (index === 0 ? ' active' : '');
-                div.innerHTML = `<img src="/resource/image/${image.imageStoredName}" class="d-block w-100" alt="Property Image">`;
-                carouselInner.appendChild(div);
-            });
-        } else {
+    if (property.propertyImageList && property.propertyImageList.length > 0) {
+        property.propertyImageList.forEach((image, index) => {
             var div = document.createElement('div');
-            div.className = 'carousel-item active';
-            div.innerHTML = `<img src="/resource/image/defaultImage.png" class="d-block w-100" alt="Property Image">`;
+            div.className = 'carousel-item' + (index === 0 ? ' active' : '');
+            div.innerHTML = `<img src="/resource/image/${image.imageStoredName}" class="d-block w-100" alt="Property Image">`;
             carouselInner.appendChild(div);
-        }
-
-        var modal = new bootstrap.Modal(document.getElementById('propertyModal'));
-        modal.show();
+        });
+    } else {
+        var div = document.createElement('div');
+        div.className = 'carousel-item active';
+        div.innerHTML = `<img src="/resource/image/defaultImage.png" class="d-block w-100" alt="Property Image">`;
+        carouselInner.appendChild(div);
     }
 
+    // 상세 정보 추가
+    document.getElementById('modalSummary').innerText = property.shortDescription || "No Summary";
+    document.getElementById('modalDetailAddress').innerText = '주소: ' + (property.propertyAddress || "No Address");
+    document.getElementById('modalDetailSize').innerText = '면적: ' + (property.sizePyeong || "No Size");
+    document.getElementById('modalDetailFloor').innerText = '층수: ' + (property.floor || "No Floor");
+    document.getElementById('modalDetailParking').innerText = '주차: ' + (property.parking || "No Parking");
+    document.getElementById('modalDetailPrice').innerText = '관리비: ' + (property.maintenanceFee || "No Maintenance Fee");
+    
+    // 입주일 포맷팅
+    var availableDate = new Date(property.availableDate);
+    var formattedDate = availableDate.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    document.getElementById('modalDetailMoveInDate').innerText = '입주일: ' + formattedDate;
+
+    document.getElementById('modalOptions').innerText = property.options || "No Options";
+    document.getElementById('modalSecurity').innerText = property.security || "No Security";
+    document.getElementById('modalCharacteristics').innerText = property.characteristics || "No Characteristics";
+    document.getElementById('modalNearbyFacilities').innerText = property.nearbyFacilities || "No Nearby Facilities";
+
+    var modal = new bootstrap.Modal(document.getElementById('propertyModal'));
+    modal.show();
+}
     // 초기 상태에서 모든 매물을 리스트에 추가합니다.
     addPropertiesToList(positions);
 

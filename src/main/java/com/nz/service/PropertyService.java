@@ -10,6 +10,7 @@ import com.nz.data.PropertyDTO;
 import com.nz.data.PropertyImageDTO;
 import com.nz.entity.PropertyEntity;
 import com.nz.entity.PropertyImageEntity;
+import com.nz.entity.PropertyOptionEntity;
 import com.nz.repository.PropertyImageRepository;
 import com.nz.repository.PropertyRepository;
 
@@ -40,6 +41,15 @@ public class PropertyService {
                     return convertToDTO(property, images);
                 })
                 .collect(Collectors.toList());
+    }
+
+    public PropertyDTO getPropertyById(Long id) {
+        PropertyEntity propertyEntity = propertyRepository.findById(id).orElse(null);
+        if (propertyEntity == null) {
+            return null;
+        }
+        List<PropertyImageEntity> images = propertyImageRepository.findByProperty_PropertyId(propertyEntity.getPropertyId());
+        return convertToDTO(propertyEntity, images);
     }
 
     private PropertyDTO convertToDTO(PropertyEntity propertyEntity, List<PropertyImageEntity> images) {
@@ -77,5 +87,57 @@ public class PropertyService {
                 .imageOriginalName(propertyImageEntity.getImageOriginalName())
                 .imageStoredName(propertyImageEntity.getImageStoredName())
                 .build();
+    }
+    
+    public void createProperty(PropertyDTO propertyDTO) {
+    	List<PropertyOptionEntity> options = propertyDTO.getPropertyOptionOptions().stream().map(optionDTO -> 
+    		PropertyOptionEntity.builder()
+    			.heatingSystem(optionDTO.getHeatingSystem())
+    			.coolingSystem(optionDTO.getCoolingSystem())
+    			.livingFacilities(optionDTO.getLivingFacilities())
+    			.securityFacilities(optionDTO.getSecurityFacilities())
+    			.otherFacilities(optionDTO.getOtherFacilities())
+    			.parking(optionDTO.getParking())
+    			.elevator(optionDTO.getElevator())
+    			.propertyFeatures(optionDTO.getPropertyFeatures())
+    			.build()
+    		).collect(Collectors.toList());
+    	
+    	List<PropertyImageEntity> images = propertyDTO.getPropertyImageList().stream().map(imageDTO ->
+    			PropertyImageEntity.builder()
+    			.imageOriginalName(imageDTO.getImageOriginalName())
+    			.imageStoredName(imageDTO.getImageStoredName())
+    			.build()
+    		).collect(Collectors.toList());
+    	
+    	PropertyEntity pe = PropertyEntity.builder()
+    			.propertyNum(propertyDTO.getPropertyNum())
+    			.memberId(propertyDTO.getMemberId())
+    			.propertyType(propertyDTO.getPropertyType())
+    			.propertyAddress(propertyDTO.getPropertyAddress())
+    			.buildingName(propertyDTO.getBuildingName())
+    			.sizePyeong(propertyDTO.getSizePyeong())
+    			.roomInfo(propertyDTO.getRoomInfo())
+    			.price(propertyDTO.getPrice())
+    			.maintenanceFee(propertyDTO.getMaintenanceFee())
+    			.availableDate(propertyDTO.getAvailableDate())
+    			.floor(propertyDTO.getFloor())
+    			.shortDescription(propertyDTO.getShortDescription())
+    			.longDescription(propertyDTO.getLongDescription())
+    			.status(propertyDTO.getStatus())
+    			.processingStatus(propertyDTO.getProcessingStatus())
+    			.latitude(propertyDTO.getLatitude())
+    			.longitude(propertyDTO.getLongitude())
+    			.propertyOptions(options)
+    			.propertyImageList(images)
+    			.build();
+    	
+    	options.forEach(option -> option.setProperty(pe));
+    	images.forEach(image -> image.setProperty(pe));
+    	
+    	this.propertyRepository.save(pe);
+    			
+    			
+    					
     }
 }

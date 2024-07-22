@@ -33,4 +33,8 @@ public class PropertyDTO {
     private Double latitude;
     private Double longitude;
     private List<PropertyImageDTO> propertyImageList;
+    private List<PropertyOptionDTO> propertyOptionOptions; // 추가된 필드
+    private String agency;  // 추가된 필드
+    private String contact;  // 추가된 필드
+    private Integer likes;  // 추가된 필드
 }

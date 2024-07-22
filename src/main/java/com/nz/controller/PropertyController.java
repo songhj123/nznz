@@ -1,20 +1,38 @@
 package com.nz.controller;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.nz.data.PropertyDTO;
+import com.nz.data.PropertyImageDTO;
 import com.nz.service.PropertyService;
+
+
+import jakarta.validation.Valid;
 
 @Controller
 public class PropertyController {
+	// 파일 업로드 경로
+	private final String uploadPath = "C:\\spring\\upload\\"; 
 
     @Autowired
     private PropertyService propertyService;
@@ -46,4 +64,93 @@ public class PropertyController {
     public String home(Model model) {
         return "home";
     }
+    @GetMapping("/property/{id}")
+    public String getPropertyDetails(@PathVariable("id") Long id, Model model) {
+        PropertyDTO property = propertyService.getPropertyById(id);
+        if (property == null) {
+            return "redirect:/properties";  // 매물을 찾을 수 없을 경우 목록 페이지로 리디렉션
+        }
+        model.addAttribute("property", property);
+        return "propertyDetails";
+    }
+    
+    @GetMapping("/sellForm")
+    public String sellProperty(Model model) {
+    	model.addAttribute("propertyDTO", new PropertyDTO());
+    	return "sellForm";
+    }
+    
+    @GetMapping("/roomDetail")
+    public String roomDetail() {
+    	
+    	return "roomDetail";
+    }
+    
+    @PostMapping("/sellPro")
+    public String sellPro(@Valid PropertyDTO propertyDTO, BindingResult bindingResult,
+    		Model model, @RequestParam("propertyImages") List<MultipartFile> propertyImages) {
+
+    	
+    	//파일 처리 로직 추가
+    	if(propertyDTO.getPropertyImageList() == null) {
+    		propertyDTO.setPropertyImageList(new ArrayList<>());
+    	}
+    	   	
+    	for(MultipartFile mf : propertyImages) {
+    		if(!mf.isEmpty()) {
+    			try {
+    				String originalFilename = mf.getOriginalFilename();
+    				Path filePath = Paths.get(uploadPath + originalFilename);
+    				Files.write(filePath, mf.getBytes());
+    				propertyDTO.getPropertyImageList().add(
+    						PropertyImageDTO.builder()
+    						.imageOriginalName(originalFilename)
+    						.imageStoredName(originalFilename)
+    						.build()
+    				);
+    			}catch(Exception e){
+    				e.printStackTrace();
+    			}
+    		}
+    	}
+    	
+    	this.propertyService.createProperty(propertyDTO);
+    	model.addAttribute("property", propertyDTO);
+    	return "sellPro";
+    }
+    
+    @GetMapping("/display")
+    public ResponseEntity<Resource> display(@RequestParam("filename")String filename){
+    	try {
+            Path filePath = Paths.get(uploadPath + filename);
+            
+
+            if (!Files.exists(filePath)) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+            Resource resource = new FileSystemResource(filePath.toString());
+            HttpHeaders header = new HttpHeaders();
+            header.add("Content-Type", Files.probeContentType(filePath));
+            return new ResponseEntity<>(resource, header, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

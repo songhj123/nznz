@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>매물 정보</title>
+</head>
+<body>
+    <h1>매물 정보</h1>
+    <div>
+        <label>매물 유형: </label><span th:text="${property.propertyType}"></span>
+    </div>
+    <div>
+        <label>매물 주소: </label><span th:text="${property.propertyAddress}"></span>
+    </div>
+    <div>
+        <label>건물 이름: </label><span th:text="${property.buildingName}"></span>
+    </div>
+    <div>
+        <label>크기 (평수): </label><span th:text="${property.sizePyeong}"></span>
+    </div>
+    <div>
+        <label>방 정보: </label><span th:text="${property.roomInfo}"></span>
+    </div>
+    <div>
+        <label>가격: </label><span th:text="${property.price}"></span>
+    </div>
+    <div>
+        <label>관리비: </label><span th:text="${property.maintenanceFee}"></span>
+    </div>
+    <div>
+        <label>입주 가능일: </label><span th:text="${property.availableDate}"></span>
+    </div>
+    <div>
+        <label>층수: </label><span th:text="${property.floor}"></span>
+    </div>
+    <div>
+        <label>간단 설명: </label><span th:text="${property.shortDescription}"></span>
+    </div>
+    <div>
+        <label>상세 설명: </label><span th:text="${property.longDescription}"></span>
+    </div>
+    <div>
+        <label>상태: </label><span th:text="${property.status}"></span>
+    </div>
+</body>
+</html>

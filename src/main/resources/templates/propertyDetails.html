@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Property Details</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/resource/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/resource/css/styles.css}">
+    <style>
+        .main-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .left-column {
+            flex: 1;
+        }
+        .right-column {
+            width: 300px;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+        .carousel-item img {
+            max-height: 400px;
+            object-fit: cover;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+        .details-container {
+            padding: 20px;
+        }
+        .details-container h5 {
+            margin-bottom: 15px;
+        }
+        .details-container p {
+            margin-bottom: 5px;
+        }
+        .map-container {
+            width: 100%;
+            height: 400px;
+            margin-bottom: 20px;
+        }
+        .options, .safety {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .similar-properties {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .similar-property {
+            width: calc(25% - 20px);
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="main-container">
+            <!-- Left Column -->
+            <div class="left-column">
+                <!-- Carousel -->
+                <div id="carouselExampleControls" class="carousel slide mb-4" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div th:each="image, iterStat : ${property.propertyImageList}" 
+                             th:class="'carousel-item' + ${iterStat.index == 0 ? ' active' : ''}">
+                            <img th:src="@{/resource/image/{imageName}(imageName=${image.imageStoredName})}" class="d-block w-100" alt="Property Image">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+
+                <!-- Detailed Information -->
+                <div class="card details-container">
+                    <h5>가격정보</h5>
+                    <p><strong>전세: </strong><span th:text="${property.price}"></span></p>
+                    <p><strong>관리비: </strong><span th:text="${property.maintenanceFee}"></span></p>
+                </div>
+
+                <div class="card details-container">
+                    <h5>상세정보</h5>
+                    <p><strong>타입: </strong><span th:text="${property.propertyType}"></span></p>
+                    <p><strong>건물 이름: </strong><span th:text="${property.buildingName}"></span></p>
+                    <p><strong>크기: </strong><span th:text="${property.sizePyeong} + ' 평'"></span></p>
+                    <p><strong>방 정보: </strong><span th:text="${property.roomInfo}"></span></p>
+                    <p><strong>입주 가능일: </strong><span th:text="${property.availableDate}"></span></p>
+                    <p><strong>층: </strong><span th:text="${property.floor}"></span></p>
+                    <p><strong>등록일: </strong><span th:text="${property.registrationDate}"></span></p>
+                    <p><strong>상태: </strong><span th:text="${property.status}"></span></p>
+                    <p><strong>처리 상태: </strong><span th:text="${property.processingStatus}"></span></p>
+                </div>
+
+                <div class="card details-container">
+                    <h5>옵션</h5>
+                    <div class="options">
+                        <div>냉장고</div>
+                        <div>세탁기</div>
+                        <div>에어컨</div>
+                        <div>가스레인지</div>
+                    </div>
+                </div>
+
+                <div class="card details-container">
+                    <h5>보안/안전시설</h5>
+                    <div class="safety">
+                        <div>비디오폰</div>
+                        <div>현관잠금</div>
+                    </div>
+                </div>
+
+                <div class="card details-container">
+                    <h5>위치 및 주변시설</h5>
+                    <div id="map" class="map-container"></div>
+                    <p>주소: <span th:text="${property.propertyAddress}"></span></p>
+                </div>
+
+                <div class="card details-container">
+                    <h5>상세설명</h5>
+                    <p><span th:text="${property.shortDescription}"></span></p>
+                    <p><span th:text="${property.longDescription}"></span></p>
+                </div>
+
+                <div class="card details-container">
+                    <h5>이 중개사무소의 다른 방</h5>
+                    <div class="similar-properties">
+                        <div th:each="otherProperty : ${otherProperties}" class="similar-property">
+                            <img th:src="@{/resource/image/{imageName}(imageName=${otherProperty.propertyImageList[0].imageStoredName})}" class="img-fluid" alt="Similar Property">
+                            <p><strong>매물 번호: </strong><span th:text="${otherProperty.propertyNum}"></span></p>
+                            <p><strong>가격: </strong><span th:text="${otherProperty.price}"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="right-column">
+                <div class="card details-container">
+                    <h5>매물 번호: <span th:text="${property.propertyId}"></span></h5>
+                    <h5>전세: <span th:text="${property.price}"></span></h5>
+                    <p><strong>방/욕실: </strong><span th:text="${property.roomInfo != null ? property.roomInfo : 'N/A'}"></span></p>
+                    <p><strong>위치: </strong><span th:text="${property.propertyAddress != null ? property.propertyAddress : 'N/A'}"></span></p>
+                    <p><strong>중개사: </strong><span th:text="${property.agency != null ? property.agency : 'N/A'}"></span></p>
+                    <a th:if="${property.contact != null}" href="#" class="btn btn-primary">연락처 보기</a>
+                    <button class="btn btn-outline-secondary mt-2">♥ <span th:text="${property.likes != null ? property.likes : 0}"></span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/resource/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/resource/js/kakaoMap.js}"></script>
+</body>
+</html>

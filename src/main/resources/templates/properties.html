@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html layout:decorate="~{layout}" xmlns:th="http://www.thymeleaf.org">
-<div layout:fragment="content">
+
 <head>
     <title>Properties</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f17be299f721e9cfc06f28d83b05f036&libraries=clusterer"></script>
     <link rel="stylesheet" th:href="@{/resource/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/resource/css/styles.css}">
+    
 </head>
 <body>
+<div layout:fragment="content">
     <div class="container-fluid h-100">
         <div class="row h-100 no-gutters">
             <div class="col-md-3 h-100">
@@ -31,7 +32,7 @@
                 </div>
                 <div class="modal-body">
                     <!-- Carousel -->
-                    <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+                    <div id="carouselExampleControls" class="carousel slide mb-3" data-bs-ride="carousel">
                         <div class="carousel-inner" id="carousel-inner">
                             <!-- Images will be injected here by JavaScript -->
                         </div>
@@ -44,9 +45,58 @@
                             <span class="visually-hidden">Next</span>
                         </button>
                     </div>
-                    <h5 id="modalTitle"></h5>
-                    <p id="modalAddress"></p>
-                    <p id="modalPrice"></p>
+                    <h5 id="modalTitle" class="mb-3"></h5>
+                    <p id="modalAddress" class="mb-2"></p>
+                    <p id="modalPrice" class="text-primary mb-4"></p>
+                    <a id="propertyDetailsLink" href="#" class="btn btn-primary mb-3">상세 페이지로 이동</a>
+
+                    <hr>
+                    <div class="mb-3">
+                        <h6>요약</h6>
+                        <p id="modalSummary"></p>
+                    </div>
+                    <div class="mb-3">
+                        <h6>주소</h6>
+                        <p id="modalDetailAddress"></p>
+                    </div>
+                    <div class="mb-3">
+                        <h6>면적</h6>
+                        <p id="modalDetailSize"></p>
+                    </div>
+                    <div class="mb-3">
+                        <h6>층수</h6>
+                        <p id="modalDetailFloor"></p>
+                    </div>
+                    <div class="mb-3">
+                        <h6>주차</h6>
+                        <p id="modalDetailParking"></p>
+                    </div>
+                    <div class="mb-3">
+                        <h6>관리비</h6>
+                        <p id="modalDetailPrice"></p>
+                    </div>
+                    <div class="mb-3">
+                        <h6>입주일</h6>
+                        <p id="modalDetailMoveInDate"></p>
+                    </div>
+
+                    <hr>
+                    <div class="mb-3">
+                        <h6>옵션</h6>
+                        <p id="modalOptions"></p>
+                    </div>
+                    <div class="mb-3">
+                        <h6>보안/안전시설</h6>
+                        <p id="modalSecurity"></p>
+                    </div>
+                    <div class="mb-3">
+                        <h6>방특징</h6>
+                        <p id="modalCharacteristics"></p>
+                    </div>
+                    <div class="mb-3">
+                        <h6>주변시설</h6>
+                        <p id="modalNearbyFacilities"></p>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -62,6 +112,7 @@
     <script th:src="@{/resource/js/kakaoMap.js}"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+  </div>
 </body>
-</div>
+
 </html>

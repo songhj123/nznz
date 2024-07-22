@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>니집내집</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const agreeAllCheckbox = document.getElementById("agreeAll");
+            const checkboxes = document.querySelectorAll(".form-check-input:not(#agreeAll)");
+
+            agreeAllCheckbox.addEventListener("change", function() {
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = agreeAllCheckbox.checked;
+                });
+            });
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener("change", function() {
+                    if (!checkbox.checked) {
+                        agreeAllCheckbox.checked = false;
+                    } else {
+                        const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+                        agreeAllCheckbox.checked = allChecked;
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div layout:fragment="content" class="terms-container">
+        <h2 class="text-center" style="padding: 10px 0px 10px 0px;">약관 동의</h2>
+        <p class="text-center" style="padding: 0px 0px 30px 0px;">
+            환영합니다! 니집내집 서비스 이용약관에 동의해주세요.
+        </p>
+        <form class="check" th:action="@{/user/join02}">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="agreeAll">
+                <label class="form-check-label" for="agreeAll">
+                    네, 모두 동의합니다.
+                </label>
+            </div>
+            <hr>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="age14">
+                <label class="form-check-label" for="age14">
+                    [필수] 만 14세 이상입니다.
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="serviceTerms">
+                <label class="form-check-label" for="serviceTerms">
+                    [필수] 니집내집 서비스 이용약관 동의
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="personalInfo">
+                <label class="form-check-label" for="personalInfo">
+                    [필수] 개인정보 수집 및 이용 동의
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="marketingInfo">
+                <label class="form-check-label" for="marketingInfo">
+                    [선택] 마케팅 정보 수신에 대한 동의
+                </label>
+            </div>
+            <small class="form-text text-muted mt-3">
+                만 14세 이상 회원 가입 가능합니다. 해당 내용은
+                <a href="#">이용약관 및 정책</a>에서도 확인 가능합니다.
+            </small>
+            <br>
+            <button type="submit" class="btn btn-primary btn-block mt-4">
+                동의하고 진행하기
+            </button>
+        </form>
+    </div>
+</body>
+</html>
