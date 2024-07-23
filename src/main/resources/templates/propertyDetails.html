@@ -1,171 +1,127 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
 <head>
-    <title>Property Details</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Details</title>
     <link rel="stylesheet" th:href="@{/resource/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/resource/css/styles.css}">
-    <style>
-        .main-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .left-column {
-            flex: 1;
-        }
-        .right-column {
-            width: 300px;
-            position: sticky;
-            top: 20px;
-            height: fit-content;
-        }
-        .carousel-item img {
-            max-height: 400px;
-            object-fit: cover;
-        }
-        .card {
-            margin-bottom: 20px;
-        }
-        .details-container {
-            padding: 20px;
-        }
-        .details-container h5 {
-            margin-bottom: 15px;
-        }
-        .details-container p {
-            margin-bottom: 5px;
-        }
-        .map-container {
-            width: 100%;
-            height: 400px;
-            margin-bottom: 20px;
-        }
-        .options, .safety {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .similar-properties {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .similar-property {
-            width: calc(25% - 20px);
-            flex: 1;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/resource/css/propertyDetails.css}">
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f17be299f721e9cfc06f28d83b05f036&libraries=services,clusterer"></script>
 </head>
 <body>
+<div layout:fragment="content">
+
     <div class="container mt-5">
-        <div class="main-container">
+        <div class="row">
             <!-- Left Column -->
-            <div class="left-column">
-                <!-- Carousel -->
-                <div id="carouselExampleControls" class="carousel slide mb-4" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        <div th:each="image, iterStat : ${property.propertyImageList}" 
-                             th:class="'carousel-item' + ${iterStat.index == 0 ? ' active' : ''}">
-                            <img th:src="@{/resource/image/{imageName}(imageName=${image.imageStoredName})}" class="d-block w-100" alt="Property Image">
+            <div class="col-md-8 left-column scrollable-column">
+                <!-- Image Slider -->
+                <div id="imageSlider" class="mb-4">
+                    <div class="main-image-container position-relative">
+                        <button id="prevImage" class="carousel-control-prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <img id="mainImage" src="" class="d-block w-100 main-image" alt="Property Image">
+                        <button id="nextImage" class="carousel-control-next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                    <div class="thumbnail-container">
+                        <div th:each="image : ${property.propertyImageList}">
+                            <img th:src="@{/resource/image/{imageName}(imageName=${image.imageStoredName})}" class="thumbnail" alt="Property Thumbnail">
                         </div>
                     </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
+                </div>
+
+                <!-- Modal for large image view -->
+                <div id="imageModal" class="modal">
+                    <span class="close">&times;</span>
+                    <button id="prevModalImage" class="modal-prev">&lt;</button>
+                    <img class="modal-content" id="img01">
+                    <button id="nextModalImage" class="modal-next">&gt;</button>
+                    <div id="caption"></div>
                 </div>
 
                 <!-- Detailed Information -->
                 <div class="card details-container">
                     <h5>가격정보</h5>
-                    <p><strong>전세: </strong><span th:text="${property.price}"></span></p>
-                    <p><strong>관리비: </strong><span th:text="${property.maintenanceFee}"></span></p>
+                    <p><strong>전세: </strong><span th:text="${property.price != null ? property.price : 'N/A'}"></span></p>
+                    <p><strong>관리비: </strong><span th:text="${property.maintenanceFee != null ? property.maintenanceFee : 'N/A'}"></span></p>
                 </div>
 
                 <div class="card details-container">
                     <h5>상세정보</h5>
-                    <p><strong>타입: </strong><span th:text="${property.propertyType}"></span></p>
-                    <p><strong>건물 이름: </strong><span th:text="${property.buildingName}"></span></p>
-                    <p><strong>크기: </strong><span th:text="${property.sizePyeong} + ' 평'"></span></p>
-                    <p><strong>방 정보: </strong><span th:text="${property.roomInfo}"></span></p>
-                    <p><strong>입주 가능일: </strong><span th:text="${property.availableDate}"></span></p>
-                    <p><strong>층: </strong><span th:text="${property.floor}"></span></p>
-                    <p><strong>등록일: </strong><span th:text="${property.registrationDate}"></span></p>
-                    <p><strong>상태: </strong><span th:text="${property.status}"></span></p>
-                    <p><strong>처리 상태: </strong><span th:text="${property.processingStatus}"></span></p>
+                    <p><strong>타입: </strong><span th:text="${property.propertyType != null ? property.propertyType : 'N/A'}"></span></p>
+                    <p><strong>건물 이름: </strong><span th:text="${property.buildingName != null ? property.buildingName : 'N/A'}"></span></p>
+                    <p><strong>크기: </strong><span th:text="${property.sizePyeong != null ? property.sizePyeong + ' 평' : 'N/A'}"></span></p>
+                    <p><strong>방 정보: </strong><span th:text="${property.roomInfo != null ? property.roomInfo : 'N/A'}"></span></p>
+                    <p><strong>입주 가능일: </strong><span th:text="${#dates.format(property.availableDate, 'yyyy-MM-dd') != null ? #dates.format(property.availableDate, 'yyyy-MM-dd') : 'N/A'}"></span></p>
+                    <p><strong>층: </strong><span th:text="${property.floor != null ? property.floor : 'N/A'}"></span></p>
+                    <p><strong>등록일: </strong><span th:text="${#dates.format(property.registrationDate, 'yyyy-MM-dd') != null ? #dates.format(property.registrationDate, 'yyyy-MM-dd') : 'N/A'}"></span></p>
+                    <p><strong>상태: </strong><span th:text="${property.status != null ? property.status : 'N/A'}"></span></p>
+                    <p><strong>처리 상태: </strong><span th:text="${property.processingStatus != null ? property.processingStatus : 'N/A'}"></span></p>
                 </div>
 
                 <div class="card details-container">
                     <h5>옵션</h5>
-                    <div class="options">
-                        <div>냉장고</div>
-                        <div>세탁기</div>
-                        <div>에어컨</div>
-                        <div>가스레인지</div>
+                    <div class="options" th:each="option : ${property.propertyOptionOptions}">
+                        <p><strong>난방 시스템: </strong><span th:text="${option.heatingSystem != null ? option.heatingSystem : 'N/A'}"></span></p>
+                        <p><strong>냉방 시스템: </strong><span th:text="${option.coolingSystem != null ? option.coolingSystem : 'N/A'}"></span></p>
+                        <p><strong>생활 시설: </strong><span th:text="${option.livingFacilities != null ? option.livingFacilities : 'N/A'}"></span></p>
+                        <p><strong>보안 시설: </strong><span th:text="${option.securityFacilities != null ? option.securityFacilities : 'N/A'}"></span></p>
+                        <p><strong>기타 시설: </strong><span th:text="${option.otherFacilities != null ? option.otherFacilities : 'N/A'}"></span></p>
+                        <p><strong>주차: </strong><span th:text="${option.parking != null ? option.parking : 'N/A'}"></span></p>
+                        <p><strong>엘리베이터: </strong><span th:text="${option.elevator != null ? option.elevator : 'N/A'}"></span></p>
+                        <p><strong>부동산 특징: </strong><span th:text="${option.propertyFeatures != null ? option.propertyFeatures : 'N/A'}"></span></p>
                     </div>
                 </div>
 
+                <!-- 보안/안전시설을 propertyOptionOptions로 대체 -->
                 <div class="card details-container">
                     <h5>보안/안전시설</h5>
-                    <div class="safety">
-                        <div>비디오폰</div>
-                        <div>현관잠금</div>
+                    <div class="safety" th:each="safety : ${property.propertyOptionOptions}">
+                        <div th:text="${safety.securityFacilities != null ? safety.securityFacilities : 'N/A'}"></div>
                     </div>
                 </div>
 
                 <div class="card details-container">
                     <h5>위치 및 주변시설</h5>
-                    <div id="map" class="map-container"></div>
-                    <p>주소: <span th:text="${property.propertyAddress}"></span></p>
+                    <div id="map" class="map-container" 
+                         th:data-latitude="${property.latitude}" 
+                         th:data-longitude="${property.longitude}"></div>
+                    <p>주소: <span th:text="${property.propertyAddress != null ? property.propertyAddress : 'N/A'}"></span></p>
                 </div>
 
                 <div class="card details-container">
                     <h5>상세설명</h5>
-                    <p><span th:text="${property.shortDescription}"></span></p>
-                    <p><span th:text="${property.longDescription}"></span></p>
-                </div>
-
-                <div class="card details-container">
-                    <h5>이 중개사무소의 다른 방</h5>
-                    <div class="similar-properties">
-                        <div th:each="otherProperty : ${otherProperties}" class="similar-property">
-                            <img th:src="@{/resource/image/{imageName}(imageName=${otherProperty.propertyImageList[0].imageStoredName})}" class="img-fluid" alt="Similar Property">
-                            <p><strong>매물 번호: </strong><span th:text="${otherProperty.propertyNum}"></span></p>
-                            <p><strong>가격: </strong><span th:text="${otherProperty.price}"></span></p>
-                        </div>
-                    </div>
+                    <p><span th:text="${property.shortDescription != null ? property.shortDescription : 'N/A'}"></span></p>
+                    <p><span th:text="${property.longDescription != null ? property.longDescription : 'N/A'}"></span></p>
                 </div>
             </div>
 
             <!-- Right Column -->
-            <div class="right-column">
-                <div class="card details-container">
-                    <h5>매물 번호: <span th:text="${property.propertyId}"></span></h5>
-                    <h5>전세: <span th:text="${property.price}"></span></h5>
+            <div class="col-md-4 right-column">
+                <div class="sticky-top card details-container">
+                    <h5>매물 번호: <span th:text="${property.propertyId != null ? property.propertyId : 'N/A'}"></span></h5>
+                    <h5>전세: <span th:text="${property.price != null ? property.price : 'N/A'}"></span></h5>
                     <p><strong>방/욕실: </strong><span th:text="${property.roomInfo != null ? property.roomInfo : 'N/A'}"></span></p>
-                    <p><strong>위치: </strong><span th:text="${property.propertyAddress != null ? property.propertyAddress : 'N/A'}"></span></p>
-                    <p><strong>중개사: </strong><span th:text="${property.agency != null ? property.agency : 'N/A'}"></span></p>
-                    <a th:if="${property.contact != null}" href="#" class="btn btn-primary">연락처 보기</a>
+                    <p><strong>위치: </strong><span th:text="${property.propertyAddress != null ? property.propertyAddress : 'N/A'}"></span></p>  
                     <button class="btn btn-outline-secondary mt-2" th:onclick="'goToConsultationRequest(' + ${property.propertyId} + ')'">방문상담예약</button>
-                    <button class="btn btn-outline-secondary mt-2">♥ <span th:text="${property.likes != null ? property.likes : 0}"></span></button>
                 </div>
             </div>
         </div>
+        <script th:src="@{/resource/js/bootstrap.bundle.min.js}"></script>
+		<script th:src="@{/resource/js/propertyDetails.js}"></script>
+		<script>
+		    function goToConsultationRequest(propertyId) {
+		        window.location.href = `/consultationRequest/${propertyId}`;
+		    }
+		</script>
     </div>
+</div>
 
-    <script th:src="@{/resource/js/bootstrap.bundle.min.js}"></script>
-    <script th:src="@{/resource/js/kakaoMap.js}"></script>
-    <script>
-    function goToConsultationRequest(propertyId) {
-        window.location.href = `/consultationRequest/${propertyId}`;
-    }
-</script>
 
 </body>
 </html>
