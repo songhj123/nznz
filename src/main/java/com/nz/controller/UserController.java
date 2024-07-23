@@ -26,35 +26,35 @@ public class UserController {
 
     @GetMapping("/join01")
     public String join01() {
-        return "join01";
+        return "auth/join01"; // 변경된 경로로 수정
     }
 
     @GetMapping("/join02")
     public String join02() {
-        return "join02";
+        return "auth/join02"; // 변경된 경로로 수정
     }
 
     @PostMapping("/joinPro")
     public String joinPro(UserDTO userDTO, Model model) {
         this.userService.createUser(userDTO);
-        return "joinPro";
+        return "auth/joinPro"; // 변경된 경로로 수정
     }
     
     @GetMapping("/loginForm")
     public String loginForm() {
-        return "loginForm";
+        return "auth/loginForm"; // 변경된 경로로 수정
     }
     
     @GetMapping("/mypage")
     @PreAuthorize("isAuthenticated()")
     public String mypage() {
-        return "mypage";
+        return "user/mypage"; // 변경된 경로로 수정
     }
     
     @GetMapping("/myContract")
     @PreAuthorize("isAuthenticated()")
     public String myContract() {
-        return "myContract";
+        return "user/myContract"; // 변경된 경로로 수정
     }
 
     @GetMapping("/check-username")

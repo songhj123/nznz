@@ -26,13 +26,12 @@ import com.nz.data.PropertyDTO;
 import com.nz.data.PropertyImageDTO;
 import com.nz.service.PropertyService;
 
-
 import jakarta.validation.Valid;
 
 @Controller
 public class PropertyController {
-	// 파일 업로드 경로
-	private final String uploadPath = "C:\\spring\\upload\\"; 
+    // 파일 업로드 경로
+    private final String uploadPath = "C:\\spring\\upload\\"; 
 
     @Autowired
     private PropertyService propertyService;
@@ -41,7 +40,7 @@ public class PropertyController {
     public String getProperties(Model model) {
         List<PropertyDTO> properties = propertyService.getAllProperties();
         model.addAttribute("properties", properties);
-        return "properties";
+        return "property/properties"; // 변경된 경로로 수정
     }
 
     @GetMapping("/properties/within")
@@ -62,8 +61,9 @@ public class PropertyController {
 
     @GetMapping("/")
     public String home(Model model) {
-        return "home";
+        return "home/home"; // 변경된 경로로 수정
     }
+    
     @GetMapping("/property/{id}")
     public String getPropertyDetails(@PathVariable("id") Long id, Model model) {
         PropertyDTO property = propertyService.getPropertyById(id);
@@ -71,60 +71,57 @@ public class PropertyController {
             return "redirect:/properties";  // 매물을 찾을 수 없을 경우 목록 페이지로 리디렉션
         }
         model.addAttribute("property", property);
-        return "propertyDetails";
+        return "property/propertyDetails"; // 변경된 경로로 수정
     }
     
     @GetMapping("/sellForm")
     public String sellProperty(Model model) {
-    	model.addAttribute("propertyDTO", new PropertyDTO());
-    	return "sellForm";
+        model.addAttribute("propertyDTO", new PropertyDTO());
+        return "property/sellForm"; // 변경된 경로로 수정
     }
     
     @GetMapping("/roomDetail")
     public String roomDetail() {
-    	
-    	return "roomDetail";
+        return "property/roomDetail"; // 변경된 경로로 수정
     }
     
     @PostMapping("/sellPro")
     public String sellPro(@Valid PropertyDTO propertyDTO, BindingResult bindingResult,
-    		Model model, @RequestParam("propertyImageList") List<MultipartFile> propertyImageList) {
+            Model model, @RequestParam("propertyImageList") List<MultipartFile> propertyImageList) {
 
-    	
-    	//파일 처리 로직 추가
-    	if(propertyDTO.getPropertyImageList() == null) {
-    		propertyDTO.setPropertyImageList(new ArrayList<>());
-    	}
-    	   	
-    	for(MultipartFile mf : propertyImageList) {
-    		if(!mf.isEmpty()) {
-    			try {
-    				String originalFilename = mf.getOriginalFilename();
-    				Path filePath = Paths.get(uploadPath + originalFilename);
-    				Files.write(filePath, mf.getBytes());
-    				propertyDTO.getPropertyImageList().add(
-    						PropertyImageDTO.builder()
-    						.imageOriginalName(originalFilename)
-    						.imageStoredName(originalFilename)
-    						.build()
-    				);
-    			}catch(Exception e){
-    				e.printStackTrace();
-    			}
-    		}
-    	}
-    	
-    	this.propertyService.createProperty(propertyDTO);
-    	model.addAttribute("property", propertyDTO);
-    	return "sellPro";
+        // 파일 처리 로직 추가
+        if (propertyDTO.getPropertyImageList() == null) {
+            propertyDTO.setPropertyImageList(new ArrayList<>());
+        }
+        
+        for (MultipartFile mf : propertyImageList) {
+            if (!mf.isEmpty()) {
+                try {
+                    String originalFilename = mf.getOriginalFilename();
+                    Path filePath = Paths.get(uploadPath + originalFilename);
+                    Files.write(filePath, mf.getBytes());
+                    propertyDTO.getPropertyImageList().add(
+                            PropertyImageDTO.builder()
+                            .imageOriginalName(originalFilename)
+                            .imageStoredName(originalFilename)
+                            .build()
+                    );
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+        this.propertyService.createProperty(propertyDTO);
+        model.addAttribute("property", propertyDTO);
+        return "property/sellPro"; // 변경된 경로로 수정
     }
     
     @GetMapping("/display")
     public ResponseEntity<Resource> display(@RequestParam("filename")String filename){
-    	try {
+        try {
             Path filePath = Paths.get(uploadPath + filename);
             
-
             if (!Files.exists(filePath)) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
@@ -139,18 +136,3 @@ public class PropertyController {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

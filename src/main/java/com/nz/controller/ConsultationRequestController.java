@@ -34,7 +34,7 @@ public class ConsultationRequestController {
             return "error/404";
         }
         model.addAttribute("property", property);
-        return "consultationRequest"; // consultationRequest.html 페이지로 이동
+        return "consultation/consultationRequest"; // 변경된 경로로 수정
     }
     
     @PostMapping("/consultationRequest")

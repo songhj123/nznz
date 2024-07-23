@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -66,7 +66,7 @@
 
                 <div class="card details-container">
                     <h5>옵션</h5>
-                    <div class="options" th:each="option : ${property.propertyOptionOptions}">
+                    <div class="options" th:each="option : ${property.propertyOption}">
                         <p><strong>난방 시스템: </strong><span th:text="${option.heatingSystem != null ? option.heatingSystem : 'N/A'}"></span></p>
                         <p><strong>냉방 시스템: </strong><span th:text="${option.coolingSystem != null ? option.coolingSystem : 'N/A'}"></span></p>
                         <p><strong>생활 시설: </strong><span th:text="${option.livingFacilities != null ? option.livingFacilities : 'N/A'}"></span></p>
@@ -81,7 +81,7 @@
                 <!-- 보안/안전시설을 propertyOptionOptions로 대체 -->
                 <div class="card details-container">
                     <h5>보안/안전시설</h5>
-                    <div class="safety" th:each="safety : ${property.propertyOptionOptions}">
+                    <div class="safety" th:each="safety : ${property.propertyOption}">
                         <div th:text="${safety.securityFacilities != null ? safety.securityFacilities : 'N/A'}"></div>
                     </div>
                 </div>
@@ -119,6 +119,25 @@
 		        window.location.href = `/consultationRequest/${propertyId}`;
 		    }
 		</script>
+		    <script th:inline="javascript">
+    function goToConsultationRequest(propertyId) {
+        window.location.href = `/consultationRequest/${propertyId}`;
+    }
+
+    /* 팝업 메시지 처리 */
+    /*<![CDATA[*/
+    var message = /*[[${message}]]*/ null;
+    var error = /*[[${error}]]*/ null;
+
+    if (message) {
+        alert(message); // 성공 메시지 팝업
+    }
+
+    if (error) {
+        alert(error); // 에러 메시지 팝업
+    }
+    /*]]>*/
+    </script>
     </div>
 </div>
 
