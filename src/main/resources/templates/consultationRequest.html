@@ -8,14 +8,14 @@
     <link rel="stylesheet" th:href="@{/resource/css/styles.css}">
     <style>
         .main-container {
-            margin: 20px auto; /* 상하 여백을 위해 자동으로 중앙 정렬 */
-            padding: 0 15px; /* 양쪽에 15px 패딩 추가 */
-            max-width: 1200px; /* 최대 넓이 설정 */
+            margin: 20px auto;
+            padding: 0 15px;
+            max-width: 1200px;
         }
         .property-image {
             width: 100%;
             height: auto;
-            max-width: 300px; /* 이미지 최대 크기 설정 */
+            max-width: 300px;
         }
         .property-info {
             display: flex;
@@ -44,44 +44,42 @@
 <body>
     <div layout:fragment="content">
         <div class="main-container">
-            <div class="row property-details">
-                <div class="col-md-4">
-                    <img th:src="@{/resource/image/{imageName}(imageName=${property.propertyImageList[0].imageStoredName})}" alt="Property Image" class="property-image img-fluid rounded">
+            <form th:action="@{/consultationRequest}" method="post">
+                <div class="row property-details">
+                    <div class="col-md-4">
+                        <img th:src="@{/resource/image/{imageName}(imageName=${property.propertyImageList[0].imageStoredName})}" alt="Property Image" class="property-image img-fluid rounded">
+                    </div>
+                    <div class="col-md-8 property-info">
+                        <h2 th:text="'월세 ' + ${property.price} + ' / ' + ${property.maintenanceFee}" class="mb-2"></h2>
+                        <p th:text="'매물번호 ' + ${property.propertyNum}" class="mb-1"></p>
+                        <p th:text="${property.propertyType}+' ' + ${property.sizePyeong} + '평'" class="mb-1"></p>
+                        <p th:text="'위치 ' + ${property.propertyAddress}" class="mb-1"></p>
+                        <input type="hidden" name="propertyId" th:value="${property.propertyId}">
+                    </div>
                 </div>
-                <div class="col-md-8 property-info">
-                    <h2 th:text="'월세 ' + ${property.price} + ' / ' + ${property.maintenanceFee}" class="mb-2"></h2>
-                    <p th:text="'매물번호 ' + ${property.propertyNum}" class="mb-1"></p>
-                    <p th:text="'원룸 ' + ${property.sizePyeong} + '평'" class="mb-1"></p>
-                    <p th:text="'위치 ' + ${property.propertyAddress}" class="mb-1"></p>
+                <div class="row visit-schedule">
+                    <div class="col-md-4">
+                        <label for="visitDate">방문 희망일</label>
+                        <input type="date" id="visitDate" name="visitDate" class="form-control">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="visitTime">방문 희망 시간대</label>
+                        <select id="visitTime" name="visitTime" class="form-control">
+                            <option value="">시간대 선택</option>
+                            <option value="오전 9시 - 11시">오전 9시 - 11시</option>
+                            <option value="오전 11시 - 오후 1시">오전 11시 - 오후 1시</option>
+                            <option value="오후 1시 - 3시">오후 1시 - 3시</option>
+                            <option value="오후 3시 - 5시">오후 3시 - 5시</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="main-container">
-            <div class="row visit-schedule">
-                <div class="col-md-4">
-                    <label for="visitDate">방문 희망일</label>
-                    <input type="date" id="visitDate" class="form-control">
+                <div class="row mt-4" style="height: auto; display: flex; justify-content: center;">
+                    <div class="col-md-4 text-center">
+                        <button class="btn btn-primary" type="submit" style="width: 100%;">신청하기</button>
+                    </div>
                 </div>
-                <div class="col-md-4">
-                    <label for="visitTime">방문 희망 시간대</label>
-                    <select id="visitTime" class="form-control">
-                        <option>시간대 선택</option>
-                        <option>오전 9시 - 11시</option>
-                        <option>오전 11시 - 오후 1시</option>
-                        <option>오후 1시 - 3시</option>
-                        <option>오후 3시 - 5시</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="main-container">
-            <div class="row mt-4" style="height: auto; display: flex; justify-content: center;">
-                <div class="col-md-4 text-center">
-                    <button class="btn btn-primary" style="width: 100%;">신청하기</button>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 </body>
 </html>
-	

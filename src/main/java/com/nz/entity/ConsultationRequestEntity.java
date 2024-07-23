@@ -28,10 +28,12 @@ public class ConsultationRequestEntity {
 
     private Long propertyId;
 
-    private Long memberId;
+    private String memberId;
 
     private Timestamp visitDate;
-
+    
+    private String visitTime;    
+    
     private Timestamp requestDate;
 
     private String status;
