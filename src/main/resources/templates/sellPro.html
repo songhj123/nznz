@@ -7,6 +7,13 @@
 </head>
 <body>
     <h1>매물 정보</h1>
+   
+    <div>
+        <div th:each="image : ${property.propertyImageList}">
+            <img th:src="@{/display?filename={image.imageStoredName}(image.imageStoredName=${image.imageStoredName})}" alt="Property Image" style="width: 100px; height: 100px; margin: 5px;">
+        </div>
+    </div>
+    
     <div>
         <label>매물 유형: </label><span th:text="${property.propertyType}"></span>
     </div>
@@ -43,5 +50,6 @@
     <div>
         <label>상태: </label><span th:text="${property.status}"></span>
     </div>
+  
 </body>
 </html>

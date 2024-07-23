@@ -88,7 +88,7 @@ public class PropertyController {
     
     @PostMapping("/sellPro")
     public String sellPro(@Valid PropertyDTO propertyDTO, BindingResult bindingResult,
-    		Model model, @RequestParam("propertyImages") List<MultipartFile> propertyImages) {
+    		Model model, @RequestParam("propertyImageList") List<MultipartFile> propertyImageList) {
 
     	
     	//파일 처리 로직 추가
@@ -96,7 +96,7 @@ public class PropertyController {
     		propertyDTO.setPropertyImageList(new ArrayList<>());
     	}
     	   	
-    	for(MultipartFile mf : propertyImages) {
+    	for(MultipartFile mf : propertyImageList) {
     		if(!mf.isEmpty()) {
     			try {
     				String originalFilename = mf.getOriginalFilename();

@@ -12,6 +12,7 @@ import com.nz.entity.PropertyEntity;
 import com.nz.entity.PropertyImageEntity;
 import com.nz.entity.PropertyOptionEntity;
 import com.nz.repository.PropertyImageRepository;
+import com.nz.repository.PropertyOptionRepository;
 import com.nz.repository.PropertyRepository;
 
 @Service
@@ -23,6 +24,9 @@ public class PropertyService {
     @Autowired
     private PropertyImageRepository propertyImageRepository;
 
+    @Autowired
+    private PropertyOptionRepository propertyOptionRepository;
+    
     public List<PropertyDTO> getAllProperties() {
         List<PropertyEntity> properties = propertyRepository.findAll();
         return properties.stream()
@@ -90,7 +94,7 @@ public class PropertyService {
     }
     
     public void createProperty(PropertyDTO propertyDTO) {
-    	List<PropertyOptionEntity> options = propertyDTO.getPropertyOptionOptions().stream().map(optionDTO -> 
+    	List<PropertyOptionEntity> options = propertyDTO.getPropertyOption().stream().map(optionDTO -> 
     		PropertyOptionEntity.builder()
     			.heatingSystem(optionDTO.getHeatingSystem())
     			.coolingSystem(optionDTO.getCoolingSystem())
@@ -136,6 +140,8 @@ public class PropertyService {
     	images.forEach(image -> image.setProperty(pe));
     	
     	this.propertyRepository.save(pe);
+    	propertyImageRepository.saveAll(images);
+    	propertyOptionRepository.saveAll(options);
     			
     			
     					

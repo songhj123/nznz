@@ -6,41 +6,41 @@
     <title>방 내놓기 폼</title>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script>
-	    function toggleMaintenanceFeeInput() {
-	        const maintenanceFeeOption = document.getElementById('maintenanceFeeOption').value;
-	        const maintenanceFeeInput = document.getElementById('maintenanceFeeInput');
-	        maintenanceFeeInput.style.display = maintenanceFeeOption === '있음' ? 'inline' : 'none';
-	    }
-	
-	    function toggleAvailabilityInput() {
-	        const availabilityType = document.getElementById('availabilityType').value;
-	        const availableDateInput = document.getElementById('availableDateInput');
-	        availableDateInput.style.display = availabilityType === '일자 선택' ? 'inline' : 'none';
-	    }
-	
-	    function openAddressSearch() {
-	        new daum.Postcode({
-	            oncomplete: function(data) {
-	                const addressField = document.getElementById('propertyAddress');
-	                const postalCodeField = document.getElementById('postalCode');
+        function toggleMaintenanceFeeInput() {
+            const maintenanceFeeOption = document.getElementById('maintenanceFeeOption').value;
+            const maintenanceFeeInput = document.getElementById('maintenanceFeeInput');
+            maintenanceFeeInput.style.display = maintenanceFeeOption === '있음' ? 'inline' : 'none';
+        }
 
-	                // 도로명 주소 또는 지번 주소 선택
-	                addressField.value = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
-	                postalCodeField.value = data.zonecode;
-	                
-	                // 팝업창 닫기
-	                this.close(); // 팝업창 닫기
-	            },
-	            // 추가 옵션: 필요한 경우 아래에 설정
-	            width: 600, // 가로 크기
-	            height: 400, // 세로 크기
-	            maxSuggestItems: 10
-	        }).open();
-	    }
-	    
-	    function validateForm() {
-            const propertyOptions = document.querySelectorAll('input[name="propertyOption"]:checked');
-            const propertyImages = document.getElementById('propertyImage').files;
+        function toggleAvailabilityInput() {
+            const availabilityType = document.getElementById('availabilityType').value;
+            const availableDateInput = document.getElementById('availableDateInput');
+            availableDateInput.style.display = availabilityType === '일자 선택' ? 'inline' : 'none';
+        }
+
+        function openAddressSearch() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    const addressField = document.getElementById('propertyAddress');
+                    const postalCodeField = document.getElementById('postalCode');
+
+                    // 도로명 주소 또는 지번 주소 선택
+                    addressField.value = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
+                    postalCodeField.value = data.zonecode;
+                    
+                    // 팝업창 닫기
+                    this.close(); // 팝업창 닫기
+                },
+                // 추가 옵션: 필요한 경우 아래에 설정
+                width: 600, // 가로 크기
+                height: 400, // 세로 크기
+                maxSuggestItems: 10
+            }).open();
+        }
+
+        function validateForm() {
+            const propertyOptions = document.querySelectorAll('input[name^="propertyOption"]:checked');
+            const propertyImages = document.getElementById('propertyImageList').files;
             if (propertyOptions.length === 0) {
                 alert('하나 이상의 매물 옵션을 선택해주세요.');
                 return false;
@@ -51,7 +51,44 @@
             }
             return true;
         }
-	    
+
+        function previewImages(event) {
+            const files = event.target.files;
+            const preview = document.createElement('div');
+            preview.className = 'image-preview';
+
+            if (files) {
+                Array.from(files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.width = '100px';
+                        img.style.height = '100px';
+                        img.style.margin = '5px';
+                        preview.appendChild(img);
+                    }
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            event.target.parentNode.appendChild(preview);
+        }
+
+        function addFileInput() {
+            const fileInputContainer = document.getElementById('fileInputContainer');
+            const newFileInput = document.createElement('div');
+            newFileInput.className = 'file-input-group';
+
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.name = 'propertyImageList';
+            fileInput.accept = 'image/*';
+            fileInput.onchange = previewImages;
+
+            newFileInput.appendChild(fileInput);
+            fileInputContainer.appendChild(newFileInput);
+        }
     </script>
 </head>
 <body>
@@ -60,7 +97,7 @@
     
     <h3>매물정보</h3>
     <hr>
-    <form th:action="@{/sellPro}" method="POST" th:object="${propertyDTO}" onsubmit="return validateForm" enctype="multipart/form-data">
+    <form th:action="@{/sellPro}" method="POST" th:object="${propertyDTO}" onsubmit="return validateForm()" enctype="multipart/form-data">
         <table>
             <tr>
                 <td><label for="propertyType">매물 유형*</label></td>
@@ -98,22 +135,22 @@
                 <td><label for="roomInfo">방 정보*</label></td>
                 <td><input type="text" id="roomInfo" name="roomInfo" th:field="*{roomInfo}" required></td>
             </tr>
-			<tr>
-			    <td><label for="floor">층수*</label></td>
-			    <td>
-			        <select id="floor" name="floor" th:field="*{floor}" required>
-			            <option value="">층 선택</option>
-			            <option value="반지하">반지하</option>
-			            <option value="옥탑">옥탑</option>
-			            <!-- 1층부터 50층까지 선택할 수 있도록 생성 -->
-			            <script>
-			                for (let i = 1; i <= 50; i++) {
-			                    document.write(`<option value="${i}">${i}층</option>`);
-			                }
-			            </script>			            
-			        </select>
-			    </td>
-			</tr>
+            <tr>
+                <td><label for="floor">층수*</label></td>
+                <td>
+                    <select id="floor" name="floor" th:field="*{floor}" required>
+                        <option value="">층 선택</option>
+                        <option value="반지하">반지하</option>
+                        <option value="옥탑">옥탑</option>
+                        <!-- 1층부터 50층까지 선택할 수 있도록 생성 -->
+                        <script>
+                            for (let i = 1; i <= 50; i++) {
+                                document.write(`<option value="${i}">${i}층</option>`);
+                            }
+                        </script>
+                    </select>
+                </td>
+            </tr>
         </table>
 
         <h3>거래 정보</h3>
@@ -174,7 +211,7 @@
             <tr>
                 <td><label for="heatingSystem">난방 옵션*</label></td>
                 <td>
-                    <select id="heatingSystem" name="propertyOption.heatingSystem">
+                    <select id="heatingSystem" name="propertyOption[0].heatingSystem">
                         <option value="">선택 안 함</option>
                         <option value="개별난방">개별난방</option>
                         <option value="중앙난방">중앙난방</option>
@@ -185,7 +222,7 @@
             <tr>
                 <td><label for="coolingSystem">냉방 옵션*</label></td>
                 <td>
-                    <select id="coolingSystem" name="propertyOption.coolingSystem">
+                    <select id="coolingSystem" name="propertyOption[0].coolingSystem">
                         <option value="">선택 안 함</option>
                         <option value="에어컨">에어컨</option>
                         <option value="없음">없음</option>
@@ -196,25 +233,25 @@
                 <td><label>생활 옵션*</label></td>
                 <td>
                     <div>
-                        <label><input type="checkbox" name="propertyOption.livingFacilities" value="침대"> 침대</label>
-                        <label><input type="checkbox" name="propertyOption.livingFacilities" value="책상"> 책상</label>
-                        <label><input type="checkbox" name="propertyOption.livingFacilities" value="옷장"> 옷장</label>
-                        <label><input type="checkbox" name="propertyOption.livingFacilities" value="쇼파"> 쇼파</label>
-                        <label><input type="checkbox" name="propertyOption.livingFacilities" value="신발장"> 신발장</label>
-                        <label><input type="checkbox" name="propertyOption.livingFacilities" value="냉장고"> 냉장고</label>
-                        <label><input type="checkbox" name="propertyOption.livingFacilities" value="세탁기"> 세탁기</label>
-                        <label><input type="checkbox" name="propertyOption.livingFacilities" value="건조기"> 건조기</label>
-                        <label><input type="checkbox" name="propertyOption.livingFacilities" value="샤워부스"> 샤워부스</label>
-                        <label><input type="checkbox" name="propertyOption.livingFacilities" value="욕조"> 욕조</label>
-                        <label><input type="checkbox" name="propertyOption.livingFacilities" value="비데"> 비데</label>
-                        <label><input type="checkbox" name="propertyOption.livingFacilities" value="싱크대"> 싱크대</label>
-                        <label><input type="checkbox" name="propertyOption.livingFacilities" value="식기세척기"> 식기세척기</label>
-                        <label><input type="checkbox" name="propertyOption.livingFacilities" value="가스레인지"> 가스레인지</label>
-                        <label><input type="checkbox" name="propertyOption.livingFacilities" value="인덕션"> 인덕션</label>
-                        <label><input type="checkbox" name="propertyOption.livingFacilities" value="전자레인지"> 전자레인지</label>
-                        <label><input type="checkbox" name="propertyOption.livingFacilities" value="가스오븐"> 가스오븐</label>
-                        <label><input type="checkbox" name="propertyOption.livingFacilities" value="TV"> TV</label>
-                        <label><input type="checkbox" name="propertyOption.livingFacilities" value="붙박이창"> 붙박이창</label>
+                        <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="침대"> 침대</label>
+                        <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="책상"> 책상</label>
+                        <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="옷장"> 옷장</label>
+                        <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="쇼파"> 쇼파</label>
+                        <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="신발장"> 신발장</label>
+                        <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="냉장고"> 냉장고</label>
+                        <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="세탁기"> 세탁기</label>
+                        <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="건조기"> 건조기</label>
+                        <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="샤워부스"> 샤워부스</label>
+                        <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="욕조"> 욕조</label>
+                        <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="비데"> 비데</label>
+                        <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="싱크대"> 싱크대</label>
+                        <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="식기세척기"> 식기세척기</label>
+                        <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="가스레인지"> 가스레인지</label>
+                        <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="인덕션"> 인덕션</label>
+                        <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="전자레인지"> 전자레인지</label>
+                        <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="가스오븐"> 가스오븐</label>
+                        <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="TV"> TV</label>
+                        <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="붙박이창"> 붙박이창</label>
                     </div>
                 </td>
             </tr>
@@ -222,14 +259,14 @@
                 <td><label>보안 옵션*</label></td>
                 <td>
                     <div>
-                        <label><input type="checkbox" name="propertyOption.securityFacilities" value="경비원"> 경비원</label>
-                        <label><input type="checkbox" name="propertyOption.securityFacilities" value="비디오폰"> 비디오폰</label>
-                        <label><input type="checkbox" name="propertyOption.securityFacilities" value="인터폰"> 인터폰</label>
-                        <label><input type="checkbox" name="propertyOption.securityFacilities" value="카드키"> 카드키</label>
-                        <label><input type="checkbox" name="propertyOption.securityFacilities" value="CCTV"> CCTV</label>
-                        <label><input type="checkbox" name="propertyOption.securityFacilities" value="사설경비"> 사설경비</label>
-                        <label><input type="checkbox" name="propertyOption.securityFacilities" value="현관보안"> 현관보안</label>
-                        <label><input type="checkbox" name="propertyOption.securityFacilities" value="방범창"> 방범창</label>
+                        <label><input type="checkbox" name="propertyOption[0].securityFacilities" value="경비원"> 경비원</label>
+                        <label><input type="checkbox" name="propertyOption[0].securityFacilities" value="비디오폰"> 비디오폰</label>
+                        <label><input type="checkbox" name="propertyOption[0].securityFacilities" value="인터폰"> 인터폰</label>
+                        <label><input type="checkbox" name="propertyOption[0].securityFacilities" value="카드키"> 카드키</label>
+                        <label><input type="checkbox" name="propertyOption[0].securityFacilities" value="CCTV"> CCTV</label>
+                        <label><input type="checkbox" name="propertyOption[0].securityFacilities" value="사설경비"> 사설경비</label>
+                        <label><input type="checkbox" name="propertyOption[0].securityFacilities" value="현관보안"> 현관보안</label>
+                        <label><input type="checkbox" name="propertyOption[0].securityFacilities" value="방범창"> 방범창</label>
                     </div>
                 </td>
             </tr>
@@ -237,18 +274,18 @@
                 <td><label>기타 옵션*</label></td>
                 <td>
                     <div>
-                        <label><input type="checkbox" name="propertyOption.otherFacilities" value="화재경보기"> 화재경보기</label>
-                        <label><input type="checkbox" name="propertyOption.otherFacilities" value="베란다"> 베란다</label>
-                        <label><input type="checkbox" name="propertyOption.otherFacilities" value="테라스"> 테라스</label>
-                        <label><input type="checkbox" name="propertyOption.otherFacilities" value="마당"> 마당</label>
-                        <label><input type="checkbox" name="propertyOption.otherFacilities" value="무인택배함"> 무인택배함</label>
+                        <label><input type="checkbox" name="propertyOption[0].otherFacilities" value="화재경보기"> 화재경보기</label>
+                        <label><input type="checkbox" name="propertyOption[0].otherFacilities" value="베란다"> 베란다</label>
+                        <label><input type="checkbox" name="propertyOption[0].otherFacilities" value="테라스"> 테라스</label>
+                        <label><input type="checkbox" name="propertyOption[0].otherFacilities" value="마당"> 마당</label>
+                        <label><input type="checkbox" name="propertyOption[0].otherFacilities" value="무인택배함"> 무인택배함</label>
                     </div>
                 </td>
             </tr>
             <tr>
                 <td><label for="parking">주차 가능 여부*</label></td>
                 <td>
-                    <select id="parking" name="propertyOption.parking">
+                    <select id="parking" name="propertyOption[0].parking">
                         <option value="1">가능</option>
                         <option value="0">불가능</option>
                     </select>
@@ -257,7 +294,7 @@
             <tr>
                 <td><label for="elevator">엘리베이터*</label></td>
                 <td>
-                    <select id="elevator" name="propertyOption.elevator">
+                    <select id="elevator" name="propertyOption[0].elevator">
                         <option value="1">있음</option>
                         <option value="0">없음</option>
                     </select>
@@ -265,17 +302,23 @@
             </tr>
             <tr>
                 <td><label for="propertyFeatures">매물 특징*</label></td>
-                <td><input type="text" id="propertyFeatures" name="propertyOption.propertyFeatures" placeholder="예: 반려동물 가능"></td>
+                <td><input type="text" id="propertyFeatures" name="propertyOption[0].propertyFeatures" placeholder="예: 반려동물 가능"></td>
             </tr>
        </table>     
-       
+
         <h3>사진 등록</h3>
-        <hr>		
+        <hr>       
         <table>
             <tr>
-                <td><label for="propertyImage">사진 추가*</label></td>
+                <td><label for="propertyImageList">사진 추가*</label></td>
                 <td>
-                    <input type="file" id="propertyImages" name="propertyImages" accept="image/*" multiple>
+                    <div id="fileInputContainer">
+                        <div class="file-input-group">
+                            <input type="file" id="propertyImageList" name="propertyImageList" accept="image/*" multiple onchange="previewImages(event)">
+                        </div>
+                    </div>
+                    <button type="button" onclick="addFileInput()">파일 추가</button>
+                    <div id="imagePreview"></div>
                 </td>
             </tr>
         </table>       
