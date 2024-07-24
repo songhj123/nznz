@@ -25,13 +25,13 @@ public class DisinfectionStatusEntity {
     @Column(name = "level_id")
     private Long levelId;
 
-    @Column(name = "level", nullable = false)
-    private Integer level;
+    @Column(name = "DISINFECTION_LEVEL", nullable = false)
+    private Integer disinfectionLevel;
 
-    @Column(name = "reasonTitle", length = 50)
+    @Column(name = "reason_title", length = 50)
     private String reasonTitle;
 
-    @Column(name = "reasonDetails", length = 50)
+    @Column(name = "reason_details", length = 50)
     private String reasonDetails;
 
     @Column(name = "username", length = 100, nullable = false)

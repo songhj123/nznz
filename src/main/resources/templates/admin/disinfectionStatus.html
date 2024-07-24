@@ -1,3 +1,150 @@
 <!DOCTYPE html>
-<html layout:decorate="~{layout/adminLayout}">
+<html layout:decorate="~{layout/adminLayout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>방역 관리</title>
+    <style>
+        .content-container {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+        }
+        .left-section, .right-section {
+            width: 48%;
+        }
+        .left-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .right-section {
+            overflow-y: auto;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .radio-group {
+            display: flex;
+            gap: 10px;
+        }
+        .radio-group input[type="radio"] {
+            margin-right: 5px;
+        }
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+        }
+        .button-container button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .table-container {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table th, table td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        table th {
+            background-color: #f4f4f4;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .pagination a {
+            margin: 0 5px;
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            text-decoration: none;
+            color: #333;
+        }
+        .pagination a.active {
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="content-container">
+            <!-- Left Section -->
+            <div class="left-section">
+                <form th:action="@{/admin/disinfectionStatus}" method="post">
+                    <div class="form-group">
+                        <label>방역 단계</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="disinfectionLevel" value="0" required> 0단계</label>
+                            <label><input type="radio" name="disinfectionLevel" value="1" required> 1단계</label>
+                            <label><input type="radio" name="disinfectionLevel" value="2" required> 2단계</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>방역 단계 설정 사유</label>
+                        <input type="text" name="reasonTitle" placeholder="회원들에게 안내할 방역 단계 설정 사유를 간단하게 작성해주세요." required>
+                    </div>
+                    <div class="form-group">
+                        <label>방역 단계 설정 내용</label>
+                        <textarea name="reasonDetails" rows="4" placeholder="회원들에게 안내할 추가 안내사항이 있다면 작성해주세요." required></textarea>
+                    </div>
+                    <div class="button-container">
+                        <button type="submit">단계 설정</button>
+                    </div>
+                </form>
+            </div>
+            <!-- Right Section -->
+            <div class="right-section">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>단계</th>
+                                <th>관리자 ID</th>
+                                <th>사유</th>
+                                <th>설정일시</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="status : ${disinfectionStatusPage.content}">
+                                <td th:text="${status.disinfectionLevel}"></td>
+                                <td th:text="${status.username}"></td>
+                                <td th:text="${status.reasonTitle}"></td>
+                                <td th:text="${#dates.format(status.updatedAt, 'yyyy.MM.dd,HH:mm')}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <a th:href="@{/admin/disinfectionStatus(page=${disinfectionStatusPage.number - 1}, size=${disinfectionStatusPage.size})}" th:if="${!disinfectionStatusPage.first}">&laquo;</a>
+                    <a th:each="pageNum : ${#numbers.sequence(1, disinfectionStatusPage.totalPages)}"
+                       th:href="@{/admin/disinfectionStatus(page=${pageNum - 1}, size=${disinfectionStatusPage.size})}"
+                       th:text="${pageNum}"
+                       th:classappend="${pageNum == disinfectionStatusPage.number + 1} ? 'active'"></a>
+                    <a th:href="@{/admin/disinfectionStatus(page=${disinfectionStatusPage.number + 1}, size=${disinfectionStatusPage.size})}" th:if="${!disinfectionStatusPage.last}">&raquo;</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
 </html>

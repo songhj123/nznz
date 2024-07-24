@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class DisinfectionStatusDTO {
     private Long levelId;
-    private Integer level;
+    private Integer disinfectionLevel;
     private String reasonTitle;
     private String reasonDetails;
     private String username;

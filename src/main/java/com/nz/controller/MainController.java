@@ -16,4 +16,8 @@ public class MainController {
         return "layout/map"; // 적절한 경로로 수정
     }
 
+    @GetMapping("/admin")
+    public String admin() {
+    	return "admin/adminHome";
+    }
 }
