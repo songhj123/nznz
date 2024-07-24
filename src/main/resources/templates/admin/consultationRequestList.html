@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout/adminLayout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>방문 신청 관리</title>
+    <link rel="stylesheet" th:href="@{/resource/css/consultationRequestStyles.css}">
+    <script th:inline="javascript">
+        function toggleAll(source) {
+            const checkboxes = document.querySelectorAll('input[name="selectedRequests"]');
+            checkboxes.forEach(cb => cb.checked = source.checked);
+            checkButtons();
+        }
+
+        function toggleCheckbox(event, checkboxId) {
+            if (event.target.tagName.toLowerCase() !== 'input') {
+                const checkbox = document.getElementById(checkboxId);
+                checkbox.checked = !checkbox.checked;
+            }
+            checkButtons();
+        }
+
+        function checkButtons() {
+            const checkboxes = document.querySelectorAll('input[name="selectedRequests"]:checked');
+            const buttons = document.querySelectorAll('.button-container button');
+            if (checkboxes.length === 0) {
+                buttons.forEach(button => button.disabled = true);
+            } else {
+                buttons.forEach(button => button.disabled = false);
+            }
+        }
+
+        function submitForm(status) {
+            const statusInput = document.getElementById('status-input');
+            statusInput.value = status;
+            const form = document.querySelector('form');
+            form.submit();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkButtons();
+        });
+    </script>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="consultation-container">
+            <h2>방문 상담 신청 목록</h2>
+            <div class="table-container">
+                <form action="/consultationRequest/updateStatus" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>신청자 ID</th>
+                                <th>매물 ID</th>
+                                <th>방문 날짜</th>
+                                <th>방문 시간</th>
+                                <th>신청 날짜</th>
+                                <th class="header-cell">
+                                    상태
+                                    <input type="checkbox" onclick="toggleAll(this)">
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="request : ${consultationRequestPage.content}" th:onclick="|toggleCheckbox(event, 'checkbox-${request.requestId}')|">
+                                <td th:text="${request.memberId}"></td>
+                                <td th:text="${request.propertyId}"></td>
+                                <td th:text="${request.visitDate}"></td>
+                                <td th:text="${request.visitTime}"></td>
+                                <td th:text="${#dates.format(request.requestDate, 'yyyy.MM.dd HH:mm')}"></td>
+                                <td class="status-cell">
+                                    <span th:text="${request.status}"></span>
+                                    <input type="checkbox" name="selectedRequests" th:id="'checkbox-' + ${request.requestId}" th:value="${request.requestId}" onchange="checkButtons()">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input type="hidden" name="status" id="status-input">
+                    <div class="button-container">
+                        <button type="button" class="btn btn-primary" onclick="submitForm('예약확정')">예약 확정</button>
+                        <button type="button" class="btn btn-danger" onclick="submitForm('예약취소')">예약 취소</button>
+                    </div>
+                </form>
+            </div>
+            <div class="pagination">
+                <a th:href="@{/consultationRequest/list(page=${consultationRequestPage.number - 1}, size=${consultationRequestPage.size})}" th:if="${!consultationRequestPage.first}">&laquo;</a>
+                <a th:each="pageNum : ${#numbers.sequence(1, consultationRequestPage.totalPages)}"
+                   th:href="@{/consultationRequest/list(page=${pageNum - 1}, size=${consultationRequestPage.size})}"
+                   th:text="${pageNum}"
+                   th:classappend="${pageNum == consultationRequestPage.number + 1} ? 'active'"></a>
+                <a th:href="@{/consultationRequest/list(page=${consultationRequestPage.number + 1}, size=${consultationRequestPage.size})}" th:if="${!consultationRequestPage.last}">&raquo;</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
