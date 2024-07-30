@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout/adminLayout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>전체 매물 관리</title>
+    <link rel="stylesheet" th:href="@{/resource/css/propertyListStyles.css}">
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="property-container" style="overflow: auto;">
+            <div class="header-container">
+                <h2 style="float: left;">전체 매물 관리</h2>
+                <div class="filter-container" style="float: right;">
+                    <label for="startDate">계약일</label>
+                    <input type="date" id="startDate" name="startDate">
+                    <span>~</span>
+                    <input type="date" id="endDate" name="endDate">
+                    <select id="filterType" name="filterType">
+                        <option value="propertyNum">매물번호</option>
+                        <option value="address">주소</option>
+                        <option value="memberId">회원 ID</option>
+                    </select>
+                    <input type="text" id="searchKeyword" name="searchKeyword" placeholder="키워드">
+                    <button type="button" class="btn btn-primary">검색</button>
+                </div>
+            </div>
+            <div class="table-container" style="clear: both;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>매물유형</th>
+                            <th>등록 일시</th>
+                            <th>매물번호</th>
+                            <th>매물정보</th>
+                            <th>임대인(아이디)</th>
+                            <th>월세/보증금</th>
+                            <th>거주현황</th>
+                            <th>선택</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="property : ${properties.content}">
+                            <td th:text="${property.propertyId}"></td>
+                            <td th:text="${property.propertyType}"></td>
+                            <td th:text="${#dates.format(property.registrationDate, 'yyyy.MM.dd')}"></td>
+                            <td th:text="${property.propertyNum}"></td>
+                            <td th:text="${property.propertyAddress}+' / '+${property.buildingName}"></td>
+                            <td th:text="${property.memberId}"></td>
+                            <td th:text="${property.price}"></td>
+                            <td th:text="${property.status}"></td>
+                            <td><input type="checkbox" name="selectedProperties" th:value="${property.propertyId}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="button-container">
+                <button type="button" class="btn btn-danger">매물 삭제</button>
+            </div>
+            <div class="pagination">
+                <a th:href="@{/admin/propertyList(page=${properties.number - 1}, size=${properties.size})}" th:if="${!properties.first}">&laquo;</a>
+                <a th:each="pageNum : ${#numbers.sequence(1, properties.totalPages)}"
+                   th:href="@{/admin/propertyList(page=${pageNum - 1}, size=${properties.size})}"
+                   th:text="${pageNum}"
+                   th:classappend="${pageNum == properties.number + 1} ? 'active'"></a>
+                <a th:href="@{/admin/propertyList(page=${properties.number + 1}, size=${properties.size})}" th:if="${!properties.last}">&raquo;</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

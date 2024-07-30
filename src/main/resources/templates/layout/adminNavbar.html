@@ -5,6 +5,12 @@
 </head>
 <body>
 <header class="navUp" th:fragment="navUp">
+<nav>
+        <a th:href="@{/home}" th:text="'고객 홈'" sec:authorize="isAuthenticated()"></a>
+
+        <a th:href="@{/user/logout}" th:text="로그아웃" sec:authorize="isAuthenticated()"></a>
+
+    </nav>
 </header>
 
 <header th:fragment="navbar">

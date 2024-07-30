@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.nz.data.PropertyDTO;
@@ -35,6 +37,14 @@ public class PropertyService {
                     return convertToDTO(property, images);
                 })
                 .collect(Collectors.toList());
+    }
+    
+    public Page<PropertyDTO> getAllPropertiesPaged(PageRequest pageRequest) {
+        return propertyRepository.findAll(pageRequest)
+                .map(property -> {
+                    List<PropertyImageEntity> images = propertyImageRepository.findByProperty_PropertyId(property.getPropertyId());
+                    return convertToDTO(property, images);
+                });
     }
 
     public List<PropertyDTO> getPropertiesWithin(double swLat, double swLng, double neLat, double neLng) {
