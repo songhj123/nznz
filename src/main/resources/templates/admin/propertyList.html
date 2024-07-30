@@ -35,6 +35,7 @@
                             <th>임대인(아이디)</th>
                             <th>월세/보증금</th>
                             <th>거주현황</th>
+                            <th>처리상태</th> <!-- 추가된 컬럼 -->
                             <th>선택</th>
                         </tr>
                     </thead>
@@ -42,12 +43,13 @@
                         <tr th:each="property : ${properties.content}">
                             <td th:text="${property.propertyId}"></td>
                             <td th:text="${property.propertyType}"></td>
-                            <td th:text="${#dates.format(property.registrationDate, 'yyyy.MM.dd')}"></td>
+                            <td th:text="${#dates.format(property.registrationDate, 'yyyy.MM.dd HH:mm')}"></td>
                             <td th:text="${property.propertyNum}"></td>
                             <td th:text="${property.propertyAddress}+' / '+${property.buildingName}"></td>
-                            <td th:text="${property.memberId}"></td>
+                            <td th:text="${property.name}+'('+${property.username}+')'"></td>
                             <td th:text="${property.price}"></td>
                             <td th:text="${property.status}"></td>
+                            <td th:text="${property.processingStatus}"></td> <!-- 추가된 필드 출력 -->
                             <td><input type="checkbox" name="selectedProperties" th:value="${property.propertyId}"></td>
                         </tr>
                     </tbody>

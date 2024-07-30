@@ -25,7 +25,7 @@ public class UserEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_member")
-	private Integer memberID;
+	private Long memberID;
 	
 	private String name;
 	

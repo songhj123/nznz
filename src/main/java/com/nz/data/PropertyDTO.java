@@ -37,4 +37,6 @@ public class PropertyDTO {
     private String agency;  // 추가된 필드
     private String contact;  // 추가된 필드
     private Integer likes;  // 추가된 필드
+    private String username;
+    private String name;
 }

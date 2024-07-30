@@ -3,6 +3,7 @@ package com.nz.controller;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.nz.data.PropertyDTO;
 import com.nz.data.PropertyImageDTO;
+import com.nz.data.UserDTO;
 import com.nz.service.PropertyService;
+import com.nz.service.UserService;
 
 import jakarta.validation.Valid;
 
@@ -38,6 +41,9 @@ public class PropertyController {
 
     @Autowired
     private PropertyService propertyService;
+
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/properties")
     public String getProperties(Model model) {
@@ -90,7 +96,8 @@ public class PropertyController {
     
     @PostMapping("/sellPro")
     public String sellPro(@Valid PropertyDTO propertyDTO, BindingResult bindingResult,
-            Model model, @RequestParam("propertyImageList") List<MultipartFile> propertyImageList) {
+            Model model, @RequestParam("propertyImageList") List<MultipartFile> propertyImageList,
+            Principal principal) {
 
         // 파일 처리 로직 추가
         if (propertyDTO.getPropertyImageList() == null) {
@@ -114,7 +121,8 @@ public class PropertyController {
                 }
             }
         }
-        
+        Long memberId = userService.getUserByMemberId(principal.getName());
+        propertyDTO.setMemberId(memberId);
         this.propertyService.createProperty(propertyDTO);
         model.addAttribute("property", propertyDTO);
         return "property/sellPro"; // 변경된 경로로 수정
@@ -143,6 +151,21 @@ public class PropertyController {
     public String adminPropertyList(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
                                     @RequestParam(value = "size", defaultValue = "10") int size) {
         Page<PropertyDTO> properties = propertyService.getAllPropertiesPaged(PageRequest.of(page, size));
+        properties.getContent().forEach(property -> {
+            if (property.getMemberId() != null) {
+                UserDTO user = userService.getUserById(property.getMemberId());
+                if (user != null) {
+                    property.setUsername(user.getUsername());
+                    property.setName(user.getName());
+                } else {
+                    property.setUsername("Unknown");
+                    property.setName("Unknown");
+                }
+            } else {
+                property.setUsername("Unknown");
+                property.setName("Unknown");
+            }
+        });
         model.addAttribute("properties", properties);
         return "admin/propertyList";
     }

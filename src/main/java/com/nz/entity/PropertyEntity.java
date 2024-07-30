@@ -13,9 +13,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.SequenceGenerator;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -54,5 +57,10 @@ public class PropertyEntity {
     
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PropertyOptionEntity> propertyOptions;
+    
+    @PrePersist
+    public void generatePropertyNum() {
+        this.propertyNum = "PROP-" + this.propertyId;
+    }
 }
 

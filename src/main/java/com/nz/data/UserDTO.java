@@ -1,6 +1,6 @@
 package com.nz.data;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
+	
+	private Long memberId;
 	
 	@Pattern(regexp = "^[a-zA-Z](?=.*\\d)[a-zA-Z0-9]{7,13}$",
 			 message = "형식에 맞지 않는 아이디입니다.\\n영문 숫자를 포함하여 8~14자 내로 작성하세요.")

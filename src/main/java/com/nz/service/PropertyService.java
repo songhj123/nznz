@@ -1,5 +1,6 @@
 package com.nz.service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -125,7 +126,6 @@ public class PropertyService {
     		).collect(Collectors.toList());
     	
     	PropertyEntity pe = PropertyEntity.builder()
-    			.propertyNum(propertyDTO.getPropertyNum())
     			.memberId(propertyDTO.getMemberId())
     			.propertyType(propertyDTO.getPropertyType())
     			.propertyAddress(propertyDTO.getPropertyAddress())
@@ -139,7 +139,8 @@ public class PropertyService {
     			.shortDescription(propertyDTO.getShortDescription())
     			.longDescription(propertyDTO.getLongDescription())
     			.status(propertyDTO.getStatus())
-    			.processingStatus(propertyDTO.getProcessingStatus())
+    			.processingStatus("승인대기")
+    			.registrationDate(new Timestamp(System.currentTimeMillis()))
     			.latitude(propertyDTO.getLatitude())
     			.longitude(propertyDTO.getLongitude())
     			.propertyOptions(options)
