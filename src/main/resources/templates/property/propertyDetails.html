@@ -10,7 +10,6 @@
 </head>
 <body>
 <div layout:fragment="content">
-
     <div class="container mt-5">
         <div class="row">
             <!-- Left Column -->
@@ -119,25 +118,25 @@
 		        window.location.href = `/consultationRequest/${propertyId}`;
 		    }
 		</script>
-		    <script th:inline="javascript">
-    function goToConsultationRequest(propertyId) {
-        window.location.href = `/consultationRequest/${propertyId}`;
-    }
-
-    /* 팝업 메시지 처리 */
-    /*<![CDATA[*/
-    var message = /*[[${message}]]*/ null;
-    var error = /*[[${error}]]*/ null;
-
-    if (message) {
-        alert(message); // 성공 메시지 팝업
-    }
-
-    if (error) {
-        alert(error); // 에러 메시지 팝업
-    }
-    /*]]>*/
-    </script>
+		<script th:inline="javascript">
+		    function goToConsultationRequest(propertyId) {
+		        window.location.href = `/consultationRequest/${propertyId}`;
+		    }
+		
+		    /* 팝업 메시지 처리 */
+		    /*<![CDATA[*/
+		    var message = /*[[${message}]]*/ null;
+		    var error = /*[[${error}]]*/ null;
+		
+		    if (message) {
+		        alert(message); // 성공 메시지 팝업
+		    }
+		
+		    if (error) {
+		        alert(error); // 에러 메시지 팝업
+		    }
+		    /*]]>*/
+		</script>
     </div>
 </div>
 
