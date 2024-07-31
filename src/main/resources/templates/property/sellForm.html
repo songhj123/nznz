@@ -85,29 +85,45 @@
         }
     </style>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="//dapi.kakao.com/v2/maps/sdk.js?appkey=49fca208e51ee1eaa8c91e3e74900aad&libraries=services"></script>
     <script>
-        function toggleMaintenanceFeeInput() {
-            const maintenanceFeeOption = document.getElementById('maintenanceFeeOption').value;
-            const maintenanceFeeInput = document.getElementById('maintenanceFeeInput');
-            maintenanceFeeInput.style.display = maintenanceFeeOption === '있음' ? 'inline' : 'none';
-        }
-
-        function toggleAvailabilityInput() {
-            const availabilityType = document.getElementById('availabilityType').value;
-            const availableDateInput = document.getElementById('availableDateInput');
-            availableDateInput.style.display = availabilityType === '일자 선택' ? 'inline' : 'none';
-        }
-
+	    function toggleMaintenanceFeeInput() {
+	        const maintenanceFeeYes = document.getElementById('maintenanceFeeYes');
+	        const maintenanceFeeInput = document.getElementById('maintenanceFeeInput');
+	        maintenanceFeeInput.style.display = maintenanceFeeYes.checked ? 'inline' : 'none';
+	    }
+	
+	    function toggleAvailabilityInput() {
+	        const availabilityDate = document.getElementById('availabilityDate');
+	        const availableDateInput = document.getElementById('availableDateInput');
+	        availableDateInput.style.display = availabilityDate.checked ? 'inline' : 'none';
+	    }
         function openAddressSearch() {
             new daum.Postcode({
                 oncomplete: function(data) {
                     const addressField = document.getElementById('propertyAddress');
-                    const postalCodeField = document.getElementById('postalCode');
+                    const latitudeField = document.getElementById('latitude');
+                    const longitudeField = document.getElementById('longitude');
+                    
+                    const address = data.roadAddress || data.jibunAddress;
+                    addressField.value = address;
 
-                    addressField.value = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
-                    postalCodeField.value = data.zonecode;
+                    // 주소로 좌표를 검색합니다
+                    const geocoder = new kakao.maps.services.Geocoder();
+                    geocoder.addressSearch(address, function(result, status) {
+                        if (status === kakao.maps.services.Status.OK) {
+                            const coords = result[0];
+                            latitudeField.value = coords.y;
+                            longitudeField.value = coords.x;
 
-                    this.close();
+                            // 디버그 로그 추가
+                            console.log("Address: " + address);
+                            console.log("Latitude: " + coords.y);
+                            console.log("Longitude: " + coords.x);
+                        } else {
+                            alert('Geocode was not successful for the following reason: ' + status);
+                        }
+                    });
                 },
                 width: 600,
                 height: 400,
@@ -196,14 +212,15 @@
                         </select>
                     </td>
                 </tr>
-                <tr>
-                    <td><label for="propertyAddress">매물 주소*</label></td>
-                    <td>
-                        <input type="text" id="propertyAddress" name="propertyAddress" th:field="*{propertyAddress}" required placeholder="주소 입력">
-                        <button type="button" onclick="openAddressSearch()">주소 검색</button>
-                        <input type="text" id="unitNumber" name="unitNumber" placeholder="동/호수">
-                    </td>
-                </tr>
+				<tr>
+				    <td><label for="propertyAddress">매물 주소*</label></td>
+				    <td>
+				        <input type="text" id="propertyAddress" name="propertyAddress" th:field="*{propertyAddress}" required placeholder="주소 입력">
+				        <button type="button" onclick="openAddressSearch()">주소 검색</button>
+				        <input type="hidden" id="latitude" name="latitude" th:field="*{latitude}">
+				        <input type="hidden" id="longitude" name="longitude" th:field="*{longitude}">
+				    </td>
+				</tr>
 
                 <tr>
                     <td><label for="buildingName">건물 이름</label></td>
@@ -255,32 +272,28 @@
                     <td><label for="price">가격*</label></td>
                     <td><input type="number" id="price" name="price" th:field="*{price}" required> 만원</td>
                 </tr>
-                <tr>
-                    <td><label>관리비 여부*</label></td>
-                    <td>
-                        <select id="maintenanceFeeOption" name="maintenanceFeeOption" required onchange="toggleMaintenanceFeeInput()">
-                            <option value="있음">있음</option>
-                            <option value="없음">없음</option>
-                        </select>
-                        <span id="maintenanceFeeInput" style="display: none;">
-                            <label for="maintenanceFee">관리비*</label>
-                            <input type="number" id="maintenanceFee" name="maintenanceFee" placeholder="원">
-                        </span>
-                    </td>
-                </tr>
-                <tr>
-                    <td><label>입주 가능일*</label></td>
-                    <td>
-                        <select id="availabilityType" name="availabilityType" required onchange="toggleAvailabilityInput()">
-                            <option value="즉시">즉시 입주</option>
-                            <option value="일자 선택">일자 선택</option>
-                        </select>
-                        <span id="availableDateInput" style="display: none;">
-                            <label for="availableDate">입주 가능일*</label>
-                            <input type="date" id="availableDate" name="availableDate">
-                        </span>
-                    </td>
-                </tr>
+               <tr>
+				    <td><label>관리비 여부*</label></td>
+				    <td>
+				        <input type="radio" id="maintenanceFeeYes" name="maintenanceFeeOption" value="있음" onchange="toggleMaintenanceFeeInput()"> 있음
+				        <input type="radio" id="maintenanceFeeNo" name="maintenanceFeeOption" value="없음" onchange="toggleMaintenanceFeeInput()" checked> 없음
+				        <span id="maintenanceFeeInput" style="display: none;">
+				            <label for="maintenanceFee">관리비*</label>
+				            <input type="number" id="maintenanceFee" name="maintenanceFee" th:field="*{maintenanceFee}" placeholder="원">
+				        </span>
+				    </td>
+				</tr>
+				<tr>
+				    <td><label>입주 가능일*</label></td>
+				    <td>
+				        <input type="radio" id="availabilityImmediately" name="availabilityType" value="즉시" onchange="toggleAvailabilityInput()" checked> 즉시
+				        <input type="radio" id="availabilityDate" name="availabilityType" value="일자 선택" onchange="toggleAvailabilityInput()"> 일자 선택
+				        <span id="availableDateInput" style="display: none;">
+				            <label for="availableDate">입주 가능일*</label>
+				            <input type="date" id="availableDate" name="availableDate" th:field="*{availableDate}">
+				        </span>
+				    </td>
+				</tr>
                 <tr>
                     <td><label for="status">상태*</label></td>
                     <td>

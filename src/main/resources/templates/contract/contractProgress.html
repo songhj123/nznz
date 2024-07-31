@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Contract Progress</title>
+    <style>
+        .property-details, .progress-details {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .property-header {
+            display: flex;
+            align-items: center;
+        }
+        .property-header img {
+            max-width: 200px;
+            margin-right: 20px;
+        }
+        .property-info {
+            flex: 1;
+        }
+        .property-info h1 {
+            margin: 0;
+        }
+        .property-info p {
+            margin: 5px 0;
+        }
+        .status {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 10px;
+            gap: 5px;
+        }
+        .status div {
+            padding: 10px 20px;
+      	    border-radius: 5px;
+            color: white;
+        }
+        .status .completed {
+            background-color: green;
+        }
+        .status .in-progress {
+            background-color: orange;
+        }
+        .status .not-started {
+            background-color: grey;
+        }
+        .arrow {
+     		font-size: 18px;
+     	    color: black !important;
+      	    margin: 0 5px;
+      	    font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1 th:text="'매물번호 ' + ${contract.propertyId} + ' - 임차 계약 건 진행상황'"></h1>
+    <div class="property-details">
+        <div class="property-header">
+            <img th:src="@{/images/property.jpg}" alt="Property Image">
+            <div class="property-info">
+                <h1 th:text="${propertyDTO.propertyType}"></h1>
+                <p>주소: <span th:text="${propertyDTO.propertyAddress}"></span></p>
+                <p>건물명: <span th:text="${propertyDTO.buildingName}"></span></p>
+                <p>크기: <span th:text="${propertyDTO.sizePyeong}"></span>평</p>
+                <p>방 정보: <span th:text="${propertyDTO.roomInfo}"></span></p>
+                <p>가격: <span th:text="${propertyDTO.price}"></span></p>
+                <p>관리비: <span th:text="${propertyDTO.maintenanceFee}"></span></p>
+                <p>사용 가능 날짜: <span th:text="${propertyDTO.availableDate}"></span></p>
+                <p>층수: <span th:text="${propertyDTO.floor}"></span></p>
+                <p>상세 설명: <span th:text="${propertyDTO.longDescription}"></span></p>
+                <p>등록 날짜: <span th:text="${propertyDTO.registrationDate}"></span></p>
+                <p>상태: <span th:text="${propertyDTO.status}"></span></p>
+                <p>처리 상태: <span th:text="${propertyDTO.processingStatus}"></span></p>
+            </div>
+        </div>
+    </div>
+    <div class="progress-details">
+        <h2>상세 진행 상황</h2>
+        <p>현재 임차인측 필수 제출 서류 리스트를 임대인이 검토 중입니다.</p>
+        <div class="status">
+    		<div class="completed" th:classappend="${contract.stage == '방문상담완료'} ? ' completed' : ' not-started'">방문상담완료</div>
+   		 	<div class="arrow">&gt;</div> 
+   			<div class="completed" th:classappend="${contract.stage == '계약진행수락'} ? ' completed' : ' not-started'">계약진행수락</div>
+		    <div class="arrow">&gt;</div> 
+		    <div class="in-progress" th:classappend="${contract.stage == '각종서류확인'} ? ' in-progress' : ' not-started'">각종서류확인</div>
+		    <div class="arrow">&gt;</div> 
+		    <div class="not-started" th:classappend="${contract.stage == '자동이체신청'} ? ' not-started' : ''">자동이체신청</div>
+		    <div class="arrow">&gt;</div> 
+		    <div class="not-started" th:classappend="${contract.stage == '계약완료'} ? ' not-started' : ''">계약완료</div>
+		</div>
+    </div>
+</body>
+</html>

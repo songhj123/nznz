@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class PropertyDTO {
     private String roomInfo;
     private Long price;
     private Long maintenanceFee;
-    private Timestamp availableDate;
+    private Date availableDate;
     private String floor;
     private String shortDescription;
     private String longDescription;

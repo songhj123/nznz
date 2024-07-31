@@ -16,6 +16,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.SequenceGenerator;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
@@ -42,7 +43,7 @@ public class PropertyEntity {
     private String roomInfo;
     private Long price;
     private Long maintenanceFee;
-    private Timestamp availableDate;
+    private Date availableDate;
     private String floor;
     private String shortDescription;
     private String longDescription;
