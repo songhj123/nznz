@@ -105,8 +105,8 @@
             <div class="col-md-4 right-column">
                 <div class="sticky-top card details-container">
                     <h5>매물 번호: <span th:text="${property.propertyId != null ? property.propertyId : 'N/A'}"></span></h5>
-                    <h5>월세: <span th:text="${property.price != null ? property.price : 'N/A'}"></span></h5>
-                    <p><strong>방: </strong><span th:text="${property.roomInfo != null ? property.roomInfo : 'N/A'}"></span></p>
+                    <h5>전세: <span th:text="${property.price != null ? property.price : 'N/A'}"></span></h5>
+                    <p><strong>방/욕실: </strong><span th:text="${property.roomInfo != null ? property.roomInfo : 'N/A'}"></span></p>
                     <p><strong>위치: </strong><span th:text="${property.propertyAddress != null ? property.propertyAddress : 'N/A'}"></span></p>  
                     <button class="btn btn-outline-secondary mt-2" th:onclick="'goToConsultationRequest(' + ${property.propertyId} + ')'">방문상담예약</button>
                 </div>
@@ -119,7 +119,7 @@
 		        window.location.href = `/consultationRequest/${propertyId}`;
 		    }
 		</script>
-	<script th:inline="javascript">
+		    <script th:inline="javascript">
     function goToConsultationRequest(propertyId) {
         window.location.href = `/consultationRequest/${propertyId}`;
     }

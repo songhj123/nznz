@@ -2,10 +2,6 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" th:href="@{/resource/css/bootstrap.min.css}">
-        <!-- vWorld API 스크립트 추가 -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://map.vworld.kr/js/vworldAPI.js"></script>
 </head>
 <body>
 <header class="navUp" th:fragment="navUp">
@@ -33,14 +29,12 @@
         </a>
         <div class="d-flex align-items-center ms-auto">
             <div class="search-container me-3">
-                <form id="searchForm" action="/search" method="GET" class="d-flex">
-                    <input type="text" id="searchQuery" name="query" class="form-control" placeholder="검색어를 입력하세요.">
-                    <button type="submit" class="search-icon btn btn-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM9.5 14c-2.49 0-4.5-2.01-4.5-4.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                        </svg>
-                    </button>
-                </form>
+                <input type="text" class="form-control" placeholder="검색어를 입력하세요.">
+                <button type="submit" class="search-icon btn btn-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zM9.5 14c-2.49 0-4.5-2.01-4.5-4.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                </button>
             </div>
             <div class="profile-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -50,60 +44,5 @@
         </div>
     </div>
 </header>
-<script th:src="@{/resource/js/bootstrap.bundle.min.js}"></script>
-<script>
-    $(document).ready(function() {
-        $('#searchForm').on('submit', function(e) {
-            e.preventDefault();
-            var query = $('#searchQuery').val();
-            if (query) {
-                // vWorld 지오코딩 API 사용
-                $.ajax({
-                    url: 'https://api.vworld.kr/req/address',
-                    data: {
-                        service: 'address',
-                        request: 'getcoord',
-                        version: '2.0',
-                        crs: 'EPSG:4326',
-                        address: query,
-                        key: 'F320E4DD-72C4-3869-9343-68E55DB54345'
-                    },
-                    success: function(response) {
-                        if (response.response.status == 'OK') {
-                            var x = response.response.result.point.x;
-                            var y = response.response.result.point.y;
-                            // 좌표를 이용하여 필요한 작업 수행
-                            console.log('Coordinates: ', x, y);
-                        } else {
-                            alert('Geocoding failed: ' + response.response.status);
-                        }
-                    }
-                });
-
-                // vWorld 검색 API 사용
-                $.ajax({
-                    url: 'https://api.vworld.kr/req/search',
-                    data: {
-                        service: 'search',
-                        request: 'search',
-                        version: '2.0',
-                        query: query,
-                        type: 'place',
-                        key: 'F320E4DD-72C4-3869-9343-68E55DB54345'
-                    },
-                    success: function(response) {
-                        if (response.response.status == 'OK') {
-                            var items = response.response.result.items;
-                            // 검색 결과 처리
-                            console.log('Search results: ', items);
-                        } else {
-                            alert('Search failed: ' + response.response.status);
-                        }
-                    }
-                });
-            }
-        });
-    });
-</script>
 </body>
 </html>

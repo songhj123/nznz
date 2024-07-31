@@ -32,7 +32,6 @@ dependencies {
    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
-   implementation 'org.json:json:20210307'
    compileOnly 'org.projectlombok:lombok'
    developmentOnly 'org.springframework.boot:spring-boot-devtools'
    runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
