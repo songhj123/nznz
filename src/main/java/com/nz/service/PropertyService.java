@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.nz.data.PropertyDTO;
 import com.nz.data.PropertyImageDTO;
+import com.nz.data.PropertyOptionDTO;
 import com.nz.entity.PropertyEntity;
 import com.nz.entity.PropertyImageEntity;
 import com.nz.entity.PropertyOptionEntity;
@@ -72,6 +73,10 @@ public class PropertyService {
                 .map(this::convertToImageDTO)
                 .collect(Collectors.toList());
 
+        List<PropertyOptionDTO> optionDTOList = propertyEntity.getPropertyOptions().stream()
+                .map(this::convertToOptionDTO) // convertToOptionDTO 메서드를 사용하여 변환
+                .collect(Collectors.toList());
+        
         return PropertyDTO.builder()
                 .propertyId(propertyEntity.getPropertyId())
                 .propertyNum(propertyEntity.getPropertyNum())
@@ -93,6 +98,7 @@ public class PropertyService {
                 .latitude(propertyEntity.getLatitude())
                 .longitude(propertyEntity.getLongitude())
                 .propertyImageList(imageDTOList)
+                .propertyOption(optionDTOList)
                 .build();
     }
 
@@ -101,6 +107,19 @@ public class PropertyService {
                 .imageId(propertyImageEntity.getImageId())
                 .imageOriginalName(propertyImageEntity.getImageOriginalName())
                 .imageStoredName(propertyImageEntity.getImageStoredName())
+                .build();
+    }
+    
+    private PropertyOptionDTO convertToOptionDTO(PropertyOptionEntity optionEntity) {
+        return PropertyOptionDTO.builder()
+                .heatingSystem(optionEntity.getHeatingSystem())
+                .coolingSystem(optionEntity.getCoolingSystem())
+                .livingFacilities(optionEntity.getLivingFacilities())
+                .securityFacilities(optionEntity.getSecurityFacilities())
+                .otherFacilities(optionEntity.getOtherFacilities())
+                .parking(optionEntity.getParking())
+                .elevator(optionEntity.getElevator())
+                .propertyFeatures(optionEntity.getPropertyFeatures())
                 .build();
     }
     
