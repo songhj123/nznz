@@ -10,11 +10,11 @@
 </head>
 <body>
 <div layout:fragment="content">
-
+<div class="scrollable-column">
     <div class="container mt-5">
         <div class="row">
             <!-- Left Column -->
-            <div class="col-md-8 left-column scrollable-column">
+            <div class="col-md-8 left-column">
                 <!-- Image Slider -->
                 <div id="imageSlider" class="mb-4">
                     <div class="main-image-container position-relative">
@@ -119,28 +119,28 @@
 		        window.location.href = `/consultationRequest/${propertyId}`;
 		    }
 		</script>
-		    <script th:inline="javascript">
-    function goToConsultationRequest(propertyId) {
-        window.location.href = `/consultationRequest/${propertyId}`;
-    }
-
-    /* 팝업 메시지 처리 */
-    /*<![CDATA[*/
-    var message = /*[[${message}]]*/ null;
-    var error = /*[[${error}]]*/ null;
-
-    if (message) {
-        alert(message); // 성공 메시지 팝업
-    }
-
-    if (error) {
-        alert(error); // 에러 메시지 팝업
-    }
-    /*]]>*/
-    </script>
+		<script th:inline="javascript">
+		    function goToConsultationRequest(propertyId) {
+		        window.location.href = `/consultationRequest/${propertyId}`;
+		    }
+		
+		    /* 팝업 메시지 처리 */
+		    /*<![CDATA[*/
+		    var message = /*[[${message}]]*/ null;
+		    var error = /*[[${error}]]*/ null;
+		
+		    if (message) {
+		        alert(message); // 성공 메시지 팝업
+		    }
+		
+		    if (error) {
+		        alert(error); // 에러 메시지 팝업
+		    }
+		    /*]]>*/
+		 </script>
     </div>
 </div>
-
+</div>
 
 </body>
 </html>
