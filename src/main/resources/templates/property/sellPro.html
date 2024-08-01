@@ -30,7 +30,7 @@
         <label>방 정보: </label><span th:text="${property.roomInfo}"></span>
     </div>
     <div>
-        <label>가격: </label><span th:text="${property.price}"></span>
+         <label>보증금/월세: </label><span th:text="${property.deposit + '/' + property.monthlyRent} + ' 만원'"></span>
     </div>
     <div>
         <label>관리비: </label><span th:text="${property.maintenanceFee}"></span>
