@@ -22,7 +22,8 @@ public class PropertyDTO {
     private String buildingName;
     private String sizePyeong;
     private String roomInfo;
-    private Long price;
+    private String deposit; // 보증금
+    private String monthlyRent; // 월세
     private Long maintenanceFee;
     private Date availableDate;
     private String floor;
