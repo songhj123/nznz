@@ -30,7 +30,9 @@ public class ContractController {
 	}
 	
 	@GetMapping("/contractList")
-	public String contractList() {
-		return "contractList";
+	public String contractList(Model model) {
+		List<ContractDTO> contractList = contractService.getAllContracts();
+		model.addAttribute("contractList", contractList);
+		return "admin/contractList";
 	}
 }

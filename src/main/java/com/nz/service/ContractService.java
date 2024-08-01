@@ -1,6 +1,8 @@
 package com.nz.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,5 +34,24 @@ public class ContractService {
 		}else {
 			throw new RuntimeException("contract not found");
 		}											
+	}
+	
+	public List<ContractDTO> getAllContracts(){
+		List<ContractEntity> contracts = contractRepository.findAll();
+		return contracts.stream()
+				.map(this :: convertToDTO)
+				.collect(Collectors.toList());
+	}
+	
+	private ContractDTO convertToDTO(ContractEntity contractEntity) {
+		return ContractDTO.builder()
+				.contractId(contractEntity.getContractId())
+				.propertyId(contractEntity.getPropertyId())
+				.landlordId(contractEntity.getLandlordId())
+				.tenantId(contractEntity.getTenantId())
+				.stage(contractEntity.getStage())
+				.contractDate(contractEntity.getContractDate())
+				.expirationDate(contractEntity.getExpirationDate())
+				.build();
 	}
 }

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout/adminLayout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>계약 목록</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+	 <div layout:fragment="content">
+    <div class="container">
+        <h1>계약 목록</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>계약 ID</th>
+                    <th>매물 ID</th>
+                    <th>임대인 ID</th>
+                    <th>임차인 ID</th>
+                    <th>계약 단계</th>
+                    <th>계약 날짜</th>
+                    <th>만료 날짜</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="contract, iterStat : ${contractList}">
+                    <td th:text="${iterStat.count}"></td>
+                    <td th:text="${contract.contractId}"></td>
+                    <td th:text="${contract.propertyId}"></td>
+                    <td th:text="${contract.landlordId}"></td>
+                    <td th:text="${contract.tenantId}"></td>
+                    <td th:text="${contract.stage}"></td>
+                    <td th:text="${#dates.format(contract.contractDate, 'yyyy-MM-dd')}"></td>
+                    <td th:text="${#dates.format(contract.expirationDate, 'yyyy-MM-dd')}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    </div>
+</body>
+</html>
