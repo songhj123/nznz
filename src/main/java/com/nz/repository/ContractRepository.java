@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.nz.entity.ContractEntity;
 
 public interface ContractRepository extends JpaRepository<ContractEntity, Long>{
-	 Optional<ContractEntity> findByPropertyId(Long propertyId);
+	 Optional<ContractEntity> findByPropertyPropertyId(Long propertyId);
 }

@@ -14,10 +14,11 @@ import lombok.NoArgsConstructor;
 @Data
 public class ContractDTO {
 	private Long contractId;
-	private Long propertyId;
-	private Long landlordId;
-	private Long tenantId;
+	private PropertyDTO propertyId;
+	private UserDTO landlordId;
+	private UserDTO tenantId;
 	private String stage;
 	private Timestamp contractDate;
 	private Timestamp expirationDate;
+
 }

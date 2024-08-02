@@ -2,13 +2,7 @@ package com.nz.entity;
 
 import java.sql.Timestamp;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Column;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,14 +22,17 @@ public class ContractEntity {
     @Column(name = "CONTRACTID")
     private Long contractId;
 
-    @Column(name = "PROPERTYID")
-    private Long propertyId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "PROPERTYID")
+    private PropertyEntity property;
 
-    @Column(name = "LANDLORDID")
-    private Long landlordId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "LANDLORDID")
+    private UserEntity landlord;
 
-    @Column(name = "TENANTID")
-    private Long tenantId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "TENANTID")
+    private UserEntity tenant;
 
     @Column(name = "STAGE")
     private String stage;

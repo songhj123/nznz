@@ -27,39 +27,50 @@
         th {
             background-color: #f4f4f4;
         }
+        h1 {
+            white-space: nowrap; /* 제목을 한 줄로 만들기 */
+        }
     </style>
 </head>
 <body>
-	 <div layout:fragment="content">
-    <div class="container">
-        <h1>계약 목록</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>번호</th>
-                    <th>계약 ID</th>
-                    <th>매물 ID</th>
-                    <th>임대인 ID</th>
-                    <th>임차인 ID</th>
-                    <th>계약 단계</th>
-                    <th>계약 날짜</th>
-                    <th>만료 날짜</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="contract, iterStat : ${contractList}">
-                    <td th:text="${iterStat.count}"></td>
-                    <td th:text="${contract.contractId}"></td>
-                    <td th:text="${contract.propertyId}"></td>
-                    <td th:text="${contract.landlordId}"></td>
-                    <td th:text="${contract.tenantId}"></td>
-                    <td th:text="${contract.stage}"></td>
-                    <td th:text="${#dates.format(contract.contractDate, 'yyyy-MM-dd')}"></td>
-                    <td th:text="${#dates.format(contract.expirationDate, 'yyyy-MM-dd')}"></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+	<div th:replace="~{layout/adminLayout :: content}">
+	
+    <div layout:fragment="content">
+        <div class="container">
+            <h1>계약 목록</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>계약 번호</th>
+                        <th>매물 번호</th>
+                        <th>보증금/월세</th>
+                        <th>주소/건물</th>
+                        <th>임대인</th>
+                        <th>임차인</th>
+                        <th>계약 단계</th>
+                        <th>계약 날짜</th>
+                        <th>만료 날짜</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="contract, iterStat : ${contractList}">
+                        <td th:text="${iterStat.count}"></td>
+                        <td th:text="${contract.contractId}"></td>
+                        <td th:text="${contract.propertyId.propertyId}"></td>
+                        <td th:text="${contract.propertyId != null ? contract.propertyId.deposit + ' / ' + contract.propertyId.monthlyRent : ''}"></td>
+                        <td th:text="${contract.propertyId != null ? contract.propertyId.propertyAddress + ' / ' + contract.propertyId.buildingName : ''}"></td>
+                        <td th:text="${contract.landlordId.name}+'('+${contract.landlordId.username}+')'"></td>
+                        <td th:text="${contract.tenantId.name}+'('+${contract.tenantId.username}+')'"></td>
+                        <td th:text="${contract.stage}"></td>
+                        <td th:text="${#dates.format(contract.contractDate, 'yyyy-MM-dd')}"></td>
+                        <td th:text="${#dates.format(contract.expirationDate, 'yyyy-MM-dd')}"></td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </body>
 </html>
