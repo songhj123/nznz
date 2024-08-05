@@ -55,7 +55,7 @@
     </style>
 </head>
 <body>
-    <h1 th:text="'매물번호 ' + ${contract.propertyId} + ' - 임차 계약 건 진행상황'"></h1>
+    <h1 th:text="'매물번호 ' + ${contract.propertyId.propertyId} + ' - 임차 계약 건 진행상황'"></h1>
     <div class="property-details">
         <div class="property-header">
             <img th:src="@{/images/property.jpg}" alt="Property Image">
@@ -65,7 +65,7 @@
                 <p>건물명: <span th:text="${propertyDTO.buildingName}"></span></p>
                 <p>크기: <span th:text="${propertyDTO.sizePyeong}"></span>평</p>
                 <p>방 정보: <span th:text="${propertyDTO.roomInfo}"></span></p>
-                <p>가격: <span th:text="${propertyDTO.price}"></span></p>
+                <p>보증금/월세: <span th:text="${propertyDTO.deposit}+'/'+${propertyDTO.monthlyRent}"></span></p>
                 <p>관리비: <span th:text="${propertyDTO.maintenanceFee}"></span></p>
                 <p>사용 가능 날짜: <span th:text="${propertyDTO.availableDate}"></span></p>
                 <p>층수: <span th:text="${propertyDTO.floor}"></span></p>
