@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout/adminLayout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>관리자 알림 페이지</title>
+    <link rel="stylesheet" type="text/css" href="/resource/css/adminAlarm.css">
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="content-container">
+            <!-- Left Section -->
+            <div class="left-section">
+                <form th:action="@{/notifications/createForAll}" method="post">
+                    <div class="form-group">
+                        <label>알림 제목</label>
+                        <input type="text" id="title" name="title" placeholder="알림 제목을 입력하세요" required>
+                    </div>
+                    <div class="form-group">
+                        <label>알림 내용</label>
+                        <textarea id="content" name="content" rows="4" placeholder="알림 내용을 입력하세요" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <p>이 메시지는 모든 사용자에게 전송됩니다.</p>
+                    </div>
+                    <div class="button-container">
+                        <button type="submit">알림 전송</button>
+                    </div>
+                </form>
+            </div>
+            <!-- Right Section -->
+            <div class="right-section">
+                <h2>보낸 알림 기록</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>제목</th>
+                                <th>내용</th>
+                                <th>발신자</th>
+                                <th>보낸 시간</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="notification : ${notifications}">
+                                <td th:text="${notification.title}"></td>
+                                <td th:text="${notification.content}"></td>
+                                <td th:text="${notification.senderUsername}"></td> <!-- 발신자 -->
+                                <td th:text="${#dates.format(notification.sentTime, 'yyyy.MM.dd, HH:mm')}"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+</html>
