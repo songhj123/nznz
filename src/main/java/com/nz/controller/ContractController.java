@@ -3,10 +3,14 @@ package com.nz.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.nz.data.ContractDTO;
 import com.nz.service.ContractService;
@@ -30,9 +34,11 @@ public class ContractController {
 	}
 	
 	@GetMapping("/contractList")
-	public String contractList(Model model) {
-		List<ContractDTO> contractList = contractService.getAllContracts();
-		model.addAttribute("contractList", contractList);
+	public String contractList(Model model, @RequestParam(name = "page", defaultValue = "0")int page,
+			@RequestParam(name = "size", defaultValue = "10") int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		Page<ContractDTO> contractPage = contractService.getAllContracts(pageable);
+		model.addAttribute("contractPage", contractPage);
 		return "admin/contractList";
 	}
 }

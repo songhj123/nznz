@@ -38,6 +38,22 @@
             margin-bottom: 20px; /* 제목과 테이블 사이에 간격 추가 */
             align-self: flex-start; /* 제목을 왼쪽으로 정렬 */
         }
+         .pagination {
+            margin: 20px 0;
+        }
+        .pagination a {
+            margin: 0 5px;
+            text-decoration: none;
+            color: #000;
+        }
+        .pagination a.active {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        .pagination a.disabled {
+            pointer-events: none;
+            color: #ccc;
+        }
     </style>
 </head>
 <body>
@@ -63,7 +79,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="contract, iterStat : ${contractList}">
+                    <tr th:each="contract, iterStat : ${contractPage}">
                         <td th:text="${iterStat.count}"></td>
                         <td th:text="${contract.contractId}"></td>
                         <td th:text="${contract.propertyId.propertyId}"></td>
@@ -74,10 +90,19 @@
                         <td th:text="${contract.stage}"></td>
                         <td th:text="${#dates.format(contract.contractDate, 'yyyy-MM-dd')}"></td>
                         <td th:text="${#dates.format(contract.expirationDate, 'yyyy-MM-dd')}"></td>
-
                     </tr>
                 </tbody>
             </table>
+            <div class="pagination">
+                    <a th:href="@{|/contractList?page=${contractPage.number - 1}&size=${contractPage.size}|}"
+                       th:classappend="${!contractPage.hasPrevious()} ? 'disabled' : ''">&laquo; 이전</a>
+                    <span th:each="i : ${#numbers.sequence(0, contractPage.totalPages - 1)}">
+                        <a th:href="@{|/contractList?page=${i}&size=${contractPage.size}|}" th:text="${i + 1}"
+                           th:classappend="${contractPage.number == i} ? 'active' : ''"></a>
+                    </span>
+                    <a th:href="@{|/contractList?page=${contractPage.number + 1}&size=${contractPage.size}|}"
+                       th:classappend="${!contractPage.hasNext()} ? 'disabled' : ''">다음 &raquo;</a>
+            </div>
         </div>
     </div>
 </body>
