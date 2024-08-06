@@ -40,11 +40,6 @@ public class UserController {
         return "auth/joinPro"; // 변경된 경로로 수정
     }
     
-    @GetMapping("/loginForm")
-    public String loginForm() {
-        return "auth/loginForm"; // 변경된 경로로 수정
-    }
-    
     @GetMapping("/mypage")
     @PreAuthorize("isAuthenticated()")
     public String mypage() {
