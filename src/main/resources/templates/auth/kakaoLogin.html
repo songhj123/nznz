@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kakao Login</title>
+</head>
+<body>
+    <form id="loginForm" action="/user/login" method="post">
+        <input type="hidden" name="username" th:value="${username}">
+        <input type="hidden" name="password" th:value="${password}">
+    </form>
+    <script>
+        document.getElementById("loginForm").submit();
+    </script>
+</body>
+</html>
