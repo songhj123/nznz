@@ -11,47 +11,69 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.client.RestTemplate;
+
+import com.nz.service.CustomOAuth2UserService;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
-	@Bean
-	SecurityFilterChain filterChain(HttpSecurity http)throws Exception{
-		
-		http.authorizeHttpRequests(
-			(authorizeHttpRequests)->authorizeHttpRequests.
-				requestMatchers("/**").permitAll())
-			.formLogin((formLogin) -> formLogin
-						.loginPage("/user/login")
-						.usernameParameter("id")
-						.passwordParameter("pw")
-						.defaultSuccessUrl("/home"))
-			.logout((logout) -> logout
-					.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
-					.logoutSuccessUrl("/home")
-					.invalidateHttpSession(true))
-			;
-			return http.build();
-	}
-	
-	@Bean
-	PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-	
-	@Bean
-	AuthenticationManager authenticationManager(
-			AuthenticationConfiguration auth) throws Exception{
-		return auth.getAuthenticationManager();
-	}
-	
+    private final CustomOAuth2UserService customOAuth2UserService;
+
+    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService) {
+        this.customOAuth2UserService = customOAuth2UserService;
+    }
+
+    @Bean
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+        	.csrf(csrf -> csrf
+                .disable()  // 테스트용 CSRF 보호 비활성화
+            )
+            .authorizeHttpRequests(authorizeHttpRequests -> 
+                authorizeHttpRequests
+                    .requestMatchers("/user/login", "/**").permitAll()
+                    .anyRequest().authenticated()
+            )
+            .formLogin(formLogin -> 
+                formLogin
+                    .loginPage("/user/login")
+                    .defaultSuccessUrl("/home")
+            )
+            .oauth2Login(oauth2Login -> 
+            oauth2Login
+                .loginPage("/user/login")
+                .userInfoEndpoint(userInfoEndpoint -> 
+                    userInfoEndpoint
+                        .userService(customOAuth2UserService)
+                )
+                .defaultSuccessUrl("/home", true)
+            )
+            .logout(logout -> 
+                logout
+                    .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
+                    .logoutSuccessUrl("/home")
+                    .invalidateHttpSession(true)
+            );
+        return http.build();
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager(
+            AuthenticationConfiguration auth) throws Exception {
+        return auth.getAuthenticationManager();
+    }
+    
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
 }
-
-
-
-
-
-
-
