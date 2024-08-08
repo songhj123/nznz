@@ -1,0 +1,24 @@
+/* 스크롤 스타일 */
+.scrollable-container {
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.scrollable-container::-webkit-scrollbar {
+    width: 12px; /* 스크롤바 너비 설정 */
+}
+
+.scrollable-container::-webkit-scrollbar-track {
+    background: #f1f1f1; /* 트랙 색상 설정 */
+}
+
+.scrollable-container::-webkit-scrollbar-thumb {
+    background-color: #888; /* 스크롤바 색상 설정 */
+    border-radius: 10px; /* 스크롤바 모서리 둥글게 설정 */
+    border: 3px solid #f1f1f1; /* 스크롤바 테두리 설정 */
+}
+
+.scrollable-container::-webkit-scrollbar-thumb:hover {
+    background: #555; /* 스크롤바 호버 시 색상 변경 */
+}

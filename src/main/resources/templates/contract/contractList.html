@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>계약 목록</title>
+</head>
+<body>
+    <h1>계약 목록</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>계약 ID</th>
+                <th>임대인</th>
+                <th>임차인</th>
+                <th>단계</th>
+                <th>상세보기</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="contract : ${contracts}">
+                <td th:text="${contract.contractId}"></td>
+                <td th:text="${contract.landlordId.name}"></td>
+                <td th:text="${contract.tenantId.name}"></td>
+                <td th:text="${contract.stage}"></td>
+                <td><a th:href="@{/contract/{contractId}(contractId=${contract.contractId})}">보기</a></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

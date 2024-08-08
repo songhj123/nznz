@@ -1,0 +1,19 @@
+<!-- src/main/resources/templates/contract/automaticTransfer.html -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>자동이체 신청</title>
+</head>
+<body>
+    <h1>자동이체 신청</h1>
+    <p>계약 ID: <span th:text="${contract.contractId}"></span></p>
+    <p>임대인: <span th:text="${contract.landlordId.name}"></span></p>
+    <p>임차인: <span th:text="${contract.tenantId.name}"></span></p>
+    <p>단계: 자동이체 신청</p>
+    <div>
+        <form th:action="@{/contract/applyAutomaticTransfer}" method="post">
+            <input type="hidden" name="contractId" th:value="${contract.contractId}" />
+            <button type="submit">자동이체 신청</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<html layout:decorate="~{layout/layout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>계약 진행 상황</title>
+    <link rel="stylesheet" href="/resource/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/resource/css/contractStyle.css">
+    <link rel="stylesheet" href="/resource/css/scrollStyle.css">
+</head>
+<body class="scrollable-body">
+    <div layout:fragment="content" class="contract-login-container scrollable-container">
+        <h1 class="contract-title mb-4">계약 진행 상황</h1>
+        <div class="contract-card">
+            <div class="card-body">
+                <p><strong>계약 ID:</strong> <span th:text="${contract.contractId}"></span></p>
+                <p><strong>단계:</strong> <span th:text="${contract.stage}"></span></p>
+                <h3>임대인 정보</h3>
+                <p><strong>이름:</strong> <span th:text="${contract.landlordId.name}"></span></p>
+                <p><strong>이메일:</strong> <span th:text="${contract.landlordId.email}"></span></p>
+                <p><strong>전화번호:</strong> <span th:text="${contract.landlordId.phoneNumber}"></span></p>
+                <h3>임차인 정보</h3>
+                <p><strong>이름:</strong> <span th:text="${contract.tenantId.name}"></span></p>
+                <p><strong>이메일:</strong> <span th:text="${contract.tenantId.email}"></span></p>
+                <p><strong>전화번호:</strong> <span th:text="${contract.tenantId.phoneNumber}"></span></p>
+
+                <div th:if="${contract.stage == '방문상담완료'}">
+                    <p>상담이 완료되었습니다. 다음 단계로 진행하십시오.</p>
+                    <form th:action="@{/contract/nextStage/{contractId}(contractId=${contract.contractId})}" method="post">
+                        <button type="submit" class="btn contract-btn-primary">다음 단계로 진행</button>
+                    </form>
+                </div>
+                <div th:if="${contract.stage == '계약진행수락'}">
+                    <p>계약 진행 수락 단계입니다. 필요한 서류를 확인하세요.</p>
+                    <form th:action="@{/contract/verifyDocuments}" method="post">
+                        <input type="hidden" name="contractId" th:value="${contract.contractId}" />
+                        <button type="submit" class="btn contract-btn-warning">서류 확인</button>
+                    </form>
+                </div>
+                <div th:if="${contract.stage == '각종서류확인'}">
+                    <p>각종 서류가 확인되었습니다. 자동이체를 신청하십시오.</p>
+                    <form th:action="@{/contract/applyAutomaticTransfer}" method="post">
+                        <input type="hidden" name="contractId" th:value="${contract.contractId}" />
+                        <button type="submit" class="btn contract-btn-info">자동이체 신청</button>
+                    </form>
+                </div>
+                <div th:if="${contract.stage == '자동이체신청'}">
+                    <p>자동이체가 신청되었습니다. 계약을 완료하십시오.</p>
+                    <form th:action="@{/contract/complete}" method="post">
+                        <input type="hidden" name="contractId" th:value="${contract.contractId}" />
+                        <button type="submit" class="btn contract-btn-success">계약 완료</button>
+                    </form>
+                </div>
+                <div th:if="${contract.stage == '계약완료'}">
+                    <p>계약이 완료되었습니다. 감사합니다.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/resource/js/jquery-3.7.1.min.js"></script>
+    <script src="/resource/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!-- src/main/resources/templates/contract/contractComplete.html -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>계약 완료</title>
+</head>
+<body>
+    <h1>계약 완료</h1>
+    <p>계약 ID: <span th:text="${contract.contractId}"></span></p>
+    <p>임대인: <span th:text="${contract.landlordId.name}"></span></p>
+    <p>임차인: <span th:text="${contract.tenantId.name}"></span></p>
+    <p>단계: 계약 완료</p>
+    <div>
+        <p>계약이 성공적으로 완료되었습니다.</p>
+        <a th:href="@{/home}">홈으로 돌아가기</a>
+    </div>
+</body>
+</html>

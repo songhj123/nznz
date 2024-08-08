@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Properties</title>
+    <link rel="stylesheet" th:href="@{/resource/css/bootstrap.min.css}">
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">My Properties</h1>
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Property ID</th>
+                    <th>Property Num</th>
+                    <th>Member ID</th>
+                    <th>Property Type</th>
+                    <th>Address</th>
+                    <th>Building Name</th>
+                    <th>Size (Pyeong)</th>
+                    <th>Room Info</th>
+                    <th>Deposit</th>
+                    <th>Monthly Rent</th>
+                    <th>Maintenance Fee</th>
+                    <th>Available Date</th>
+                    <th>Floor</th>
+                    <th>Short Description</th>
+                    <th>Long Description</th>
+                    <th>Registration Date</th>
+                    <th>Status</th>
+                    <th>Processing Status</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>Images</th>
+                    <th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="property : ${properties}">
+                    <td th:text="${property.propertyId}"></td>
+                    <td th:text="${property.propertyNum}"></td>
+                    <td th:text="${property.memberId}"></td>
+                    <td th:text="${property.propertyType}"></td>
+                    <td th:text="${property.propertyAddress}"></td>
+                    <td th:text="${property.buildingName}"></td>
+                    <td th:text="${property.sizePyeong}"></td>
+                    <td th:text="${property.roomInfo}"></td>
+                    <td th:text="${property.deposit}"></td>
+                    <td th:text="${property.monthlyRent}"></td>
+                    <td th:text="${property.maintenanceFee}"></td>
+                    <td th:text="${property.availableDate}"></td>
+                    <td th:text="${property.floor}"></td>
+                    <td th:text="${property.shortDescription}"></td>
+                    <td th:text="${property.longDescription}"></td>
+                    <td th:text="${property.registrationDate}"></td>
+                    <td th:text="${property.status}"></td>
+                    <td th:text="${property.processingStatus}"></td>
+                    <td th:text="${property.latitude}"></td>
+                    <td th:text="${property.longitude}"></td>
+                    <td>
+                        <ul class="list-unstyled">
+                            <li th:each="image : ${property.propertyImageList}">
+                                <span th:text="${image.imageOriginalName}"></span>
+                            </li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul class="list-unstyled">
+                            <li th:each="option : ${property.propertyOption}">
+                                Heating: <span th:text="${option.heatingSystem}"></span><br>
+                                Cooling: <span th:text="${option.coolingSystem}"></span><br>
+                                Living Facilities: <span th:text="${option.livingFacilities}"></span><br>
+                                Security Facilities: <span th:text="${option.securityFacilities}"></span><br>
+                                Other Facilities: <span th:text="${option.otherFacilities}"></span><br>
+                                Parking: <span th:text="${option.parking}"></span><br>
+                                Elevator: <span th:text="${option.elevator}"></span><br>
+                                Features: <span th:text="${option.propertyFeatures}"></span>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script th:src="@{/resource/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

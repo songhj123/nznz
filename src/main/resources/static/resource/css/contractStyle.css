@@ -1,0 +1,54 @@
+/* 계약 관련 스타일 */
+.contract-login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.contract-card {
+    background-color: #666;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.contract-card h1, .contract-card p {
+    margin-bottom: 10px;
+}
+
+.contract-btn-primary, .contract-btn-warning, .contract-btn-info, .contract-btn-success {
+    color: #fff;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-top: 10px;
+}
+
+.contract-btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.contract-btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.contract-btn-info {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+
+.contract-btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.contract-btn-primary:hover, .contract-btn-warning:hover, .contract-btn-info:hover, .contract-btn-success:hover {
+    opacity: 0.8;
+}

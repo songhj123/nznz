@@ -1,0 +1,16 @@
+<!-- src/main/resources/templates/contract/consultationComplete.html -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>방문 상담 완료</title>
+</head>
+<body>
+    <h1>방문 상담 완료</h1>
+    <p>계약 ID: <span th:text="${contract.contractId}"></span></p>
+    <p>임대인: <span th:text="${contract.landlordId.name}"></span></p>
+    <p>임차인: <span th:text="${contract.tenantId.name}"></span></p>
+    <p>단계: 방문 상담 완료</p>
+    <div>
+        <a th:href="@{/contract/nextStage/{contractId}(contractId=${contract.contractId})}">다음 단계로 진행</a>
+    </div>
+</body>
+</html>

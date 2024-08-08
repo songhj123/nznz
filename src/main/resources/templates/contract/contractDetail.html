@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout/layout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>계약 상세 정보</title>
+   	<link rel="stylesheet" href="/resource/css/bootstrap.min.css?after">
+    <link rel="stylesheet" href="/resource/css/contractStyle.css?after">
+    <link rel="stylesheet" href="/resource/css/scrollStyle.css?after">
+</head>
+<body class="scrollable-body">
+    <div layout:fragment="content" class="contract-login-container scrollable-container">
+        <h1 class="contract-title mb-4">계약 상세 정보</h1>
+        <div class="contract-card">
+            <div class="card-body">
+                <p><strong>계약 ID:</strong> <span th:text="${contract.contractId}"></span></p>
+                <h3>임대인 정보</h3>
+                <p><strong>이름:</strong> <span th:text="${contract.landlordId.name}"></span></p>
+                <p><strong>이메일:</strong> <span th:text="${contract.landlordId.email}"></span></p>
+                <p><strong>전화번호:</strong> <span th:text="${contract.landlordId.phoneNumber}"></span></p>
+                <h3>임차인 정보</h3>
+                <p><strong>이름:</strong> <span th:text="${contract.tenantId.name}"></span></p>
+                <p><strong>이메일:</strong> <span th:text="${contract.tenantId.email}"></span></p>
+                <p><strong>전화번호:</strong> <span th:text="${contract.tenantId.phoneNumber}"></span></p>
+                <h3>계약 상태</h3>
+                <p><strong>단계:</strong> <span th:text="${contract.stage}"></span></p>
+                <div class="mt-4">
+                    <a th:href="@{/contract/stage/{contractId}(contractId=${contract.contractId})}" class="btn contract-btn-primary">계약 진행하기</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/resource/js/jquery-3.7.1.min.js"></script>
+    <script src="/resource/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
