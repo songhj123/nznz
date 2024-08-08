@@ -29,8 +29,8 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-        	.csrf(csrf -> csrf
-        		.ignoringRequestMatchers("/user/login")  // 특정 경로에서만 CSRF 비활성화
+           .csrf(csrf -> csrf
+              .ignoringRequestMatchers("/user/login")  // 특정 경로에서만 CSRF 비활성화
             )
             .authorizeHttpRequests(authorizeHttpRequests -> 
                 authorizeHttpRequests
