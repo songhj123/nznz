@@ -1,14 +1,70 @@
 <!DOCTYPE html>
-<html layout:decorate="~{layout/layout}">
+<html layout:decorate="~{layout/layout}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>니집내집</title>
-    <link rel="stylesheet" href="/static/style.css">
-
+    <title>내 계약 목록</title>
+    <link rel="stylesheet" href="/static/resource/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/resource/css/customStyle.css"> <!-- 사용자 정의 스타일 추가 -->
 </head>
 <body>
-    <div layout:fragment="content" class="login-container">
-        
+    <div layout:fragment="content" class="container mt-5 login-container">
+        <h1 class="mb-4">내 계약 목록</h1>
+
+        <h2 class="mb-3">임대인으로서의 계약</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>계약 ID</th>
+                        <th>임대인</th>
+                        <th>임차인</th>
+                        <th>단계</th>
+                        <th>상세보기</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="contract : ${contractsAsLandlord}">
+                        <td th:text="${contract.contractId}"></td>
+                        <td th:text="${contract.landlordId != null ? contract.landlordId.name : 'N/A'}"></td>
+                        <td th:text="${contract.tenantId != null ? contract.tenantId.name : 'N/A'}"></td>
+                        <td th:text="${contract.stage}"></td>
+                        <td><a th:href="@{/contract/{contractId}(contractId=${contract.contractId})}" class="btn btn-primary">보기</a></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(contractsAsLandlord)}">
+                        <td colspan="5">임대인으로서 참여한 계약이 없습니다.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="mb-3">임차인으로서의 계약</h2>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>계약 ID</th>
+                        <th>임대인</th>
+                        <th>임차인</th>
+                        <th>단계</th>
+                        <th>상세보기</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="contract : ${contractsAsTenant}">
+                        <td th:text="${contract.contractId}"></td>
+                        <td th:text="${contract.landlordId != null ? contract.landlordId.name : 'N/A'}"></td>
+                        <td th:text="${contract.tenantId != null ? contract.tenantId.name : 'N/A'}"></td>
+                        <td th:text="${contract.stage}"></td>
+                        <td><a th:href="@{/contract/{contractId}(contractId=${contract.contractId})}" class="btn btn-primary">보기</a></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(contractsAsTenant)}">
+                        <td colspan="5">임차인으로서 참여한 계약이 없습니다.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
+    <script src="/static/resource/js/jquery-3.7.1.min.js"></script>
+    <script src="/static/resource/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

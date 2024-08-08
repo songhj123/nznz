@@ -1,6 +1,8 @@
 package com.nz.controller;
 
+import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
@@ -12,7 +14,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.nz.data.ContractDTO;
 import com.nz.data.UserDTO;
+import com.nz.service.ContractService;
 import com.nz.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
     private final UserService userService;
+    private final ContractService contractService;
 
     @GetMapping("/join01")
     public String join01() {
@@ -48,8 +53,13 @@ public class UserController {
     
     @GetMapping("/myContract")
     @PreAuthorize("isAuthenticated()")
-    public String myContract() {
-        return "user/myContract"; // 변경된 경로로 수정
+    public String myContract(Model model, Principal principal) {
+        String currentUsername = principal.getName();
+        List<ContractDTO> contractsAsLandlord = contractService.getContractsByLandlordUsername(currentUsername);
+        List<ContractDTO> contractsAsTenant = contractService.getContractsByTenantUsername(currentUsername);
+        model.addAttribute("contractsAsLandlord", contractsAsLandlord);
+        model.addAttribute("contractsAsTenant", contractsAsTenant);
+        return "user/myContract";
     }
 
     @GetMapping("/check-username")

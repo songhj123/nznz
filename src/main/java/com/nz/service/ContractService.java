@@ -22,12 +22,15 @@ import com.nz.entity.PropertyImageEntity;
 import com.nz.entity.PropertyOptionEntity;
 import com.nz.entity.UserEntity;
 import com.nz.repository.ContractRepository;
+import com.nz.repository.UserRepository;
 
 @Service
 public class ContractService {
 	
 	@Autowired
 	private ContractRepository contractRepository;
+	@Autowired
+    private UserRepository userRepository;
 
 	public ContractDTO getContractByPropertyId(Long propertyId) {
 		Optional<ContractEntity> op = contractRepository.findByPropertyPropertyId(propertyId);
@@ -131,6 +134,106 @@ public class ContractService {
 				.role(userEntity.getRole())
 				.build();
 	}
+	
+	
+	
+	
+    public List<ContractDTO> getAllContracts() {
+        List<ContractEntity> contractEntities = contractRepository.findAll();
+        return contractEntities.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<ContractDTO> getContractsByUsername(String username) {
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다: " + username));
+        List<ContractEntity> contractEntities = contractRepository.findByLandlordOrTenant(user, user);
+        return contractEntities.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<ContractDTO> getContractsByLandlordUsername(String username) {
+        UserEntity landlord = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다: " + username));
+        List<ContractEntity> contractEntities = contractRepository.findByLandlordOrTenant(landlord, null);
+        return contractEntities.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<ContractDTO> getContractsByTenantUsername(String username) {
+        UserEntity tenant = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다: " + username));
+        List<ContractEntity> contractEntities = contractRepository.findByLandlordOrTenant(null, tenant);
+        return contractEntities.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public ContractDTO getContractById(Long contractId) {
+        ContractEntity contractEntity = contractRepository.findById(contractId)
+                .orElseThrow(() -> new RuntimeException("계약을 찾을 수 없습니다."));
+        return convertToDTO(contractEntity);
+    }
+
+    public void acceptContract(Long contractId) {
+        ContractEntity contractEntity = contractRepository.findById(contractId)
+                .orElseThrow(() -> new RuntimeException("계약을 찾을 수 없습니다."));
+        contractEntity.setStage("계약진행수락");
+        contractRepository.save(contractEntity);
+    }
+
+    public void applyAutomaticTransfer(Long contractId) {
+        ContractEntity contractEntity = contractRepository.findById(contractId)
+                .orElseThrow(() -> new RuntimeException("계약을 찾을 수 없습니다."));
+        contractEntity.setStage("자동이체신청");
+        contractRepository.save(contractEntity);
+    }
+
+    public void advanceToNextStage(Long contractId) {
+        ContractEntity contractEntity = contractRepository.findById(contractId)
+                .orElseThrow(() -> new RuntimeException("계약을 찾을 수 없습니다."));
+        switch (contractEntity.getStage()) {
+            case "방문상담완료":
+                contractEntity.setStage("계약진행수락");
+                break;
+            case "계약진행수락":
+                contractEntity.setStage("각종서류확인");
+                break;
+            case "각종서류확인":
+                contractEntity.setStage("자동이체신청");
+                break;
+            case "자동이체신청":
+                contractEntity.setStage("계약완료");
+                break;
+            default:
+                throw new IllegalStateException("알 수 없는 단계: " + contractEntity.getStage());
+        }
+        contractRepository.save(contractEntity);
+    }
+
+    public void verifyDocuments(Long contractId) {
+        ContractEntity contractEntity = contractRepository.findById(contractId)
+                .orElseThrow(() -> new RuntimeException("계약을 찾을 수 없습니다."));
+        contractEntity.setStage("각종서류확인");
+        contractRepository.save(contractEntity);
+    }
+
+    public void completeContract(Long contractId) {
+        ContractEntity contractEntity = contractRepository.findById(contractId)
+                .orElseThrow(() -> new RuntimeException("계약을 찾을 수 없습니다."));
+        contractEntity.setStage("계약완료");
+        contractRepository.save(contractEntity);
+    }
+    
+    public void updateContractStatus(Long contractId, String status) {
+        ContractEntity contractEntity = contractRepository.findById(contractId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid contract ID"));
+        contractEntity.setStage(status);
+        contractRepository.save(contractEntity);
+    }
 }
 
 
