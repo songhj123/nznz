@@ -16,11 +16,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class AlarmDTO {
-
-    private Long notificationId;
+    private Long alarmId;
     private String title;
-    private String content;
-    private UserEntity memberId;
-    private UserEntity receiverId;
-    private Timestamp sentTime;
+    private String message;
+    private String username;
+    private Timestamp createdAt;
 }

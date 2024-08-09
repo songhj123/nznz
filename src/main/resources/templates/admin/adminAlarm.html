@@ -9,14 +9,14 @@
         <div class="content-container">
             <!-- Left Section -->
             <div class="left-section">
-                <form th:action="@{/notifications/createForAll}" method="post">
+                <form th:action="@{/admin/alarmPushAll}" method="post">
                     <div class="form-group">
                         <label>알림 제목</label>
                         <input type="text" id="title" name="title" placeholder="알림 제목을 입력하세요" required>
                     </div>
                     <div class="form-group">
                         <label>알림 내용</label>
-                        <textarea id="content" name="content" rows="4" placeholder="알림 내용을 입력하세요" required></textarea>
+                        <textarea id="message" name="message" rows="4" placeholder="알림 내용을 입력하세요" required></textarea>
                     </div>
                     <div class="form-group">
                         <p>이 메시지는 모든 사용자에게 전송됩니다.</p>
@@ -42,14 +42,26 @@
                         <tbody>
                             <tr th:each="notification : ${notifications}">
                                 <td th:text="${notification.title}"></td>
-                                <td th:text="${notification.content}"></td>
-                                <td th:text="${notification.senderUsername}"></td> <!-- 발신자 -->
-                                <td th:text="${#dates.format(notification.sentTime, 'yyyy.MM.dd, HH:mm')}"></td>
+                                <td th:text="${notification.message}"></td>
+                                <td th:text="${notification.username}"></td> <!-- 발신자 -->
+                                <td th:text="${#dates.format(notification.createdAt, 'yyyy.MM.dd, HH:mm')}"></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
-
+                <div class="pagination">
+				    <span th:if="${notifications.hasPrevious()}">
+				        <a th:href="@{/admin/alarmPush(page=${notifications.number - 1}, size=${notifications.size})}">&laquo; Previous</a>
+				    </span>
+				    <span th:each="i : ${#numbers.sequence(1, notifications.totalPages)}">
+				        <a th:href="@{/admin/alarmPush(page=${i - 1}, size=${notifications.size})}"
+				           th:text="${i}"
+				           th:classappend="${notifications.number + 1 == i} ? 'active' : ''"></a>
+				    </span>
+				    <span th:if="${notifications.hasNext()}">
+				        <a th:href="@{/admin/alarmPush(page=${notifications.number + 1}, size=${notifications.size})}">Next &raquo;</a>
+				    </span>
+				</div>
             </div>
         </div>
     </div>
