@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout/layout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>공지사항 리스트</title>
+    <link rel="stylesheet" th:href="@{/resource/css/propertyListStyles.css}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .pagination {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .pagination a {
+            margin: 0 5px;
+            padding: 8px 16px;
+            text-decoration: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+        }
+        .pagination a:hover {
+            background-color: #0056b3;
+        }
+        .btn-container {
+            width: 80%;
+            margin: 20px auto;
+            display: flex;
+            justify-content: flex-start;
+        }
+        .btn-container a {
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+        .btn-container a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h1>공지사항 리스트</h1>
+        <table>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>내용</th>
+                <th>작성일자</th>
+                <th>조회수</th>
+            </tr>
+            <tr th:each="notice : ${paginationDTO.list}">
+                <td th:text="${notice.noticeId}"></td>
+                <td><a th:href="@{/notice/detail/{noticeId}(noticeId=${notice.noticeId})}" th:text="${notice.title}"></a></td>
+                <td th:text="${notice.content}"></td>
+                <td th:text="${#dates.format(notice.createdDate, 'yyyy-MM-dd')}"></td>
+                <td th:text="${notice.viewCount}"></td>
+            </tr>
+        </table>
+        <div class="pagination" th:if="${paginationDTO.pageCount > 1}">
+            <span th:each="i : ${#numbers.sequence(paginationDTO.startPage, paginationDTO.endPage)}">
+                <a th:href="@{/notice/list(pageNum=${i})}" th:text="${i}">Page</a>
+            </span>
+        </div>
+        <div class="btn-container">
+            <a th:href="@{/notice/writeForm}">공지 작성</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout/layout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>공지사항 수정</title>
+    <link rel="stylesheet" th:href="@{/resource/css/propertyListStyles.css}">
+    <style>
+        .detail-body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+        .detail-container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .detail-container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .detail-notice {
+            margin-top: 20px;
+        }
+        .detail-notice div {
+            margin-bottom: 10px;
+        }
+        .detail-notice div span {
+            display: inline-block;
+            min-width: 100px;
+        }
+        .detail-back-link, .detail-action-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .detail-back-link a, .detail-action-link a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        .detail-back-link a:hover, .detail-action-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="detail-body">
+    <header th:replace="layout/navbar :: navUp"></header>
+    <header th:replace="layout/navbar :: navbar"></header>
+
+    <main class="flex-fill">
+        <div layout:fragment="content">
+            <h1>공지사항 수정</h1>
+            <div class="detail-container">
+                <form th:action="@{/notice/updatePro}" th:object="${notice}" method="post">
+                    <input type="hidden" th:field="*{noticeId}" />
+                    <div>
+                        <label for="title">제목:</label>
+                        <input type="text" id="title" name="title" th:field="*{title}">
+                    </div>
+                    <div>
+                        <label for="content">내용:</label>
+                        <textarea id="content" name="content" th:field="*{content}"></textarea>
+ 					</div>
+      			 	<div>
+                        <button type="submit">저장</button>
+                    </div>
+	              	  </form>
+	                <div class="detail-back-link">
+	                    <a th:href="@{/notice/list}">목록으로 돌아가기</a>
+	                </div>
+	            </div>
+	        </div>
+	    </main>
+	
+	    <footer class="text-white text-center py-2">
+	        <p>&copy; 2024 NZNZ. All Rights Reserved.</p>
+	    </footer>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.amazonaws.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
