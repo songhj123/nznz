@@ -14,6 +14,8 @@
         <a th:href="@{/user/loginForm}" th:text="로그인" sec:authorize="isAnonymous()"></a>
         <a th:href="@{/user/logout}" th:text="로그아웃" sec:authorize="isAuthenticated()"></a>
         
+        <a th:href="@{/admin}" th:text="관리자페이지" sec:authorize="hasRole('ROLE_MANAGER')"></a>
+        
         <a href="#support">고객지원</a>
     </nav>
 </header>
