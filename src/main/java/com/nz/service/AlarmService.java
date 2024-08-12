@@ -50,4 +50,26 @@ public class AlarmService {
                         .createdAt(alarm.getCreatedAt())
                         .build());
     }
+    
+    public void createNotificationForUser(UserEntity userId, String title, String message) {
+    	UserEntity user = USERREPOSITORY.findById(userId.getMemberID())
+    			.orElseThrow(() -> new RuntimeException("해당 유저가 없습니다."));
+    	
+    	AlarmEntity alarm = AlarmEntity.builder()
+    			.title(title)
+    			.message(message)
+    			.username(user.getUsername())
+    			.createdAt(new Timestamp(System.currentTimeMillis()))
+    			.build();
+    	
+    	ALARMREPOSITORY.save(alarm);
+    	
+    	AlarmReferenceEntity alarmReference = AlarmReferenceEntity.builder()
+    			.user(user)
+    			.alarm(alarm)
+    			.isRead(0)
+    			.build();
+    	
+    	ALARMREFERENCEREPOSITORY.save(alarmReference);
+    }
 }

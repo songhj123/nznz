@@ -7,21 +7,27 @@ import org.springframework.stereotype.Service;
 
 import com.nz.data.ConsultationRequestDTO;
 import com.nz.entity.ConsultationRequestEntity;
+import com.nz.entity.UserEntity;
 import com.nz.repository.ConsultationRequestRepository;
+import com.nz.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ConsultationRequestService {
 
-    @Autowired
-    private ConsultationRequestRepository consultationRequestRepository;
+    private final ConsultationRequestRepository consultationRequestRepository;
+    private final AlarmService alarmService;
+    private final UserRepository userRepository;
 
     public void createConsultationRequest(ConsultationRequestDTO dto, String username) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -64,6 +70,13 @@ public class ConsultationRequestService {
             ConsultationRequestEntity request = consultationRequestRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid request ID: " + id));
             request.setStatus(status);
             consultationRequestRepository.save(request);
+            
+            UserEntity user = userRepository.findByUsername(request.getMemberId())
+            		.orElseThrow(() -> new IllegalArgumentException("Invalid member ID: " + request.getMemberId()));
+            
+            String title = "방문 상담 상태 변경 알림";
+            String message = "고객님의 방문 상담 신청이 '" + status + "' 상태로 변경되었습니다."; 
+            alarmService.createNotificationForUser(user, title, message);
         });
     }
 }
