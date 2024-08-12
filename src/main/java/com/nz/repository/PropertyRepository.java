@@ -18,4 +18,24 @@ public interface PropertyRepository extends JpaRepository<PropertyEntity, Long> 
     List<PropertyEntity> findPropertiesWithin(@Param("southWestLat") double southWestLat, @Param("southWestLng") double southWestLng, @Param("northEastLat") double northEastLat, @Param("northEastLng") double northEastLng);
 
     Page<PropertyEntity> findByProcessingStatus(String status, Pageable pageable);
+    
+    @Query("SELECT p FROM PropertyEntity p WHERE " +
+    	       "(:status IS NULL OR p.processingStatus = :status) AND (" +
+    	       "(:filterField = 'propertyNum' AND p.propertyNum LIKE %:keyword%) OR " +
+    	       "(:filterField = 'propertyAddress' AND p.propertyAddress LIKE %:keyword%) OR " +
+    	       "(:filterField = 'buildingName' AND p.buildingName LIKE %:keyword%) OR " +
+    	       "(:filterField = 'roomInfo' AND p.roomInfo LIKE %:keyword%))")
+    	Page<PropertyEntity> findByStatusAndKeyword(@Param("status") String status,
+    	                                            @Param("filterField") String filterField,
+    	                                            @Param("keyword") String keyword,
+    	                                            Pageable pageable);
+
+    	@Query("SELECT p FROM PropertyEntity p WHERE " +
+    	       "(:filterField = 'propertyNum' AND p.propertyNum LIKE %:keyword%) OR " +
+    	       "(:filterField = 'propertyAddress' AND p.propertyAddress LIKE %:keyword%) OR " +
+    	       "(:filterField = 'buildingName' AND p.buildingName LIKE %:keyword%) OR " +
+    	       "(:filterField = 'roomInfo' AND p.roomInfo LIKE %:keyword%)")
+    	Page<PropertyEntity> findByKeyword(@Param("filterField") String filterField,
+    	                                   @Param("keyword") String keyword,
+    	                                   Pageable pageable);
 }

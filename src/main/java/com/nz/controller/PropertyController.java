@@ -148,16 +148,29 @@ public class PropertyController {
     public String adminPropertyList(Model model, 
                                     @RequestParam(value = "page", defaultValue = "0") int page,
                                     @RequestParam(value = "size", defaultValue = "10") int size,
-                                    @RequestParam(value = "status", required = false) String status) {
+                                    @RequestParam(value = "status", required = false) String status,
+                                    @RequestParam(value = "filterField", required = false) String filterField,
+                                    @RequestParam(value = "searchKeyword", required = false) String keyword) {
         Page<PropertyDTO> properties;
-        if (status != null && !status.isEmpty()) {
+
+        if ((status != null && !status.isEmpty()) && (filterField != null && !filterField.isEmpty()) && (keyword != null && !keyword.isEmpty())) {
+            // 상태와 키워드 필터가 모두 적용되는 경우
+            properties = propertyService.getPropertiesByStatusAndKeyword(status, filterField, keyword, PageRequest.of(page, size));
+        } else if (status != null && !status.isEmpty()) {
+            // 상태 필터만 적용되는 경우
             properties = propertyService.getPropertiesByStatus(status, PageRequest.of(page, size));
+        } else if ((filterField != null && !filterField.isEmpty()) && (keyword != null && !keyword.isEmpty())) {
+            // 키워드 필터만 적용되는 경우
+            properties = propertyService.getPropertiesByKeyword(filterField, keyword, PageRequest.of(page, size));
         } else {
+            // 필터가 적용되지 않은 경우
             properties = propertyService.getAllPropertiesPaged(PageRequest.of(page, size));
         }
         
         model.addAttribute("properties", properties);
         model.addAttribute("currentStatus", status); // 현재 필터링 상태 유지
+        model.addAttribute("filterField", filterField);
+        model.addAttribute("searchKeyword", keyword);
         return "admin/propertyList";
     }
     

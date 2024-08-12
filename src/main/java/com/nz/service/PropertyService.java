@@ -197,4 +197,20 @@ public class PropertyService {
             propertyRepository.save(property);
         });
     }
+    
+    public Page<PropertyDTO> getPropertiesByStatusAndKeyword(String status, String filterField, String keyword, PageRequest pageRequest) {
+        return propertyRepository.findByStatusAndKeyword(status, filterField, keyword, pageRequest)
+                .map(property -> {
+                    List<PropertyImageEntity> images = propertyImageRepository.findByProperty_PropertyId(property.getPropertyId());
+                    return convertToDTO(property, images);
+                });
+    }
+
+    public Page<PropertyDTO> getPropertiesByKeyword(String filterField, String keyword, PageRequest pageRequest) {
+        return propertyRepository.findByKeyword(filterField, keyword, pageRequest)
+                .map(property -> {
+                    List<PropertyImageEntity> images = propertyImageRepository.findByProperty_PropertyId(property.getPropertyId());
+                    return convertToDTO(property, images);
+                });
+    }
 }

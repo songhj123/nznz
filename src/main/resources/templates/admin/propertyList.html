@@ -19,6 +19,15 @@
 					            <option value="반려" th:selected="${currentStatus == '반려'}">반려됨</option>
 					            <option value="비활성화" th:selected="${currentStatus == '비활성화'}">비활성화</option>
 					        </select>
+					        
+					        <label for="filterField">검색 기준:</label>
+		                        <select id="filterField" name="filterField">
+		                            <option value="propertyNum" th:selected="${filterField == 'propertyNum'}">매물번호</option>
+		                            <option value="propertyAddress" th:selected="${filterField == 'propertyAddress'}">주소</option>
+		                            <option value="buildingName" th:selected="${filterField == 'buildingName'}">건물 이름</option>
+		                            <option value="roomInfo" th:selected="${filterField == 'roomInfo'}">방 정보</option>
+		                        </select>
+					            <input type="text" id="searchKeyword" name="searchKeyword" placeholder="키워드" th:value="${searchKeyword}">
 					        <button type="submit" class="btn btn-primary">필터 적용</button>
 					    </div>
 					</form>
@@ -64,13 +73,13 @@
                 </form>
             </div>
             <div class="pagination">
-                <a th:href="@{/admin/propertyList(page=${properties.number - 1}, size=${properties.size})}" th:if="${!properties.first}">&laquo;</a>
-                <a th:each="pageNum : ${#numbers.sequence(1, properties.totalPages)}"
-                   th:href="@{/admin/propertyList(page=${pageNum - 1}, size=${properties.size})}"
-                   th:text="${pageNum}"
-                   th:classappend="${pageNum == properties.number + 1} ? 'active'"></a>
-                <a th:href="@{/admin/propertyList(page=${properties.number + 1}, size=${properties.size})}" th:if="${!properties.last}">&raquo;</a>
-            </div>
+			    <a th:href="@{/admin/propertyList(page=${properties.number - 1}, size=${properties.size}, status=${currentStatus}, filterField=${filterField}, searchKeyword=${searchKeyword})}" th:if="${!properties.first}">&laquo;</a>
+			    <a th:each="pageNum : ${#numbers.sequence(1, properties.totalPages)}"
+			       th:href="@{/admin/propertyList(page=${pageNum - 1}, size=${properties.size}, status=${currentStatus}, filterField=${filterField}, searchKeyword=${searchKeyword})}"
+			       th:text="${pageNum}"
+			       th:classappend="${pageNum == properties.number + 1} ? 'active'"></a>
+			    <a th:href="@{/admin/propertyList(page=${properties.number + 1}, size=${properties.size}, status=${currentStatus}, filterField=${filterField}, searchKeyword=${searchKeyword})}" th:if="${!properties.last}">&raquo;</a>
+			</div>
         </div>
     </div>
 </body>
