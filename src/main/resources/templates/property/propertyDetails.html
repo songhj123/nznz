@@ -6,11 +6,12 @@
     <title>Property Details</title>
     <link rel="stylesheet" th:href="@{/resource/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/resource/css/propertyDetails.css}">
+    <link rel="stylesheet" th:href="@{/resource/css/scrollStyle.css}">
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f17be299f721e9cfc06f28d83b05f036&libraries=services,clusterer"></script>
 </head>
 <body>
 <div layout:fragment="content">
-<div class="scrollable-column">
+<div class="scrollable-container">
     <div class="container mt-5">
         <div class="row">
             <!-- Left Column -->
@@ -47,7 +48,8 @@
                 <!-- Detailed Information -->
                 <div class="card details-container">
                     <h5>가격정보</h5>
-                    <p><strong>전세: </strong><span th:text="${property.price != null ? property.price : 'N/A'}"></span></p>
+                    <p><strong>보증금: </strong><span th:text="${property.deposit != null ? property.deposit : 'N/A'}"></span></p>
+                    <p><strong>월세: </strong><span th:text="${property.monthlyRent != null ? property.monthlyRent : 'N/A'}"></span></p>
                     <p><strong>관리비: </strong><span th:text="${property.maintenanceFee != null ? property.maintenanceFee : 'N/A'}"></span></p>
                 </div>
 
@@ -105,7 +107,8 @@
             <div class="col-md-4 right-column">
                 <div class="sticky-top card details-container">
                     <h5>매물 번호: <span th:text="${property.propertyId != null ? property.propertyId : 'N/A'}"></span></h5>
-                    <h5>전세: <span th:text="${property.price != null ? property.price : 'N/A'}"></span></h5>
+                    <h5>보증금: <span th:text="${property.deposit != null ? property.deposit : 'N/A'}"></span></h5>
+                    <h5>월세: <span th:text="${property.monthlyRent != null ? property.monthlyRent : 'N/A'}"></span></h5>
                     <p><strong>방/욕실: </strong><span th:text="${property.roomInfo != null ? property.roomInfo : 'N/A'}"></span></p>
                     <p><strong>위치: </strong><span th:text="${property.propertyAddress != null ? property.propertyAddress : 'N/A'}"></span></p>  
                     <button class="btn btn-outline-secondary mt-2" th:onclick="'goToConsultationRequest(' + ${property.propertyId} + ')'">방문상담예약</button>
@@ -114,11 +117,6 @@
         </div>
         <script th:src="@{/resource/js/bootstrap.bundle.min.js}"></script>
 		<script th:src="@{/resource/js/propertyDetails.js}"></script>
-		<script>
-		    function goToConsultationRequest(propertyId) {
-		        window.location.href = `/consultationRequest/${propertyId}`;
-		    }
-		</script>
 		<script th:inline="javascript">
 		    function goToConsultationRequest(propertyId) {
 		        window.location.href = `/consultationRequest/${propertyId}`;
@@ -137,6 +135,21 @@
 		        alert(error); // 에러 메시지 팝업
 		    }
 		    /*]]>*/
+		    
+		    // 모달 바깥을 클릭하면 모달 닫기
+		    window.onclick = function(event) {
+		        if (event.target == imageModal) {
+		        	imageModal.style.display = "none";
+		        }
+		    }
+		
+		    // ESC 키를 눌렀을 때 모달 닫기
+		    document.onkeydown = function(event) {
+		        if (event.key === "Escape") {
+		        	imageModal.style.display = "none";
+		        }
+		    }
+		    
 		 </script>
     </div>
 </div>
