@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.nz.data.PropertyDTO;
 import com.nz.data.PropertyImageDTO;
@@ -60,11 +61,7 @@ public class PropertyController {
             @RequestParam("northEastLat") double northEastLat,
             @RequestParam("northEastLng") double northEastLng) {
         List<PropertyDTO> properties = propertyService.getPropertiesWithin(southWestLat, southWestLng, northEastLat, northEastLng);
-        for (PropertyDTO property : properties) {
-            System.out.println("==========================================");
-            System.out.println("Property ID: " + property.getPropertyId());
-            System.out.println("Property Images: " + property.getPropertyImageList());
-        }
+        
         return ResponseEntity.ok(properties);
     }
 
@@ -148,25 +145,38 @@ public class PropertyController {
     }
     
     @GetMapping("/admin/propertyList")
-    public String adminPropertyList(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
-                                    @RequestParam(value = "size", defaultValue = "10") int size) {
-        Page<PropertyDTO> properties = propertyService.getAllPropertiesPaged(PageRequest.of(page, size));
-        properties.getContent().forEach(property -> {
-            if (property.getMemberId() != null) {
-                UserDTO user = userService.getUserById(property.getMemberId());
-                if (user != null) {
-                    property.setUsername(user.getUsername());
-                    property.setName(user.getName());
-                } else {
-                    property.setUsername("Unknown");
-                    property.setName("Unknown");
-                }
-            } else {
-                property.setUsername("Unknown");
-                property.setName("Unknown");
-            }
-        });
+    public String adminPropertyList(Model model, 
+                                    @RequestParam(value = "page", defaultValue = "0") int page,
+                                    @RequestParam(value = "size", defaultValue = "10") int size,
+                                    @RequestParam(value = "status", required = false) String status) {
+        Page<PropertyDTO> properties;
+        if (status != null && !status.isEmpty()) {
+            properties = propertyService.getPropertiesByStatus(status, PageRequest.of(page, size));
+        } else {
+            properties = propertyService.getAllPropertiesPaged(PageRequest.of(page, size));
+        }
+        
         model.addAttribute("properties", properties);
+        model.addAttribute("currentStatus", status); // 현재 필터링 상태 유지
         return "admin/propertyList";
+    }
+    
+    @PostMapping("/admin/property/updateStatus")
+    public String updatePropertyStatus(@RequestParam("selectedProperties") List<Long> propertyIds, 
+                                       @RequestParam("action") String action, 
+                                       RedirectAttributes redirectAttributes) {
+        try {
+            if ("approve".equals(action)) {
+                propertyService.updatePropertyStatus(propertyIds, "승인");
+            } else if ("reject".equals(action)) {
+                propertyService.updatePropertyStatus(propertyIds, "반려");
+            } else if ("delete".equals(action)) {
+                propertyService.updatePropertyStatus(propertyIds, "비활성화"); // 실제 삭제가 아니라 상태 변경
+            }
+            redirectAttributes.addFlashAttribute("message", "상태가 성공적으로 업데이트되었습니다.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "상태 업데이트 중 오류가 발생했습니다.");
+        }
+        return "redirect:/admin/propertyList";
     }
 }

@@ -19,6 +19,8 @@ import com.nz.repository.PropertyImageRepository;
 import com.nz.repository.PropertyOptionRepository;
 import com.nz.repository.PropertyRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class PropertyService {
 
@@ -175,8 +177,24 @@ public class PropertyService {
     	this.propertyRepository.save(pe);
     	propertyImageRepository.saveAll(images);
     	propertyOptionRepository.saveAll(options);
-    			
-    			
     					
+    }
+    
+    public Page<PropertyDTO> getPropertiesByStatus(String status, PageRequest pageRequest) {
+        return propertyRepository.findByProcessingStatus(status, pageRequest)
+                .map(property -> {
+                    List<PropertyImageEntity> images = propertyImageRepository.findByProperty_PropertyId(property.getPropertyId());
+                    return convertToDTO(property, images);
+                });
+    }
+    
+    @Transactional
+    public void updatePropertyStatus(List<Long> propertyIds, String status) {
+        propertyIds.forEach(id -> {
+            PropertyEntity property = propertyRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid property ID: " + id));
+            property.setProcessingStatus(status);
+            propertyRepository.save(property);
+        });
     }
 }
