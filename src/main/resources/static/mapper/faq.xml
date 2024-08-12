@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nz.repository.FAQMapper">
+	<insert id="faqInsert">
+		insert into faq (
+			faqId,question,answer,author
+		)values(
+			seq_faq.NEXTVAL,
+			#{question}, #{answer}, #{author}
+		)
+	</insert>
+	<select id="faqList" resultType="com.nz.data.FAQDTO">
+		<![CDATA[
+		select * from(
+			select rownum as rnum,faqId,question,answer,author
+			from(
+				select faqId, question, answer, author from faq
+				order by faqId desc
+			)
+			where rownum <= #{end}
+		) 
+		where rnum >= #{start}
+		]]>
+	</select>
+	<select id="countFaqs" resultType="int">
+		select count(*) from faq
+	</select>	
+	<select id="getFaqById">
+		select * from faq where faqId = #{faqId}
+	</select>
+	<update id="updateFaq" parameterType="com.nz.data.FAQDTO">
+		update faq
+			set question = #{question},
+				answer = #{answer},
+				author = #{author}
+			where faqId = #{faqId}	
+	</update>
+	<delete id="deleteFaq">
+		delete from faq where faqId = #{faqId}
+	</delete>
+</mapper>

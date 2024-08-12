@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout/layout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>상세내용</title>
+    <link rel="stylesheet" th:href="@{/resource/css/propertyListStyles.css}">
+    <style>
+        .detail-body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+        .detail-container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .detail-container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .detail-faq {
+            margin-top: 20px;
+        }
+        .detail-faq div {
+            margin-bottom: 10px;
+        }
+        .detail-faq div span {
+            display: inline-block;
+            min-width: 100px;
+        }
+        .detail-action-links {
+            display: flex;
+            justify-content: flex-start; /* 왼쪽 정렬 */
+            align-items: center; /* 수직 중앙 정렬 */
+            gap: 10px; /* 버튼 사이 간격 */
+            margin-top: 20px;
+        }
+        .detail-action-links a, .detail-action-links button {
+            text-decoration: none;
+            color: #007bff;
+            border: none;
+            background: none;
+            cursor: pointer;
+            padding: 0;
+            font: inherit;
+            margin: 0;
+        }
+        .detail-action-links a:hover, .detail-action-links button:hover {
+            text-decoration: underline;
+        }
+        .detail-back-link {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .detail-back-link a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        .detail-back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="detail-body">
+    <header th:replace="layout/navbar :: navUp"></header>
+    <header th:replace="layout/navbar :: navbar"></header>
+
+    <main class="flex-fill">
+        <div layout:fragment="content">
+            <h1>FAQ 상세내용</h1>
+            <div class="detail-container">
+                <div class="detail-faq">
+                    <div>
+                        <strong>질문:</strong> <span th:text="${faq.question}"></span>
+                    </div>
+                    <div>
+                        <strong>답변:</strong>
+                        <div th:text="${faq.answer}"></div>
+                    </div>
+                    <div>
+                        <strong>작성자:</strong> <span th:text="${faq.author}"></span>
+                    </div>
+                </div>
+                <div class="detail-action-links">
+                    <a th:href="@{/faq/updateForm/{faqId}(faqId=${faq.faqId})}">수정</a>
+                    <form th:action="@{/faq/deletePro/{faqId}(faqId=${faq.faqId})}" method="post" style="display:inline;">
+                        <button type="submit">삭제</button>
+                    </form>
+                </div>
+                <div class="detail-back-link">
+                    <a th:href="@{/faq/list}">목록으로 돌아가기</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-white text-center py-2">
+        <p>&copy; 2024 NZNZ. All Rights Reserved.</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
