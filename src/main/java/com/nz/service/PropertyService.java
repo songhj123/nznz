@@ -15,23 +15,25 @@ import com.nz.data.PropertyOptionDTO;
 import com.nz.entity.PropertyEntity;
 import com.nz.entity.PropertyImageEntity;
 import com.nz.entity.PropertyOptionEntity;
+import com.nz.entity.UserEntity;
 import com.nz.repository.PropertyImageRepository;
 import com.nz.repository.PropertyOptionRepository;
 import com.nz.repository.PropertyRepository;
+import com.nz.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class PropertyService {
 
-    @Autowired
-    private PropertyRepository propertyRepository;
-
-    @Autowired
-    private PropertyImageRepository propertyImageRepository;
-
-    @Autowired
-    private PropertyOptionRepository propertyOptionRepository;
+    
+    private final PropertyRepository propertyRepository;
+    private final PropertyImageRepository propertyImageRepository;
+    private final PropertyOptionRepository propertyOptionRepository;
+    private final UserRepository userRepository;
+    private final AlarmService alarmService;
     
     public List<PropertyDTO> getAllProperties() {
         List<PropertyEntity> properties = propertyRepository.findAll();
@@ -79,6 +81,17 @@ public class PropertyService {
         List<PropertyOptionDTO> optionDTOList = propertyEntity.getPropertyOptions().stream()
                 .map(this::convertToOptionDTO) // convertToOptionDTO 메서드를 사용하여 변환
                 .collect(Collectors.toList());
+        
+        UserEntity user = null;
+        if (propertyEntity.getMemberId() != null) {
+            user = userRepository.findById(propertyEntity.getMemberId())
+                    .orElse(null);  // 사용자가 존재하지 않을 경우 예외 처리를 고려
+        }
+
+        // 사용자 정보가 없을 경우 기본값 설정
+        String username = (user != null) ? user.getUsername() : "Unknown";
+        String name = (user != null) ? user.getName() : "Unknown";
+        
 		return PropertyDTO.builder()
 		        .propertyId(propertyEntity.getPropertyId())
 		        .propertyNum(propertyEntity.getPropertyNum())
@@ -102,6 +115,8 @@ public class PropertyService {
 		        .longitude(propertyEntity.getLongitude())
 		        .propertyImageList(imageDTOList)
 		        .propertyOption(optionDTOList)
+		        .username(username)
+		        .name(name)
 		        .build();
 
     }
@@ -195,6 +210,14 @@ public class PropertyService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid property ID: " + id));
             property.setProcessingStatus(status);
             propertyRepository.save(property);
+        
+        
+        UserEntity user = userRepository.findById(property.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("Invalid member ID: " + property.getMemberId()));
+            
+            String title = "매물 상태 변경 알림";
+            String message = "고객님의 매물(ID: " + property.getPropertyNum() + ")이 '" + status + "' 상태로 변경되었습니다.";
+            alarmService.createNotificationForUser(user, title, message);
         });
     }
     
