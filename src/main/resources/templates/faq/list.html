@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html layout:decorate="~{layout/layout}" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>공지사항 리스트</title>
+    <title>FAQ 리스트</title>
     <link rel="stylesheet" th:href="@{/resource/css/propertyListStyles.css}">
     <style>
         body {
@@ -42,7 +42,7 @@
 		    border-radius: 3px;
 		    display: inline-block;
 		    background-color: white;
-		}
+        }
         .pagination a:hover {
             background-color: #ddd;
         }
@@ -71,31 +71,30 @@
 </head>
 <body>
     <div layout:fragment="content">
-        <h1>공지사항 리스트</h1>
+        <h1>FAQ 리스트</h1>
         <table>
             <tr>
                 <th>번호</th>
-                <th>제목</th>
-                <th>내용</th>
-                <th>작성일자</th>
-                <th>조회수</th>
+                <th>질문</th>
+                <th>답변</th>
+                <th>작성자</th>
             </tr>
-            <tr th:each="notice : ${paginationDTO.list}">
-                <td th:text="${notice.noticeId}"></td>
-                <td><a th:href="@{/notice/detail/{noticeId}(noticeId=${notice.noticeId})}" th:text="${notice.title}"></a></td>
-                <td th:text="${notice.content}"></td>
-                <td th:text="${#dates.format(notice.createdDate, 'yyyy-MM-dd')}"></td>
-                <td th:text="${notice.viewCount}"></td>
+            <tr th:each="faq : ${paginationDTO.list}">
+                <td th:text="${faq.faqId}"></td>
+                <td><a th:href="@{/faq/detail/{faqId}(faqId=${faq.faqId})}" th:text="${faq.question}"></a></td>
+                <td th:text="${faq.answer}"></td>
+                <td th:text="${faq.author}"></td>
             </tr>
         </table>
-        <div class="pagination" th:if="${paginationDTO.pageCount > 1}">
+		<div class="pagination" th:if="${paginationDTO.pageCount > 1}">
 		    <span th:each="i : ${#numbers.sequence(paginationDTO.startPage, paginationDTO.endPage)}">
-		        <a th:href="@{/notice/list(pageNum=${i})}" th:text="${i}" 
-		           th:classappend="${i == paginationDTO.pageNum} ? 'active' : ''"></a>
+		        <a th:href="@{/faq/list(pageNum=${i})}"
+		           th:classappend="${i == paginationDTO.pageNum} ? 'active' : ''"
+		           th:text="${i}" th:if="${i > 0}">Page</a>
 		    </span>
 		</div>
         <div class="btn-container">
-            <a th:href="@{/notice/writeForm}">공지 작성</a>
+            <a th:href="@{/faq/writeForm}">FAQ 작성</a>
         </div>
     </div>
 </body>

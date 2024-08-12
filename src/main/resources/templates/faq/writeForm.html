@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout/adminLayout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>FAQ 작성</title>
+    <style>
+        .form-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh; /* 중앙에 위치하게 하기 위해서 적절한 높이 설정 */
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .form-wrapper {
+            width: 60%;
+            max-width: 800px;
+            padding: 30px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        label {
+            margin-top: 15px;
+            font-size: 1.2em;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1.1em;
+        }
+        textarea {
+            height: 150px; /* 내용 크기 조정 */
+        }
+        button {
+            margin-top: 30px;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container" layout:fragment="content">
+        <div class="form-wrapper">
+            <form th:action="@{/faq/writePro}" method="post" th:object="${faqDTO}">
+                <h1>FAQ 작성</h1>
+                <label for="question">질문</label>
+                <input type="text" id="question" name="question" required placeholder="질문을 입력하세요">
+                <label for="answer">답변</label>
+                <textarea id="answer" name="answer" required placeholder="답변을 입력하세요"></textarea>
+                <label for="author">작성자</label>
+                <input type="text" id="author" name="author" required placeholder="작성자를 입력하세요">
+                <button type="submit">작성하기</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
