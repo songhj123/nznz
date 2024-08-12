@@ -13,5 +13,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long>{
 	
 	Optional<UserEntity> findByKakaoId(Long kakaoId);
 
+	Optional<UserEntity> findById(Long memberId);
+
 
 }

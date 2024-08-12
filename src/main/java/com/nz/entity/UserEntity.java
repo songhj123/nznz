@@ -58,7 +58,7 @@ public class UserEntity implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(role));
     }
-
+    
     @Override
     public String getPassword() {
         return this.password;

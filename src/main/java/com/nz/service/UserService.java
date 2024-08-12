@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -85,6 +86,25 @@ public class UserService {
             throw new RuntimeException("존재하지 않는 아이디입니다.");
         }
     }
-
+    
+    public UserEntity findById(Long memberId) {
+        return userRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+    }
+    
+    public void userUpdate(UserDTO userDTO) {
+		UserEntity ue = this.userRepository.findByUsername(userDTO.getUsername()).get();
+		ue.setName(userDTO.getName());
+		ue.setEmail(userDTO.getEmail());
+		ue.setPhoneNumber(userDTO.getPhoneNumber());
+		ue.setAccountNumber(userDTO.getAccountNumber());
+		this.userRepository.save(ue);
+	}
+	
+	public void userDelete(String username, String password) {
+		UserEntity ue = this.userRepository.findByUsername(username).get();
+		if(passwordEncoder.matches(password, ue.getPassword())) {
+			this.userRepository.delete(ue);
+		}
+	}
 
 }
