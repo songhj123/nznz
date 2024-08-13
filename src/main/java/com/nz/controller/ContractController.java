@@ -101,4 +101,51 @@ public class ContractController {
         return contract.getLandlordId().getUsername().equals(username) || 
                contract.getTenantId().getUsername().equals(username);
     }
+    
+    
+    
+    
+    @GetMapping("/contract")
+    public String listContracts(Model model) {
+        List<ContractDTO> contracts = contractService.getAllContracts();
+        model.addAttribute("contracts", contracts);
+        return "contract/contractList";
+    }
+
+    @GetMapping("/contract/myContracts")
+    public String listMyContracts(Model model, Principal principal) {
+        String currentUsername = principal.getName();
+        List<ContractDTO> contracts = contractService.getContractsByUsername(currentUsername);
+        model.addAttribute("contracts", contracts);
+        return "contract/myContract";
+    }
+
+
+
+
+
+    @GetMapping("/contract/stage/{contractId}")
+    public String contractStage(@PathVariable("contractId") Long contractId, Model model, Principal principal) {
+        String currentUsername = principal.getName();
+        ContractDTO contract = contractService.getContractById(contractId);
+
+        if (!isAuthorizedUser(contract, currentUsername)) {
+            return "error/accessDenied";
+        }
+
+        model.addAttribute("contract", contract);
+        return "contract/contractStage";
+    }
+
+
+
+    @PostMapping("/contract/nextStage/{contractId}")
+    public String nextStage(@PathVariable("contractId") Long contractId) {
+        contractService.advanceToNextStage(contractId);
+        return "redirect:/contract/stage/" + contractId;
+    }
+
+
+
+
 }
