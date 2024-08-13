@@ -93,7 +93,7 @@
 		           th:text="${i}" th:if="${i > 0}">Page</a>
 		    </span>
 		</div>
-        <div class="btn-container">
+        <div class="btn-container" sec:authorize="hasRole('ROLE_MANAGER')">
             <a th:href="@{/faq/writeForm}">FAQ 작성</a>
         </div>
     </div>

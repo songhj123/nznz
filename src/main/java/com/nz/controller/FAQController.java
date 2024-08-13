@@ -1,5 +1,6 @@
 package com.nz.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,11 +21,13 @@ import lombok.RequiredArgsConstructor;
 public class FAQController {
 	private final FAQService faqService;
 	
+	@PreAuthorize("hasRole('ROLE_MANAGER')")
 	@GetMapping("writeForm")
 	public String writeForm() {
 		return "faq/writeForm";
 	}
 	
+	@PreAuthorize("hasRole('ROLE_MANAGER')")
 	@PostMapping("writePro")
 	public String writePro(FAQDTO faqDTO) {
 		faqService.createFaq(faqDTO);
@@ -49,6 +52,7 @@ public class FAQController {
 		return "faq/detail";
 	}
 	
+	@PreAuthorize("hasRole('ROLE_MANAGER')")
 	@GetMapping("updateForm/{faqId}")
 	public String updateForm(@PathVariable("faqId")int faqId, Model model) {
 		FAQDTO faq = faqService.getFaqById(faqId);
@@ -56,12 +60,14 @@ public class FAQController {
 		return "faq/updateForm";
 	}
 	
+	@PreAuthorize("hasRole('ROLE_MANAGER')")
 	@PostMapping("updatePro")
 	public String updatePro(@ModelAttribute FAQDTO faqDTO) {
 		faqService.updateFaq(faqDTO);
 		return "redirect:/faq/list";
 	}
 	
+	@PreAuthorize("hasRole('ROLE_MANAGER')")
 	@PostMapping("deletePro/{faqId}")
 	public String deletePro(@PathVariable("faqId")int faqId) {
 		return "redirect:/faq/list";

@@ -82,7 +82,7 @@
                         <strong>작성자:</strong> <span th:text="${faq.author}"></span>
                     </div>
                 </div>
-                <div class="detail-action-links">
+                <div class="detail-action-links" sec:authorize="hasRole('ROLE_MANAGER')">
                     <a th:href="@{/faq/updateForm/{faqId}(faqId=${faq.faqId})}">수정</a>
                     <form th:action="@{/faq/deletePro/{faqId}(faqId=${faq.faqId})}" method="post" style="display:inline;">
                         <button type="submit">삭제</button>

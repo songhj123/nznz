@@ -1,5 +1,6 @@
 package com.nz.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,12 +23,13 @@ import lombok.extern.java.Log;
 public class NoticeController {
 	private final NoticeService noticeService;
 	
-	
+	@PreAuthorize("hasRole('ROLE_MANAGER')")
 	@GetMapping("writeForm")
 	public String writeForm() {
 		return "notice/writeForm";
 	}
 	
+	@PreAuthorize("hasRole('ROLE_MANAGER')")
 	@PostMapping("writePro")
 	public String writePro(NoticeDTO noticeDTO) {
 		noticeService.createNotice(noticeDTO);
@@ -49,6 +51,7 @@ public class NoticeController {
 		return "notice/detail";
 	}
 	
+	@PreAuthorize("hasRole('ROLE_MANAGER')")
 	@GetMapping("updateForm/{noticeId}")
 	public String updateForm(@PathVariable("noticeId")int noticeId, Model model) {
 		NoticeDTO notice = noticeService.getNoticeById(noticeId);
@@ -56,12 +59,14 @@ public class NoticeController {
 		return "notice/updateForm";
 	}
 	
+	@PreAuthorize("hasRole('ROLE_MANAGER')")
 	@PostMapping("updatePro")
 	public String updatePro(@ModelAttribute NoticeDTO noticeDTO) {
 		noticeService.updateNotice(noticeDTO);
 		return "redirect:/notice/list";
 	}
 	
+	@PreAuthorize("hasRole('ROLE_MANAGER')")
 	@PostMapping("deletePro/{noticeId}")
 	public String deletePro(@PathVariable("noticeId")int noticeId) {
 		noticeService.deleteNotice(noticeId);

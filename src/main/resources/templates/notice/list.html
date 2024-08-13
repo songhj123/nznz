@@ -94,7 +94,7 @@
 		           th:classappend="${i == paginationDTO.pageNum} ? 'active' : ''"></a>
 		    </span>
 		</div>
-        <div class="btn-container">
+        <div class="btn-container" sec:authorize="hasRole('ROLE_MANAGER')">
             <a th:href="@{/notice/writeForm}">공지 작성</a>
         </div>
     </div>
