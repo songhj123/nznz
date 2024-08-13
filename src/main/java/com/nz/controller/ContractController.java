@@ -63,14 +63,14 @@ public class ContractController {
         return "redirect:/contract/detail/" + contractId;
     }
 
-    @GetMapping("/verifyDocuments/{contractId}")
+    @PostMapping("/verifyDocuments/{contractId}")
     @PreAuthorize("isAuthenticated()")
     public String verifyDocuments(@PathVariable Long contractId) {
         contractService.verifyDocuments(contractId);
         return "redirect:/contract/detail/" + contractId;
     }
 
-    @GetMapping("/applyAutomaticTransfer/{contractId}")
+    @PostMapping("/applyAutomaticTransfer/{contractId}")
     @PreAuthorize("isAuthenticated()")
     public String applyAutomaticTransfer(@PathVariable Long contractId) {
         contractService.applyAutomaticTransfer(contractId);
@@ -147,5 +147,6 @@ public class ContractController {
 
 
 
+    
 
 }
