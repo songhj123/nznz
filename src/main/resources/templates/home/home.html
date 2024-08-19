@@ -42,6 +42,9 @@
                     <div class="col-md-4 mb-4">
                         <a href="/favorites" class="card p-4 text-center d-block">찜한 방</a>
                     </div>
+                    <div class="col-md-4 mb-4">
+                        <a th:href="@{/sellForm}" sec:authorize="isAuthenticated()" class="card p-4 text-center d-block">방 내놓기</a>
+                    </div>
                 </section>
             </div>
         </main>
