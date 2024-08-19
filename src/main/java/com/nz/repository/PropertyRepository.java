@@ -25,17 +25,20 @@ public interface PropertyRepository extends JpaRepository<PropertyEntity, Long> 
     	       "(:filterField = 'propertyAddress' AND p.propertyAddress LIKE %:keyword%) OR " +
     	       "(:filterField = 'buildingName' AND p.buildingName LIKE %:keyword%) OR " +
     	       "(:filterField = 'roomInfo' AND p.roomInfo LIKE %:keyword%))")
-    	Page<PropertyEntity> findByStatusAndKeyword(@Param("status") String status,
-    	                                            @Param("filterField") String filterField,
-    	                                            @Param("keyword") String keyword,
-    	                                            Pageable pageable);
+	Page<PropertyEntity> findByStatusAndKeyword(@Param("status") String status,
+	                                            @Param("filterField") String filterField,
+	                                            @Param("keyword") String keyword,
+	                                            Pageable pageable);
 
-    	@Query("SELECT p FROM PropertyEntity p WHERE " +
-    	       "(:filterField = 'propertyNum' AND p.propertyNum LIKE %:keyword%) OR " +
-    	       "(:filterField = 'propertyAddress' AND p.propertyAddress LIKE %:keyword%) OR " +
-    	       "(:filterField = 'buildingName' AND p.buildingName LIKE %:keyword%) OR " +
-    	       "(:filterField = 'roomInfo' AND p.roomInfo LIKE %:keyword%)")
-    	Page<PropertyEntity> findByKeyword(@Param("filterField") String filterField,
-    	                                   @Param("keyword") String keyword,
-    	                                   Pageable pageable);
+	@Query("SELECT p FROM PropertyEntity p WHERE " +
+	       "(:filterField = 'propertyNum' AND p.propertyNum LIKE %:keyword%) OR " +
+	       "(:filterField = 'propertyAddress' AND p.propertyAddress LIKE %:keyword%) OR " +
+	       "(:filterField = 'buildingName' AND p.buildingName LIKE %:keyword%) OR " +
+	       "(:filterField = 'roomInfo' AND p.roomInfo LIKE %:keyword%)")
+	Page<PropertyEntity> findByKeyword(@Param("filterField") String filterField,
+	                                   @Param("keyword") String keyword,
+	                                   Pageable pageable);
+    	
+    Page<PropertyEntity> findByMemberId(Long memberId, Pageable pageable);
+
 }

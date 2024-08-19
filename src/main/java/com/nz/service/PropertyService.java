@@ -2,6 +2,7 @@ package com.nz.service;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -236,4 +237,76 @@ public class PropertyService {
                     return convertToDTO(property, images);
                 });
     }
+    
+    
+    public Page<PropertyDTO> getPropertiesByMember(String username, PageRequest pageRequest) {
+    	Optional<UserEntity> user = userRepository.findByUsername(username);
+        return propertyRepository.findByMemberId(user.get().getMemberID(), pageRequest)
+                .map(property -> {
+                    List<PropertyImageEntity> images = propertyImageRepository.findByProperty_PropertyId(property.getPropertyId());
+                    return convertToDTO(property, images);
+                });
+    }
+    
+    @Transactional
+    public void updateProperty(Long propertyId, PropertyDTO propertyDTO) {
+        // 기존 매물 정보 조회
+        PropertyEntity existingProperty = propertyRepository.findById(propertyId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid property ID: " + propertyId));
+        
+        // 기존 매물 정보를 DTO에서 가져온 값으로 업데이트
+        existingProperty.setPropertyType(propertyDTO.getPropertyType());
+        existingProperty.setPropertyAddress(propertyDTO.getPropertyAddress());
+        existingProperty.setBuildingName(propertyDTO.getBuildingName());
+        existingProperty.setSizePyeong(propertyDTO.getSizePyeong());
+        existingProperty.setRoomInfo(propertyDTO.getRoomInfo());
+        existingProperty.setDeposit(propertyDTO.getDeposit());
+        existingProperty.setMonthlyRent(propertyDTO.getMonthlyRent());
+        existingProperty.setMaintenanceFee(propertyDTO.getMaintenanceFee());
+        existingProperty.setAvailableDate(propertyDTO.getAvailableDate());
+        existingProperty.setFloor(propertyDTO.getFloor());
+        existingProperty.setShortDescription(propertyDTO.getShortDescription());
+        existingProperty.setLongDescription(propertyDTO.getLongDescription());
+        existingProperty.setStatus(propertyDTO.getStatus());
+        existingProperty.setProcessingStatus(propertyDTO.getProcessingStatus());
+        existingProperty.setLatitude(propertyDTO.getLatitude());
+        existingProperty.setLongitude(propertyDTO.getLongitude());
+        
+        // 기존 옵션 및 이미지 정보 삭제 후 새로 저장
+        propertyOptionRepository.deleteAll(existingProperty.getPropertyOptions());
+        propertyImageRepository.deleteAll(existingProperty.getPropertyImageList());
+
+        List<PropertyOptionEntity> updatedOptions = propertyDTO.getPropertyOption().stream().map(optionDTO ->
+            PropertyOptionEntity.builder()
+                .heatingSystem(optionDTO.getHeatingSystem())
+                .coolingSystem(optionDTO.getCoolingSystem())
+                .livingFacilities(optionDTO.getLivingFacilities())
+                .securityFacilities(optionDTO.getSecurityFacilities())
+                .otherFacilities(optionDTO.getOtherFacilities())
+                .parking(optionDTO.getParking())
+                .elevator(optionDTO.getElevator())
+                .propertyFeatures(optionDTO.getPropertyFeatures())
+                .build()
+        ).collect(Collectors.toList());
+
+        List<PropertyImageEntity> updatedImages = propertyDTO.getPropertyImageList().stream().map(imageDTO ->
+            PropertyImageEntity.builder()
+                .imageOriginalName(imageDTO.getImageOriginalName())
+                .imageStoredName(imageDTO.getImageStoredName())
+                .build()
+        ).collect(Collectors.toList());
+        
+        // 새 옵션 및 이미지 정보를 매물 엔티티에 설정
+        updatedOptions.forEach(option -> option.setProperty(existingProperty));
+        updatedImages.forEach(image -> image.setProperty(existingProperty));
+
+        existingProperty.setPropertyOptions(updatedOptions);
+        existingProperty.setPropertyImageList(updatedImages);
+        
+        // 변경된 매물 정보와 새 옵션 및 이미지 정보를 저장
+        propertyRepository.save(existingProperty);
+        propertyOptionRepository.saveAll(updatedOptions);
+        propertyImageRepository.saveAll(updatedImages);
+    }
+
 }
