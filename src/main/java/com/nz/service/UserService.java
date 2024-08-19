@@ -73,6 +73,7 @@ public class UserService {
             UserEntity ue = op.get();
             UserDTO userDTO = UserDTO.builder()
                                      .name(ue.getName())
+                                     .memberId(ue.getMemberID())
                                      .username(ue.getUsername())
                                      .password(ue.getPassword())
                                      .email(ue.getEmail())

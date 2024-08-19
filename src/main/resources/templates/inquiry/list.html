@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html layout:decorate="~{layout/layout}" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>FAQ 리스트</title>
+    <title>문의 리스트</title>
     <link rel="stylesheet" th:href="@{/resource/css/propertyListStyles.css}">
     <style>
         body {
@@ -42,7 +42,7 @@
 		    border-radius: 3px;
 		    display: inline-block;
 		    background-color: white;
-        }
+		}
         .pagination a:hover {
             background-color: #ddd;
         }
@@ -71,30 +71,37 @@
 </head>
 <body>
     <div layout:fragment="content">
-        <h1>FAQ 리스트</h1>
+        <h1>문의 리스트</h1>
         <table>
             <tr>
                 <th>번호</th>
-                <th>질문</th>
-                <th>답변</th>
-                <th>작성자</th>
+                <th>유형</th>
+                <th>제목</th>
+                <th>내용</th>
+                <th>작성일자</th>
+                
             </tr>
-            <tr th:each="faq : ${paginationDTO.list}">
-                <td th:text="${faq.faqId}"></td>
-                <td><a th:href="@{/faq/detail/{faqId}(faqId=${faq.faqId})}" th:text="${faq.question}"></a></td>
-                <td th:text="${faq.answer}"></td>
-                <td th:text="${faq.author}"></td>
+            <tr th:each="inquiry : ${paginationDTO.list}">
+                <td th:text="${inquiry.inquiryId}"></td>
+                <td th:text="${inquiry.type}"></td>
+                <td><a th:href="@{/inquiry/detail/{inquiryId}(inquiryId=${inquiry.inquiryId})}" th:text="${inquiry.title}"></a></td>
+                <td th:text="${inquiry.content}"></td>
+                <td th:text="${#dates.format(inquiry.createdTime, 'yyyy-MM-dd')}"></td>
+
+
             </tr>
         </table>
-		<div class="pagination" th:if="${paginationDTO.pageCount > 1}">
+        <div class="pagination" th:if="${paginationDTO.pageCount > 1}">
 		    <span th:each="i : ${#numbers.sequence(paginationDTO.startPage, paginationDTO.endPage)}">
-		        <a th:href="@{/faq/list(pageNum=${i})}"
-		           th:classappend="${i == paginationDTO.pageNum} ? 'active' : ''"
-		           th:text="${i}" th:if="${i > 0}">Page</a>
+		        <a th:href="@{/inquiry/list(pageNum=${i})}" th:text="${i}" 
+		           th:classappend="${i == paginationDTO.pageNum} ? 'active' : ''"></a>
 		    </span>
 		</div>
-        <div class="btn-container" sec:authorize="hasRole('ROLE_MANAGER')">
-            <a th:href="@{/faq/writeForm}">FAQ 작성</a>
+        <div class="btn-container">
+             <!-- 로그인 여부를 체크하여 문의 작성 버튼을 조건부로 표시 -->
+            <div sec:authorize="isAuthenticated()">
+			    <a th:href="@{/inquiry/writeForm}">문의 작성</a>
+			</div>
         </div>
     </div>
 </body>

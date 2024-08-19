@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout/Layout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>문의 작성</title>
+    <style>
+        html, body {
+            height: 100%; /* 전체 페이지가 100% 높이를 가지도록 설정 */
+            margin: 0;
+            padding: 0;
+        }
+        .form-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* 중앙에 위치하게 하기 위해서 적절한 높이 설정 */
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        .form-wrapper {
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        label {
+            margin-top: 15px;
+            font-size: 1.2em;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1.1em;
+        }
+        textarea {
+            height: 300px; /* 내용 크기 조정 */
+        }
+        button {
+            margin-top: 30px;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        body {
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container" layout:fragment="content">
+        <div class="form-wrapper">
+            <form th:action="@{/inquiry/writePro}" method="post" th:object="${inquiryDTO}">
+                <h1>문의 작성</h1>
+                <input type="hidden" th:field="*{memberId}" />
+                <label for="type">유형</label>
+                <select id="type" name="type">
+                    <option value="서비스 이용문의">서비스 이용문의</option>
+                    <option value="허위매물 신고">허위매물 신고</option>
+                    <option value="단지정보 문의">단지정보 문의</option>
+                    <option value="기타문의">기타문의</option>
+                    <option value="장애/오류 신고">장애/오류 신고</option>
+                </select>
+                <label for="email">이메일</label>
+                <input type="text" id="email" name="email" required placeholder="이메일을 입력하세요">
+                <label for="title">제목</label>
+                <input type="text" id="title" name="title" required placeholder="제목을 입력하세요">
+                <label for="content">내용</label>
+                <textarea id="content" name="content" required placeholder="내용을 입력하세요"></textarea>
+                <button type="submit">작성하기</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
