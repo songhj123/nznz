@@ -12,7 +12,7 @@
             <h2 class="text-center">로그인</h2>
             
             <form th:action="@{/user/login}" method="post">
-            	<div th:if=${param.error}>
+            	<div th:if="${param.error}">
             		<div class="alert alert-danger">
             			아이디 또는 비밀번호를 다시 확인해주세요.
             		</div>
