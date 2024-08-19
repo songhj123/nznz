@@ -39,6 +39,7 @@ public class InquiryController {
 	}
 	
 	@PostMapping("writePro")
+	@PreAuthorize("isAuthenticated()")  // 로그인 여부 확인
 	public String writePro(@ModelAttribute InquiryDTO inquiryDTO, Principal principal) {
 		 String username = principal.getName();
 	     UserDTO user = userService.readUsername(username);
@@ -57,11 +58,17 @@ public class InquiryController {
 	}
 	
 	@GetMapping("detail/{inquiryId}")
-	public String detail(@PathVariable("inquiryId")int inquiryId, Model model) {
-		InquiryDTO inquiry = inquiryService.getInquiryWithRepliesById(inquiryId);
-		model.addAttribute("inquiry", inquiry);
-		return "inquiry/detail";
+	public String detail(@PathVariable("inquiryId") int inquiryId, Principal principal, Model model) {
+	    InquiryDTO inquiry = inquiryService.getInquiryWithRepliesById(inquiryId);
+	    model.addAttribute("inquiry", inquiry);
+	    
+	    if (principal != null) {
+	    	Long memberId = userService.getUserByMemberId(principal.getName());
+	        model.addAttribute("memberId",memberId);
+	    }
+	    return "inquiry/detail";
 	}
+
 	
 	@GetMapping("updateForm/{inquiryId}")
 	@PreAuthorize("isAuthenticated()")
