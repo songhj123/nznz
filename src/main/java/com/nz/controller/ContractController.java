@@ -50,38 +50,38 @@ public class ContractController {
 	
     @GetMapping("/detail/{contractId}")
     @PreAuthorize("isAuthenticated()")
-    public String contractDetail(@PathVariable Long contractId, Model model) {
+    public String contractDetail(@PathVariable("contractId") Long contractId, Model model) {
         ContractDTO contract = contractService.getContractById(contractId);
         model.addAttribute("contract", contract);
         return "contract/contractDetail";
     }
 
-    @GetMapping("/accept/{contractId}")
+    @PostMapping("/contract/accept/{contractId}")
     @PreAuthorize("isAuthenticated()")
-    public String acceptContract(@PathVariable Long contractId) {
+    public String acceptContract(@PathVariable("contractId") Long contractId) {
         contractService.acceptContract(contractId);
-        return "redirect:/contract/detail/" + contractId;
+        return "redirect:/contract/stage/" + contractId.toString();
     }
 
-    @PostMapping("/verifyDocuments/{contractId}")
+    @PostMapping("/contract/verifyDocuments/{contractId}")
     @PreAuthorize("isAuthenticated()")
-    public String verifyDocuments(@PathVariable Long contractId) {
+    public String verifyDocuments(@PathVariable("contractId") Long contractId) {
         contractService.verifyDocuments(contractId);
-        return "redirect:/contract/detail/" + contractId;
+        return "redirect:/contract/stage/" + contractId.toString();
     }
 
-    @PostMapping("/applyAutomaticTransfer/{contractId}")
+    @PostMapping("/contract/applyAutomaticTransfer/{contractId}")
     @PreAuthorize("isAuthenticated()")
-    public String applyAutomaticTransfer(@PathVariable Long contractId) {
+    public String applyAutomaticTransfer(@PathVariable("contractId") Long contractId) {
         contractService.applyAutomaticTransfer(contractId);
-        return "redirect:/contract/detail/" + contractId;
+        return "redirect:/contract/stage/" + contractId.toString();
     }
 
-    @PostMapping("/complete/{contractId}")
+    @PostMapping("/contract/complete/{contractId}")
     @PreAuthorize("isAuthenticated()")
-    public String completeContract(@PathVariable Long contractId) {
+    public String completeContract(@PathVariable("contractId") Long contractId) {
         contractService.completeContract(contractId);
-        return "redirect:/contract/detail/" + contractId;
+        return "redirect:/contract/stage/" + contractId.toString();
     }
 
     @GetMapping("/contract/{contractId}")
@@ -142,11 +142,10 @@ public class ContractController {
     @PostMapping("/contract/nextStage/{contractId}")
     public String nextStage(@PathVariable("contractId") Long contractId) {
         contractService.advanceToNextStage(contractId);
-        return "redirect:/contract/stage/" + contractId;
+        return "redirect:/contract/stage/" + contractId.toString();
     }
 
 
 
-    
 
 }
