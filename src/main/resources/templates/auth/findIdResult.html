@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>아이디 찾기 결과</title>
+    <link rel="stylesheet" href="/static/sstyle.css">
+</head>
+<body>
+<div layout:fragment="content">
+    <h2>아이디 찾기 결과</h2>
+    <p>아이디: <span th:text="${username}"></span></p>
+    <a th:href="@{/user/loginForm}">로그인</a>
+</div>
+</body>
+</html>

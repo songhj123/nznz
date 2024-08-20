@@ -111,7 +111,7 @@
             display: absolute;
             justify-content: flex-end;
             margin-top: 24px;
-            margin-left: 720px;
+            margin-left: 700px;
         }
 
         .action-buttons button {
@@ -287,24 +287,22 @@
                 <label>전화번호</label>
                 <span th:text="${user.phoneNumber}">전화번호</span>
             </div>
-            <hr>
-            <div class="profile-info">
-                <label>임대 자격</label>
-                <span>승인</span>
-                <button>연결</button>
-            </div>
             <div class="profile-info">
                 <label>계좌번호</label>
-                <span>등록요청</span>
-                <button>연결</button>
+                <span th:text="${user.accountNumber}">이메일</span>
             </div>
+            <hr>
             <div class="profile-info">
                 <label>소셜네트워크</label>
                 <span>미연결</span>
                 <button>연결</button>
             </div>
+            <br><br>
             <div class="delete-button">
-                <button>회원탈퇴</button>
+            	<a th:href="@{/user/changePassword}">비밀번호 변경</a>
+            </div>
+            <div class="delete-button">
+                <a th:href="@{/user/userDelete}">회원탈퇴</a>
             </div>
         </div>
     </div>
