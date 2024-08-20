@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>매물 수정</title>
+    <link rel="stylesheet" th:href="@{/resource/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/resource/css/propertyDetails.css}">
+    <link rel="stylesheet" th:href="@{/resource/css/scrollStyle.css}">
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY&libraries=services,clusterer"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+</head>
+<body>
+<div layout:fragment="content">
+<div class="scrollable-container">
+    <div class="container mt-5">
+        <form th:action="@{/myProperty/update/{id}(id=${property.propertyId})}" method="POST" th:object="${property}" onsubmit="return validateForm()" enctype="multipart/form-data">
+        <div class="row">
+            <!-- Left Column -->
+            <div class="col-md-8 left-column">
+                <!-- Image Slider -->
+                <div id="imageSlider" class="mb-4">
+                    <div class="main-image-container position-relative">
+                        <button id="prevImage" class="carousel-control-prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button id="nextImage" class="carousel-control-next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                    <div class="thumbnail-container">
+                        <div th:each="image : ${property.propertyImageList}">
+                            <img th:src="@{/resource/image/{imageName}(imageName=${image.imageStoredName})}" class="thumbnail" alt="Property Thumbnail">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Information -->
+                <div class="card details-container">
+                    <h5>가격정보</h5>
+                    <p><strong>보증금: </strong>
+                        <input type="number" th:field="*{deposit}" class="form-control d-inline-block" style="width: auto;">
+                    </p>
+                    <p><strong>월세: </strong>
+                        <input type="number" th:field="*{monthlyRent}" class="form-control d-inline-block" style="width: auto;">
+                    </p>
+                    <p><strong>관리비: </strong>
+                        <input type="number" th:field="*{maintenanceFee}" class="form-control d-inline-block" style="width: auto;">
+                    </p>
+                </div>
+
+                <div class="card details-container">
+                    <h5>상세정보</h5>
+                    <p><strong>타입: </strong>
+                        <select th:field="*{propertyType}" class="form-control d-inline-block" style="width: auto;">
+                            <option value="아파트">아파트</option>
+                            <option value="오피스텔">오피스텔</option>
+                            <option value="원룸">원룸</option>
+                            <option value="투룸">투룸</option>
+                        </select>
+                    </p>
+                    <p><strong>건물 이름: </strong>
+                        <input type="text" th:field="*{buildingName}" class="form-control d-inline-block" style="width: auto;">
+                    </p>
+                    <p><strong>크기: </strong>
+                        <input type="text" th:field="*{sizePyeong}" class="form-control d-inline-block" style="width: auto;"> 평
+                    </p>
+                    <p><strong>방 정보: </strong>
+                        <input type="text" th:field="*{roomInfo}" class="form-control d-inline-block" style="width: auto;">
+                    </p>
+                    <p><strong>입주 가능일: </strong>
+                        <input type="date" th:field="*{availableDate}" class="form-control d-inline-block" style="width: auto;" required>
+                    </p>
+                    <p><strong>층: </strong>
+                        <select th:field="*{floor}" class="form-control d-inline-block" style="width: auto;">
+                            <option value="반지하">반지하</option>
+                            <option value="옥탑">옥탑</option>
+                            <option th:each="i : ${#numbers.sequence(1, 50)}" th:value="${i}" th:text="${i + '층'}"></option>
+                        </select>
+                    </p>
+                    <p><strong>상태: </strong>
+                        <select th:field="*{status}" class="form-control d-inline-block" style="width: auto;">
+                            <option value="거주중">거주중</option>
+                            <option value="공실">공실</option>
+                        </select>
+                    </p>
+                </div>
+
+                <!-- Option Information with Checkboxes -->
+                <div class="card details-container">
+                    <h5>옵션</h5>
+                    <div class="options">
+                        <div>
+                            <p><strong>난방 옵션*</strong></p>
+                            <div>
+                            	<select id="heatingSystem" name="propertyOption[0].heatingSystem">
+		                            <option value="개별난방" th:field="*{propertyOption[0].heatingSystem}" th:checked="${property.propertyOption[0].heatingSystem == '개별난방'}">개별난방</option>
+		                            <option value="중앙난방" th:field="*{propertyOption[0].heatingSystem}" th:checked="${property.propertyOption[0].heatingSystem == '중앙난방'}">중앙난방</option>
+		                            <option value="지역난방" th:field="*{propertyOption[0].heatingSystem}" th:checked="${property.propertyOption[0].heatingSystem == '지역난방'}">지역난방</option>
+		                        </select>
+                            </div>
+                        </div>
+                        <div>
+                            <p><strong>냉방 옵션*</strong></p>
+                            <div>
+	                            <select id="coolingSystem" name="propertyOption[0].coolingSystem">
+		                            <option value="에어컨" th:field="*{propertyOption[0].coolingSystem}" th:checked="${property.propertyOption[0].coolingSystem == '에어컨'}">에어컨</option>
+		                            <option value="없음" th:field="*{propertyOption[0].coolingSystem}" th:checked="${property.propertyOption[0].coolingSystem == '없음'}">없음</option>
+		                        </select>
+                            </div>
+                        </div>
+                        <div>
+                            <p><strong>생활 옵션*</strong></p>
+                            <div>
+                                <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="침대" th:checked="${property.propertyOption[0].livingFacilities.contains('침대')}"> 침대</label>
+                                <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="책상" th:checked="${property.propertyOption[0].livingFacilities.contains('책상')}"> 책상</label>
+                                <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="옷장" th:checked="${property.propertyOption[0].livingFacilities.contains('옷장')}"> 옷장</label>
+                                <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="쇼파" th:checked="${property.propertyOption[0].livingFacilities.contains('쇼파')}"> 쇼파</label>
+	                            <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="신발장" th:checked="${property.propertyOption[0].livingFacilities.contains('신발장')}"> 신발장</label>
+	                            <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="냉장고" th:checked="${property.propertyOption[0].livingFacilities.contains('냉장고')}"> 냉장고</label>
+	                            <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="세탁기" th:checked="${property.propertyOption[0].livingFacilities.contains('세탁기')}"> 세탁기</label>
+	                            <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="건조기" th:checked="${property.propertyOption[0].livingFacilities.contains('건조기')}"> 건조기</label>
+	                            <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="샤워부스" th:checked="${property.propertyOption[0].livingFacilities.contains('샤워부스')}"> 샤워부스</label>
+	                            <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="욕조" th:checked="${property.propertyOption[0].livingFacilities.contains('욕조')}"> 욕조</label>
+	                            <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="비데" th:checked="${property.propertyOption[0].livingFacilities.contains('비데')}"> 비데</label>
+	                            <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="싱크대" th:checked="${property.propertyOption[0].livingFacilities.contains('싱크대')}"> 싱크대</label>
+	                            <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="식기세척기" th:checked="${property.propertyOption[0].livingFacilities.contains('식기세척기')}"> 식기세척기</label>
+	                            <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="가스레인지" th:checked="${property.propertyOption[0].livingFacilities.contains('가스레인지')}"> 가스레인지</label>
+	                            <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="인덕션" th:checked="${property.propertyOption[0].livingFacilities.contains('인덕션')}"> 인덕션</label>
+	                            <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="전자레인지" th:checked="${property.propertyOption[0].livingFacilities.contains('전자레인지')}"> 전자레인지</label>
+	                            <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="가스오븐" th:checked="${property.propertyOption[0].livingFacilities.contains('가스오븐')}"> 가스오븐</label>
+	                            <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="TV" th:checked="${property.propertyOption[0].livingFacilities.contains('TV')}"> TV</label>
+	                            <label><input type="checkbox" name="propertyOption[0].livingFacilities" value="붙박이창" th:checked="${property.propertyOption[0].livingFacilities.contains('붙박이창')}"> 붙박이창</label>
+                                <!-- 더 많은 옵션 추가 -->
+                            </div>
+                        </div>
+                        <div>
+                            <p><strong>보안 옵션*</strong></p>
+                            <div>
+                                <label><input type="checkbox" name="propertyOption[0].securityFacilities" value="경비원" th:checked="${property.propertyOption[0].securityFacilities.contains('경비원')}"> 경비원</label>
+                                <label><input type="checkbox" name="propertyOption[0].securityFacilities" value="비디오폰" th:checked="${property.propertyOption[0].securityFacilities.contains('비디오폰')}"> 비디오폰</label>
+	                            <label><input type="checkbox" name="propertyOption[0].securityFacilities" value="인터폰" th:checked="${property.propertyOption[0].securityFacilities.contains('인터폰')}"> 인터폰</label>
+	                            <label><input type="checkbox" name="propertyOption[0].securityFacilities" value="카드키" th:checked="${property.propertyOption[0].securityFacilities.contains('카드키')}"> 카드키</label>
+	                            <label><input type="checkbox" name="propertyOption[0].securityFacilities" value="CCTV" th:checked="${property.propertyOption[0].securityFacilities.contains('CCTV')}"> CCTV</label>
+	                            <label><input type="checkbox" name="propertyOption[0].securityFacilities" value="사설경비" th:checked="${property.propertyOption[0].securityFacilities.contains('사설경비')}"> 사설경비</label>
+	                            <label><input type="checkbox" name="propertyOption[0].securityFacilities" value="현관보안" th:checked="${property.propertyOption[0].securityFacilities.contains('현관보안')}"> 현관보안</label>
+	                            <label><input type="checkbox" name="propertyOption[0].securityFacilities" value="방범창" th:checked="${property.propertyOption[0].securityFacilities.contains('방범창')}"> 방범창</label>
+                                <!-- 더 많은 옵션 추가 -->
+                            </div>
+                        </div>
+                        <div>
+                            <p><strong>기타 옵션*</strong></p>
+                            <div>
+                                <label><input type="checkbox" name="propertyOption[0].otherFacilities" value="화재경보기" th:checked="${property.propertyOption[0].otherFacilities.contains('화재경보기')}"> 화재경보기</label>
+                                <label><input type="checkbox" name="propertyOption[0].otherFacilities" value="베란다" th:checked="${property.propertyOption[0].otherFacilities.contains('베란다')}"> 베란다</label>
+                                <label><input type="checkbox" name="propertyOption[0].otherFacilities" value="테라스" th:checked="${property.propertyOption[0].otherFacilities.contains('테라스')}"> 테라스</label>
+	                            <label><input type="checkbox" name="propertyOption[0].otherFacilities" value="마당" th:checked="${property.propertyOption[0].otherFacilities.contains('마당')}"> 마당</label>
+	                            <label><input type="checkbox" name="propertyOption[0].otherFacilities" value="무인택배함" th:checked="${property.propertyOption[0].otherFacilities.contains('무인택배함')}"> 무인택배함</label>
+                                <!-- 더 많은 옵션 추가 -->
+                            </div>
+                        </div>
+                        <div>
+                            <p><strong>주차 가능 여부*</strong></p>
+                            <select th:field="*{propertyOption[0].parking}" class="form-control d-inline-block" style="width: auto;">
+                                <option value="1" th:selected="${property.propertyOption[0].parking == '1'}">가능</option>
+                                <option value="0" th:selected="${property.propertyOption[0].parking == '0'}">불가능</option>
+                            </select>
+                        </div>
+                        <div>
+                            <p><strong>엘리베이터*</strong></p>
+                            <select th:field="*{propertyOption[0].elevator}" class="form-control d-inline-block" style="width: auto;">
+                                <option value="1" th:selected="${property.propertyOption[0].elevator == '1'}">있음</option>
+                                <option value="0" th:selected="${property.propertyOption[0].elevator == '0'}">없음</option>
+                            </select>
+                        </div>
+                        <div>
+                            <p><strong>부동산 특징*</strong></p>
+                            <input type="text" th:field="*{propertyOption[0].propertyFeatures}" class="form-control" placeholder="예: 반려동물 가능">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card details-container">
+                    <h5>사진 등록</h5>
+                    <div id="fileInputContainer">
+                        <div class="file-input-group">
+                            <input type="file" th:field="*{propertyImageList}" accept="image/*" multiple onchange="previewImages(event)">
+                        </div>
+                    </div>
+                    <button type="button" onclick="addFileInput()">파일 추가</button>
+                    <div id="imagePreview"></div>
+                </div>
+
+                <div class="card details-container">
+                    <h5>상세설명</h5>
+                    <p><strong>간단설명: </strong>
+                        <textarea th:field="*{shortDescription}" class="form-control"></textarea>
+                    </p>
+                    <p><strong>상세설명: </strong>
+                        <textarea th:field="*{longDescription}" class="form-control"></textarea>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-md-4 right-column">
+                <div class="sticky-top card details-container">
+                    <h5>매물 번호: <span th:text="${property.propertyId != null ? property.propertyId : 'N/A'}"></span></h5>
+                    <h5>보증금: <span th:text="${property.deposit != null ? property.deposit : 'N/A'}"></span></h5>
+                    <h5>월세: <span th:text="${property.monthlyRent != null ? property.monthlyRent : 'N/A'}"></span></h5>
+                    <p><strong>방/욕실: </strong><span th:text="${property.roomInfo != null ? property.roomInfo : 'N/A'}"></span></p>
+                    <p><strong>위치: </strong><span th:text="${property.propertyAddress != null ? property.propertyAddress : 'N/A'}"></span></p>  
+                    <button type="submit" class="btn btn-outline-secondary mt-2">저장</button>
+                </div>
+            </div>
+        </div>
+        </form>
+        <script th:src="@{/resource/js/bootstrap.bundle.min.js}"></script>
+        <script th:src="@{/resource/js/propertyDetails.js}"></script>
+        <script th:inline="javascript">
+            function openAddressSearch() {
+                new daum.Postcode({
+                    oncomplete: function(data) {
+                        const addressField = document.getElementById('propertyAddress');
+                        const latitudeField = document.getElementById('latitude');
+                        const longitudeField = document.getElementById('longitude');
+                        
+                        const address = data.roadAddress || data.jibunAddress;
+                        addressField.value = address;
+
+                        // 주소로 좌표를 검색합니다
+                        const geocoder = new kakao.maps.services.Geocoder();
+                        geocoder.addressSearch(address, function(result, status) {
+                            if (status === kakao.maps.services.Status.OK) {
+                                const coords = result[0];
+                                latitudeField.value = coords.y;
+                                longitudeField.value = coords.x;
+
+                                console.log("Address: " + address);
+                                console.log("Latitude: " + coords.y);
+                                console.log("Longitude: " + coords.x);
+                            } else {
+                                alert('Geocode was not successful for the following reason: ' + status);
+                            }
+                        });
+                    },
+                    width: 600,
+                    height: 400,
+                    maxSuggestItems: 10
+                }).open();
+            }
+
+            function validateForm() {
+                const propertyOptions = document.querySelectorAll('input[name^="propertyOption"]:checked');
+                const propertyImages = document.getElementById('propertyImageList').files;
+                if (propertyOptions.length === 0) {
+                    alert('하나 이상의 매물 옵션을 선택해주세요.');
+                    return false;
+                }
+                if (propertyImages.length === 0) {
+                    alert('하나 이상의 이미지를 추가해주세요.');
+                    return false;
+                }
+                return true;
+            }
+
+            function previewImages(event) {
+                const files = event.target.files;
+                const preview = document.createElement('div');
+                preview.className = 'image-preview';
+
+                if (files) {
+                    Array.from(files).forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.style.width = '100px';
+                            img.style.height = '100px';
+                            img.style.margin = '5px';
+                            preview.appendChild(img);
+                        }
+                        reader.readAsDataURL(file);
+                    });
+                }
+
+                event.target.parentNode.appendChild(preview);
+            }
+
+            function addFileInput() {
+                const fileInputContainer = document.getElementById('fileInputContainer');
+                const newFileInput = document.createElement('div');
+                newFileInput.className = 'file-input-group';
+
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.name = 'propertyImageList';
+                fileInput.accept = 'image/*';
+                fileInput.onchange = previewImages;
+
+                newFileInput.appendChild(fileInput);
+                fileInputContainer.appendChild(newFileInput);
+            }
+        </script>
+    </div>
+</div>
+</div>
+
+</body>
+</html>

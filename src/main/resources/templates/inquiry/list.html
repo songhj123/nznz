@@ -98,10 +98,7 @@
 		    </span>
 		</div>
         <div class="btn-container">
-             <!-- 로그인 여부를 체크하여 문의 작성 버튼을 조건부로 표시 -->
-            <div sec:authorize="isAuthenticated()">
-			    <a th:href="@{/inquiry/writeForm}">문의 작성</a>
-			</div>
+            <a th:href="@{/inquiry/writeForm}">문의 작성</a>
         </div>
     </div>
 </body>

@@ -50,7 +50,7 @@
                         <img th:src="@{/resource/image/{imageName}(imageName=${property.propertyImageList[0].imageStoredName})}" alt="Property Image" class="property-image img-fluid rounded">
                     </div>
                     <div class="col-md-8 property-info">
-                        <h2 th:text="'월세 ' + ${property.price} + ' / ' + ${property.maintenanceFee}" class="mb-2"></h2>
+                        <h2 th:text="'월세/보증금 ( ' + ${property.monthlyRent} + ' / ' + ${property.deposit} +' ) '" class="mb-2"></h2>
                         <p th:text="'매물번호 ' + ${property.propertyNum}" class="mb-1"></p>
                         <p th:text="${property.propertyType}+' ' + ${property.sizePyeong} + '평'" class="mb-1"></p>
                         <p th:text="'위치 ' + ${property.propertyAddress}" class="mb-1"></p>

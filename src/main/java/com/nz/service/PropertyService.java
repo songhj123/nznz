@@ -2,6 +2,7 @@ package com.nz.service;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -236,4 +237,73 @@ public class PropertyService {
                     return convertToDTO(property, images);
                 });
     }
+    
+    
+    public Page<PropertyDTO> getPropertiesByMember(String username, PageRequest pageRequest) {
+    	Optional<UserEntity> user = userRepository.findByUsername(username);
+        return propertyRepository.findByMemberId(user.get().getMemberID(), pageRequest)
+                .map(property -> {
+                    List<PropertyImageEntity> images = propertyImageRepository.findByProperty_PropertyId(property.getPropertyId());
+                    return convertToDTO(property, images);
+                });
+    }
+    
+    @Transactional
+    public void updateProperty(Long propertyId, PropertyDTO propertyDTO) {
+        // 기존 매물 정보 조회
+        PropertyEntity existingProperty = propertyRepository.findById(propertyId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid property ID: " + propertyId));
+        
+        // 폼에서 받아온 값들만 업데이트
+        existingProperty.setDeposit(propertyDTO.getDeposit());
+        existingProperty.setMonthlyRent(propertyDTO.getMonthlyRent());
+        existingProperty.setMaintenanceFee(propertyDTO.getMaintenanceFee());
+        existingProperty.setPropertyType(propertyDTO.getPropertyType());
+        existingProperty.setBuildingName(propertyDTO.getBuildingName());
+        existingProperty.setSizePyeong(propertyDTO.getSizePyeong());
+        existingProperty.setRoomInfo(propertyDTO.getRoomInfo());
+        existingProperty.setAvailableDate(propertyDTO.getAvailableDate());
+        existingProperty.setFloor(propertyDTO.getFloor());
+        existingProperty.setStatus(propertyDTO.getStatus());
+        existingProperty.setShortDescription(propertyDTO.getShortDescription());
+        existingProperty.setLongDescription(propertyDTO.getLongDescription());
+
+        // 옵션 업데이트
+        if (propertyDTO.getPropertyOption() != null && !propertyDTO.getPropertyOption().isEmpty()) {
+            existingProperty.getPropertyOptions().clear(); // 기존 옵션 제거
+            List<PropertyOptionEntity> updatedOptions = propertyDTO.getPropertyOption().stream().map(optionDTO ->
+                PropertyOptionEntity.builder()
+                    .heatingSystem(optionDTO.getHeatingSystem())
+                    .coolingSystem(optionDTO.getCoolingSystem())
+                    .livingFacilities(optionDTO.getLivingFacilities())
+                    .securityFacilities(optionDTO.getSecurityFacilities())
+                    .otherFacilities(optionDTO.getOtherFacilities())
+                    .parking(optionDTO.getParking())
+                    .elevator(optionDTO.getElevator())
+                    .propertyFeatures(optionDTO.getPropertyFeatures())
+                    .property(existingProperty) // 엔티티와 연결 유지
+                    .build()
+            ).collect(Collectors.toList());
+            existingProperty.getPropertyOptions().addAll(updatedOptions); // 새 옵션 추가
+        }
+
+        // 이미지 업데이트
+        if (propertyDTO.getPropertyImageList() != null && !propertyDTO.getPropertyImageList().isEmpty()) {
+            existingProperty.getPropertyImageList().clear(); // 기존 이미지 제거
+            List<PropertyImageEntity> updatedImages = propertyDTO.getPropertyImageList().stream().map(imageDTO ->
+                PropertyImageEntity.builder()
+                    .imageOriginalName(imageDTO.getImageOriginalName())
+                    .imageStoredName(imageDTO.getImageStoredName())
+                    .property(existingProperty) // 엔티티와 연결 유지
+                    .build()
+            ).collect(Collectors.toList());
+            existingProperty.getPropertyImageList().addAll(updatedImages); // 새 이미지 추가
+        }
+        
+        // 변경된 매물 정보 저장
+        propertyRepository.save(existingProperty);
+    }
+
+
+
 }

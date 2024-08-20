@@ -48,13 +48,13 @@ public class ConsultationRequestController {
     @PostMapping("/consultationRequest")
     @PreAuthorize("isAuthenticated()")
     public String createConsultationRequest(@ModelAttribute ConsultationRequestDTO consultationRequestDTO, RedirectAttributes redirectAttributes, Principal principal) {
-    	String redir = "redirect:/property/\" + consultationRequestDTO.getPropertyId()";
+    	String redir = "redirect:/property/" + consultationRequestDTO.getPropertyId().toString();
     	try {
             consultationRequestService.createConsultationRequest(consultationRequestDTO, principal.getName());
             redirectAttributes.addFlashAttribute("message", "방문 상담 신청이 완료되었습니다.");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
-            redir= "redirect:/consultationRequest/" + consultationRequestDTO.getPropertyId();
+            redir= "redirect:/consultationRequest/" + consultationRequestDTO.getPropertyId().toString();
         }
         return redir; // 신청 완료 후 목록 페이지로 리디렉션
     }
