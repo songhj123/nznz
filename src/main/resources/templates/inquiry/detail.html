@@ -10,19 +10,19 @@
         }
         .detail-container {
             display: flex; /* flexbox를 사용하여 자식 요소들을 가로로 배치 */
-		    justify-content: space-between; /* 좌우로 공간을 넓게 배치 */
-		    width: 80%;
-		    margin: 20px auto;
-		    background-color: #fff;
-		    padding: 20px;
-		    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            justify-content: space-between; /* 좌우로 공간을 넓게 배치 */
+            width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .detail-container h1 {
             display: flex; /* 전체 컨테이너를 flex로 설정 */
-		    justify-content: space-between; /* 좌우로 요소를 배치 */		    
+            justify-content: space-between; /* 좌우로 요소를 배치 */            
         }
         .detail-inquiry {
-       	    flex: 1; /* 문의 섹션이 전체의 절반을 차지하게 함 */
+            flex: 1; /* 문의 섹션이 전체의 절반을 차지하게 함 */
             margin-right: 20px;
         }
         .detail-inquiry div {
@@ -33,24 +33,23 @@
             min-width: 100px;
         }
         .detail-reply-section {
-		    flex: 1; /* 오른쪽 섹션 */
-		}
-		
-		.detail-reply-section h2 {
-		    margin-top: 0;
-		}
-		
-		.detail-reply-section form div {
-		    margin-bottom: 10px;
-		}
-		
-		.detail-reply-section textarea {
-		    width: 100%;
-		    resize: vertical;
-		}
+            flex: 1; /* 오른쪽 섹션 */
+        }
+        
+        .detail-reply-section h2 {
+            margin-top: 0;
+        }
+        
+        .detail-reply-section form div {
+            margin-bottom: 10px;
+        }
+        
+        .detail-reply-section textarea {
+            width: 100%;
+            resize: vertical;
+        }
         .detail-action-links {
             display: flex;
-            
             align-items: center; /* 수직 중앙 정렬 */
             gap: 10px; /* 버튼 사이 간격 */
             margin-top: 10px;
@@ -107,53 +106,53 @@
                         <strong>작성일자:</strong> <span th:text="${#dates.format(inquiry.createdTime, 'yyyy-MM-dd')}"></span>
                     </div>
                      <div class="detail-action-links">
-	                    <a th:href="@{/inquiry/updateForm/{inquiryId}(inquiryId=${inquiry.inquiryId})}">수정</a>
-	                    <form th:action="@{/inquiry/deletePro/{inquiryId}(inquiryId=${inquiry.inquiryId})}" method="post" style="display:inline;">
-	                        <button type="submit">삭제</button>
-	                    </form>
-	                </div>
-	                <div class="detail-back-link">
-	                    <a th:href="@{/inquiry/list}">목록으로 돌아가기</a>
-	                </div>
+                        <!-- 수정 버튼 -->
+                        <a th:if="${memberId == inquiry.memberId}" th:href="@{/inquiry/updateForm/{inquiryId}(inquiryId=${inquiry.inquiryId})}">수정</a>
+                        
+                        <!-- 삭제 폼 -->
+                        <form th:if="${memberId == inquiry.memberId}" th:action="@{/inquiry/deletePro/{inquiryId}(inquiryId=${inquiry.inquiryId})}" method="post" style="display:inline;">
+                            <button type="submit">삭제</button>
+                        </form>
+                    </div>
+                    <div class="detail-back-link">
+                        <a th:href="@{/inquiry/list}">목록으로 돌아가기</a>
+                    </div>
                 </div>
-               	  
-                
                 
                 <!-- 답변 목록 -->
                 <div class="detail-reply-section">
-	                <div class="detail-replies">
-	                    <h2>답변 목록</h2>
-	                    <div th:each="reply : ${inquiry.replies}">
-	                        <div>
-	                            <strong>답변 내용:</strong>
-	                            <div th:text="${reply.content}"></div>
-	                        </div>
-	                        <div>
-	                            <strong>작성일자:</strong> <span th:text="${#dates.format(reply.createdTime, 'yyyy-MM-dd HH:mm')}"></span>
-	                        </div>
-	                    </div>
-	                </div>
-	              
-	                
-	                <!-- 답변 작성 폼 -->
-	               <div class="detail-reply-form" th:if="${#authorization.expression('hasRole(''ROLE_MANAGER'')')}"> 	                
-	                    <h2>답변 작성</h2>
-	                    <form th:action="@{/inquiry/replyPro}" method="post">
-	                        <input type="hidden" name="inquiryId" th:value="${inquiry.inquiryId}">
-	                        <div>
-	                            <label for="content">답변 내용:</label>
-	                            <textarea id="content" name="content" rows="4"></textarea>
-	                        </div>
-	                        <div>
-	                            <button type="submit">답변 저장</button>
-	                        </div>
-	                    </form>	  
-               		 </div>
+                    <div class="detail-replies">
+                        <h2>답변 목록</h2>
+                        <div th:each="reply : ${inquiry.replies}">
+                            <div>
+                                <strong>답변 내용:</strong>
+                                <div th:text="${reply.content}"></div>
+                            </div>
+                            <div>
+                                <strong>작성일자:</strong> <span th:text="${#dates.format(reply.createdTime, 'yyyy-MM-dd HH:mm')}"></span>
+                            </div>
+                        </div>
+                    </div>
+                  
+                    <!-- 답변 작성 폼 -->
+                   <div class="detail-reply-form" th:if="${#authorization.expression('hasRole(''ROLE_MANAGER'')')}">                    
+                        <h2>답변 작성</h2>
+                        <form th:action="@{/inquiry/replyPro}" method="post">
+                            <input type="hidden" name="inquiryId" th:value="${inquiry.inquiryId}">
+                            <div>
+                                <label for="content">답변 내용:</label>
+                                <textarea id="content" name="content" rows="4"></textarea>
+                            </div>
+                            <div>
+                                <button type="submit">답변 저장</button>
+                            </div>
+                        </form>      
+                     </div>
                 
                  <!-- 답변 작성 권한이 없는 사용자에게 표시할 메시지 -->
-		        <div th:unless="${#authorization.expression('hasRole(''ROLE_MANAGER'')')}">
-		            <p>답변 작성 권한이 없습니다.</p>
-		        </div>
+                <div th:unless="${#authorization.expression('hasRole(''ROLE_MANAGER'')')}">
+                    <p>답변 작성 권한이 없습니다.</p>
+                </div>
             </div>
         </div>
     </main>
@@ -164,6 +163,6 @@
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.amazonaws.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
