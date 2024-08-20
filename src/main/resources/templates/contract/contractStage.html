@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html layout:decorate="~{layout/layout}" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -30,22 +31,19 @@
                 </div>
                 <div th:if="${contract.stage == '계약진행수락'}">
                     <p>계약 진행 수락 단계입니다. 필요한 서류를 확인하세요.</p>
-                    <form th:action="@{/contract/verifyDocuments}" method="post">
-                        <input type="hidden" name="contractId" th:value="${contract.contractId}" />
+                    <form th:action="@{/contract/verifyDocuments/{contractId}(contractId=${contract.contractId})}" method="post">
                         <button type="submit" class="btn contract-btn-warning">서류 확인</button>
                     </form>
                 </div>
                 <div th:if="${contract.stage == '각종서류확인'}">
                     <p>각종 서류가 확인되었습니다. 자동이체를 신청하십시오.</p>
-                    <form th:action="@{/contract/applyAutomaticTransfer}" method="post">
-                        <input type="hidden" name="contractId" th:value="${contract.contractId}" />
+                    <form th:action="@{/contract/applyAutomaticTransfer/{contractId}(contractId=${contract.contractId})}" method="post">
                         <button type="submit" class="btn contract-btn-info">자동이체 신청</button>
                     </form>
                 </div>
                 <div th:if="${contract.stage == '자동이체신청'}">
                     <p>자동이체가 신청되었습니다. 계약을 완료하십시오.</p>
-                    <form th:action="@{/contract/complete}" method="post">
-                        <input type="hidden" name="contractId" th:value="${contract.contractId}" />
+                    <form th:action="@{/contract/complete/{contractId}(contractId=${contract.contractId})}" method="post">
                         <button type="submit" class="btn contract-btn-success">계약 완료</button>
                     </form>
                 </div>

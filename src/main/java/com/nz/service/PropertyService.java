@@ -254,59 +254,56 @@ public class PropertyService {
         PropertyEntity existingProperty = propertyRepository.findById(propertyId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid property ID: " + propertyId));
         
-        // 기존 매물 정보를 DTO에서 가져온 값으로 업데이트
-        existingProperty.setPropertyType(propertyDTO.getPropertyType());
-        existingProperty.setPropertyAddress(propertyDTO.getPropertyAddress());
-        existingProperty.setBuildingName(propertyDTO.getBuildingName());
-        existingProperty.setSizePyeong(propertyDTO.getSizePyeong());
-        existingProperty.setRoomInfo(propertyDTO.getRoomInfo());
+        // 폼에서 받아온 값들만 업데이트
         existingProperty.setDeposit(propertyDTO.getDeposit());
         existingProperty.setMonthlyRent(propertyDTO.getMonthlyRent());
         existingProperty.setMaintenanceFee(propertyDTO.getMaintenanceFee());
+        existingProperty.setPropertyType(propertyDTO.getPropertyType());
+        existingProperty.setBuildingName(propertyDTO.getBuildingName());
+        existingProperty.setSizePyeong(propertyDTO.getSizePyeong());
+        existingProperty.setRoomInfo(propertyDTO.getRoomInfo());
         existingProperty.setAvailableDate(propertyDTO.getAvailableDate());
         existingProperty.setFloor(propertyDTO.getFloor());
+        existingProperty.setStatus(propertyDTO.getStatus());
         existingProperty.setShortDescription(propertyDTO.getShortDescription());
         existingProperty.setLongDescription(propertyDTO.getLongDescription());
-        existingProperty.setStatus(propertyDTO.getStatus());
-        existingProperty.setProcessingStatus(propertyDTO.getProcessingStatus());
-        existingProperty.setLatitude(propertyDTO.getLatitude());
-        existingProperty.setLongitude(propertyDTO.getLongitude());
-        
-        // 기존 옵션 및 이미지 정보 삭제 후 새로 저장
-        propertyOptionRepository.deleteAll(existingProperty.getPropertyOptions());
-        propertyImageRepository.deleteAll(existingProperty.getPropertyImageList());
 
-        List<PropertyOptionEntity> updatedOptions = propertyDTO.getPropertyOption().stream().map(optionDTO ->
-            PropertyOptionEntity.builder()
-                .heatingSystem(optionDTO.getHeatingSystem())
-                .coolingSystem(optionDTO.getCoolingSystem())
-                .livingFacilities(optionDTO.getLivingFacilities())
-                .securityFacilities(optionDTO.getSecurityFacilities())
-                .otherFacilities(optionDTO.getOtherFacilities())
-                .parking(optionDTO.getParking())
-                .elevator(optionDTO.getElevator())
-                .propertyFeatures(optionDTO.getPropertyFeatures())
-                .build()
-        ).collect(Collectors.toList());
+        // 옵션 업데이트
+        if (propertyDTO.getPropertyOption() != null && !propertyDTO.getPropertyOption().isEmpty()) {
+            existingProperty.getPropertyOptions().clear(); // 기존 옵션 제거
+            List<PropertyOptionEntity> updatedOptions = propertyDTO.getPropertyOption().stream().map(optionDTO ->
+                PropertyOptionEntity.builder()
+                    .heatingSystem(optionDTO.getHeatingSystem())
+                    .coolingSystem(optionDTO.getCoolingSystem())
+                    .livingFacilities(optionDTO.getLivingFacilities())
+                    .securityFacilities(optionDTO.getSecurityFacilities())
+                    .otherFacilities(optionDTO.getOtherFacilities())
+                    .parking(optionDTO.getParking())
+                    .elevator(optionDTO.getElevator())
+                    .propertyFeatures(optionDTO.getPropertyFeatures())
+                    .property(existingProperty) // 엔티티와 연결 유지
+                    .build()
+            ).collect(Collectors.toList());
+            existingProperty.getPropertyOptions().addAll(updatedOptions); // 새 옵션 추가
+        }
 
-        List<PropertyImageEntity> updatedImages = propertyDTO.getPropertyImageList().stream().map(imageDTO ->
-            PropertyImageEntity.builder()
-                .imageOriginalName(imageDTO.getImageOriginalName())
-                .imageStoredName(imageDTO.getImageStoredName())
-                .build()
-        ).collect(Collectors.toList());
+        // 이미지 업데이트
+        if (propertyDTO.getPropertyImageList() != null && !propertyDTO.getPropertyImageList().isEmpty()) {
+            existingProperty.getPropertyImageList().clear(); // 기존 이미지 제거
+            List<PropertyImageEntity> updatedImages = propertyDTO.getPropertyImageList().stream().map(imageDTO ->
+                PropertyImageEntity.builder()
+                    .imageOriginalName(imageDTO.getImageOriginalName())
+                    .imageStoredName(imageDTO.getImageStoredName())
+                    .property(existingProperty) // 엔티티와 연결 유지
+                    .build()
+            ).collect(Collectors.toList());
+            existingProperty.getPropertyImageList().addAll(updatedImages); // 새 이미지 추가
+        }
         
-        // 새 옵션 및 이미지 정보를 매물 엔티티에 설정
-        updatedOptions.forEach(option -> option.setProperty(existingProperty));
-        updatedImages.forEach(image -> image.setProperty(existingProperty));
-
-        existingProperty.setPropertyOptions(updatedOptions);
-        existingProperty.setPropertyImageList(updatedImages);
-        
-        // 변경된 매물 정보와 새 옵션 및 이미지 정보를 저장
+        // 변경된 매물 정보 저장
         propertyRepository.save(existingProperty);
-        propertyOptionRepository.saveAll(updatedOptions);
-        propertyImageRepository.saveAll(updatedImages);
     }
+
+
 
 }
