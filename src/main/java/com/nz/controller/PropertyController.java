@@ -192,4 +192,17 @@ public class PropertyController {
         }
         return "redirect:/admin/propertyList";
     }
+    
+    
+    
+    @GetMapping("/properties/location")
+    public String getPropertiesByLocation(
+            @RequestParam("latitude") double latitude,
+            @RequestParam("longitude") double longitude,
+            Model model) {
+        // 지도 페이지로 이동할 때 초기 중심 좌표로 설정
+        model.addAttribute("latitude", latitude);
+        model.addAttribute("longitude", longitude);
+        return "property/properties"; // 지도 페이지로 이동
+    }
 }
