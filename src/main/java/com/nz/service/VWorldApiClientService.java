@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class VWorldApiClientService {
     private static final String API_KEY = "F320E4DD-72C4-3869-9343-68E55DB54345"; // 여기에 VWorld API 키를 입력하세요
     
-    public List<String> getSuggestions(String query) {
+    public List<String> getSuggestions(String query) throws Exception {
         List<String> suggestions = new ArrayList<>();
         try {
             String encodedQuery = URLEncoder.encode(query, "UTF-8");
@@ -61,50 +61,65 @@ public class VWorldApiClientService {
                     }
                 }
             } else {
-                System.err.println("HTTP error code: " + responseCode);
+                throw new Exception("HTTP error code: " + responseCode);
             }
         } catch (Exception e) {
             e.printStackTrace();
+            throw e; // 예외를 다시 던져 호출자에게 알림
         }
         return suggestions;
     }
     
-    public double[] getCoordinates(String address) {
+    public double[] getCoordinates(String address) throws Exception {
         double[] coords = new double[2];
-        try {
-            String encodedAddress = URLEncoder.encode(address, "UTF-8");
-            String urlStr = "https://api.vworld.kr/req/address?service=address&request=getCoord&version=2.0&crs=epsg:4326&address="
-                            + encodedAddress + "&format=json&type=road&key=" + API_KEY;
-            URL url = new URL(urlStr);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            
-            int responseCode = conn.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                String inputLine;
-                StringBuilder response = new StringBuilder();
-                
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-                
-                // 응답 로그 출력
-                System.out.println("API 응답: " + response.toString());
-                
-                JSONObject jsonResponse = new JSONObject(response.toString());
-                JSONObject point = jsonResponse.getJSONObject("response").getJSONObject("result").getJSONObject("point");
-                
-                coords[0] = point.getDouble("y");
-                coords[1] = point.getDouble("x");
-            } else {
-                System.err.println("HTTP error code: " + responseCode);
+        String encodedAddress = URLEncoder.encode(address, "UTF-8");
+        String urlStr = "https://api.vworld.kr/req/address?service=address&request=getCoord&version=2.0&crs=epsg:4326&address="
+                        + encodedAddress + "&format=json&type=road&key=" + API_KEY;
+        URL url = new URL(urlStr);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+
+        int responseCode = conn.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String inputLine;
+            StringBuilder response = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            in.close();
+
+            // 응답 로그 출력
+            System.out.println("API 응답: " + response.toString());
+
+            JSONObject jsonResponse = new JSONObject(response.toString());
+            JSONObject responseObj = jsonResponse.optJSONObject("response");
+            if (responseObj != null) {
+                String status = responseObj.optString("status");
+                if ("OK".equals(status)) {
+                    JSONObject result = responseObj.optJSONObject("result");
+                    if (result != null) {
+                        JSONObject point = result.optJSONObject("point");
+                        if (point != null) {
+                            coords[0] = point.getDouble("y");
+                            coords[1] = point.getDouble("x");
+                            return coords;
+                        } else {
+                            throw new Exception("API 응답에 좌표 정보가 없습니다.");
+                        }
+                    } else {
+                        throw new Exception("API 응답에 결과 정보가 없습니다.");
+                    }
+                } else if ("NOT_FOUND".equals(status)) {
+                    throw new Exception("주소를 찾을 수 없습니다.");
+                } else {
+                    throw new Exception("API 응답 오류: " + status);
+                }
+            } else {
+                throw new Exception("잘못된 API 응답 형식입니다.");
+            }
+        } else {
+            throw new Exception("HTTP error code: " + responseCode);
         }
-        return coords;
     }
 }

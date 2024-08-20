@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout/adminLayout}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>전체 회원 관리</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header-container h2 {
+            margin: 0;
+        }
+
+        .filter-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-container select {
+            margin-right: 10px;
+            padding: 5px;
+        }
+
+        .table-container {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table th, table td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+
+        table thead {
+            background-color: #f5f5f5;
+        }
+
+        table thead th {
+            font-weight: bold;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            color: white;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            color: #333;
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            margin: 0 5px;
+        }
+
+        .pagination a.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .pagination a:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="header-container">
+            <h2>전체 회원 관리</h2>
+            <div class="filter-container" style="margin-top: 20px">
+                <form th:action="@{/admin/userList}" method="get">
+                    <select id="role" name="role">
+                        <option value="">전체</option>
+                        <option value="ROLE_MANAGER" th:selected="${currentRole == 'ROLE_MANAGER'}">관리자</option>
+                        <option value="ROLE_USER" th:selected="${currentRole == 'ROLE_USER'}">사용자</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary" style="margin-right: 20px">필터 적용</button>
+                </form>
+            </div>
+        </div>
+        <div class="table-container">
+            <form th:action="@{/admin/user/updateStatus}" method="post">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>번호</th>
+                            <th>회원 아이디</th>
+                            <th>이름</th>
+                            <th>이메일</th>
+                            <th>전화번호</th>
+                            <th>계좌번호</th>
+                            <th>가입 일시</th>
+                            <th>권한</th>
+                            <th>선택</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="user, iterStat : ${userList.content}">
+                            <td th:text="${iterStat.index + 1}"></td>
+                            <td th:text="${user.username}"></td>
+                            <td th:text="${user.name}"></td>
+                            <td th:text="${user.email}"></td>
+                            <td th:text="${user.phoneNumber}"></td>
+                            <td th:text="${user.accountNumber}"></td>
+                            <td th:text="${#dates.format(user.createDate, 'yyyy.MM.dd HH:mm')}"></td>
+                            <td th:text="${user.role}"></td>
+                            <td><input type="checkbox" name="selectedUsers" th:value="${user.username}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="button-container" style="margin-right: 20px">
+                <a style="margin-top: 8px">회원 권한 수정</a>
+                    <button type="submit" name="action" value="ROLE_MANAGER" class="btn btn-success">관리자 전환</button>
+                    <button type="submit" name="action" value="ROLE_USER" class="btn btn-secondary">일반회원 전환</button>
+                    <button type="submit" name="action" value="ROLE_SUSPENDED" class="btn btn-danger">활동 제한</button>
+                </div>
+            </form>
+        </div>
+        <div class="pagination" style="margin-bottom: 14px">
+            <a th:href="@{/admin/userList(page=${userList.number - 1}, size=${userList.size})}" th:if="${!userList.first}">&laquo;</a>
+            <a th:each="pageNum : ${#numbers.sequence(1, userList.totalPages)}"
+               th:href="@{/admin/userList(page=${pageNum - 1}, size=${userList.size})}"
+               th:text="${pageNum}"
+               th:classappend="${pageNum == userList.number + 1} ? 'active'"></a>
+            <a th:href="@{/admin/userList(page=${userList.number + 1}, size=${userList.size})}" th:if="${!userList.last}">&raquo;</a>
+        </div>
+    </div>
+</html>

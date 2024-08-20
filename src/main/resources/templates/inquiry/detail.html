@@ -105,10 +105,8 @@
                     <div>
                         <strong>작성일자:</strong> <span th:text="${#dates.format(inquiry.createdTime, 'yyyy-MM-dd')}"></span>
                     </div>
-                     <div class="detail-action-links">
-                        <!-- 수정 버튼 -->
+                      <!-- 수정 버튼 -->
                         <a th:if="${memberId == inquiry.memberId}" th:href="@{/inquiry/updateForm/{inquiryId}(inquiryId=${inquiry.inquiryId})}">수정</a>
-                        
                         <!-- 삭제 폼 -->
                         <form th:if="${memberId == inquiry.memberId}" th:action="@{/inquiry/deletePro/{inquiryId}(inquiryId=${inquiry.inquiryId})}" method="post" style="display:inline;">
                             <button type="submit">삭제</button>
@@ -122,6 +120,7 @@
                 <!-- 답변 목록 -->
                 <div class="detail-reply-section">
                     <div class="detail-replies">
+
                         <h2>답변 목록</h2>
                         <div th:each="reply : ${inquiry.replies}">
                             <div>
@@ -133,7 +132,7 @@
                             </div>
                         </div>
                     </div>
-                  
+
                     <!-- 답변 작성 폼 -->
                    <div class="detail-reply-form" th:if="${#authorization.expression('hasRole(''ROLE_MANAGER'')')}">                    
                         <h2>답변 작성</h2>
@@ -150,7 +149,7 @@
                      </div>
                 
                  <!-- 답변 작성 권한이 없는 사용자에게 표시할 메시지 -->
-                <div th:unless="${#authorization.expression('hasRole(''ROLE_MANAGER'')')}">
+		         <div th:unless="${#authorization.expression('hasRole(''ROLE_MANAGER'')')}">
                     <p>답변 작성 권한이 없습니다.</p>
                 </div>
             </div>

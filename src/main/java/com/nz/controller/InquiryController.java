@@ -61,7 +61,7 @@ public class InquiryController {
 	public String detail(@PathVariable("inquiryId") int inquiryId, Principal principal, Model model) {
 	    InquiryDTO inquiry = inquiryService.getInquiryWithRepliesById(inquiryId);
 	    model.addAttribute("inquiry", inquiry);
-	    
+
 	    if (principal != null) {
 	    	Long memberId = userService.getUserByMemberId(principal.getName());
 	        model.addAttribute("memberId",memberId);

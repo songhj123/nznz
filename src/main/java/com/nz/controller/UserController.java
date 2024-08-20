@@ -74,7 +74,7 @@ public class UserController {
     @GetMapping("/userDelete")
 	@PreAuthorize("isAuthenticated()")
 	public String userDeleteForm() {
-		return "userDeleteForm";
+		return "auth/userDeleteForm";
 	}
 	
 	@PostMapping("/userDelete")
@@ -110,5 +110,66 @@ public class UserController {
         UserEntity user = userService.findById(memberId);
         model.addAttribute("user", user);
         return "user/mypage";
+    }
+    
+ // 아이디 찾기 페이지
+    @GetMapping("/findId")
+    public String showFindIdPage() {
+        return "auth/findId";  // findId.html로 이동
+    }
+
+    // 아이디 찾기 처리
+    @PostMapping("/findIdResult")
+    public String findId(@RequestParam("email") String email, Model model) {
+        try {
+            String username = userService.findUsernameByEmail(email);
+            model.addAttribute("username", username);
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+        }
+        return "auth/findIdResult";  // findIdResult.html로 이동
+    }
+
+    // 비밀번호 재설정 페이지
+    @GetMapping("/resetPassword")
+    public String showResetPasswordPage() {
+        return "auth/resetPassword";  // resetPassword.html로 이동
+    }
+
+    // 비밀번호 재설정 처리
+    @PostMapping("/resetPasswordResult")
+    public String resetPassword(@RequestParam("username") String username,
+                                @RequestParam("email") String email,
+                                Model model) {
+        try {
+            String tempPassword = userService.resetPassword(username, email);
+            model.addAttribute("tempPassword", tempPassword);
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+        }
+        return "auth/resetPasswordResult";  // resetPasswordResult.html로 이동
+    }
+    
+ // 비밀번호 변경 페이지
+    @GetMapping("/changePassword")
+    @PreAuthorize("isAuthenticated()")
+    public String showChangePasswordPage() {
+        return "auth/changePassword";  // changePassword.html로 이동
+    }
+
+    // 비밀번호 변경 처리
+    @PostMapping("/changePassword")
+    @PreAuthorize("isAuthenticated()")
+    public String changePassword(@RequestParam("oldPassword") String oldPassword,
+                                 @RequestParam("newPassword") String newPassword,
+                                 Principal principal, Model model) {
+        try {
+            String username = principal.getName();
+            userService.changePassword(username, oldPassword, newPassword);
+            model.addAttribute("message", "비밀번호가 변경되었습니다.");
+        } catch (RuntimeException e) {
+            model.addAttribute("error", e.getMessage());
+        }
+        return "auth/changePasswordResult";  // changePasswordResult.html로 이동
     }
 }

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>아이디 찾기</title>
+    <link rel="stylesheet" href="/static/sstyle.css">
+</head>
+<body>
+<div layout:fragment="content">
+    <h2>아이디 찾기</h2>
+    <form th:action="@{/user/findIdResult}" method="post">
+        <label for="email">이메일:</label>
+        <input type="email" id="email" name="email" required>
+        <button type="submit">아이디 찾기</button>
+    </form>
+
+    <div th:if="${username}">
+        <p>아이디: <span th:text="${username}"></span></p>
+    </div>
+    
+    <div th:if="${error}">
+        <p th:text="${error}" style="color:red;"></p>
+    </div>
+</div>
+</body>
+</html>

@@ -76,7 +76,11 @@ public class UserEntity implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        boolean nonLocked = !role.equals("ROLE_SUSPENDED");
+        if (!nonLocked) {
+            System.out.println("계정이 잠겨 있습니다: " + this.username); // 로그 출력
+        }
+        return nonLocked;
     }
 
     @Override
@@ -88,4 +92,6 @@ public class UserEntity implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+    
+    
 }
