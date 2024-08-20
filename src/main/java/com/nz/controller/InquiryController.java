@@ -39,6 +39,7 @@ public class InquiryController {
 	}
 	
 	@PostMapping("writePro")
+	@PreAuthorize("isAuthenticated()")  // 로그인 여부 확인
 	public String writePro(@ModelAttribute InquiryDTO inquiryDTO, Principal principal) {
 		 String username = principal.getName();
 	     UserDTO user = userService.readUsername(username);
@@ -67,6 +68,7 @@ public class InquiryController {
 	    }
 	    return "inquiry/detail";
 	}
+
 	
 	@GetMapping("updateForm/{inquiryId}")
 	@PreAuthorize("isAuthenticated()")
