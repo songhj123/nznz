@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="card mb-3">
                     <img src="${imageUrl}" class="card-img-top" alt="Property Image">
                     <div class="card-body">
-                        <h5 class="card-title">${property.propertyNum}</h5>
+                        <h5 class="card-title">매물번호 : ${property.propertyId}</h5>
                         <p class="card-text">건물명: ${property.buildingName}</p>
                         <p class="card-text">주소: ${property.propertyAddress}</p>
                         <p class="card-text">가격: ${property.monthlyRent+" / "+property.deposit}</p>
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function showPropertyDetails(property) {
-        document.getElementById('modalTitle').innerText = property.propertyNum || "No Title";
+        document.getElementById('modalTitle').innerText = '매물번호 : ' +(property.propertyId || "No Title");
         document.getElementById('modalAddress').innerText = '주소: ' + (property.propertyAddress || "No Address");
         document.getElementById('modalPrice').innerText = '가격: ' + (property.monthlyRent+" / "+property.deposit || "No Price");
         document.getElementById('propertyDetailsLink').href = `/property/${property.propertyId}`;
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('modalDetailAddress').innerText = '주소: ' + (property.propertyAddress || "No Address");
         document.getElementById('modalDetailSize').innerText = '면적: ' + (property.sizePyeong || "No Size");
         document.getElementById('modalDetailFloor').innerText = '층수: ' + (property.floor || "No Floor");
-        document.getElementById('modalDetailParking').innerText = '주차: ' + (property.parking || "No Parking");
+        document.getElementById('modalDetailParking').innerText = '주차: ' + (property.propertyOption.parking || "No Parking");
         document.getElementById('modalDetailPrice').innerText = '관리비: ' + (property.maintenanceFee || "No Maintenance Fee");
         
         // 입주일 포맷팅
@@ -98,10 +98,27 @@ document.addEventListener('DOMContentLoaded', function() {
         var formattedDate = availableDate.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
         document.getElementById('modalDetailMoveInDate').innerText = '입주일: ' + formattedDate;
 
-        document.getElementById('modalOptions').innerText = property.options || "No Options";
-        document.getElementById('modalSecurity').innerText = property.security || "No Security";
-        document.getElementById('modalCharacteristics').innerText = property.characteristics || "No Characteristics";
-        document.getElementById('modalNearbyFacilities').innerText = property.nearbyFacilities || "No Nearby Facilities";
+        // 옵션 반복문 처리
+	    var options = property.propertyOption || [];
+	    var heatingSystem = [];
+	    var coolingSystem = [];
+	    var livingFacilities = [];
+	    var securityFacilities = [];
+	    var propertyFeatures = [];
+	
+	    options.forEach(option => {
+	        heatingSystem.push(option.heatingSystem || "No Heating");
+	        coolingSystem.push(option.coolingSystem || "No Cooling");
+	        livingFacilities.push(option.livingFacilities || "No Facilities");
+	        securityFacilities.push(option.securityFacilities || "No Security");
+	        propertyFeatures.push(option.propertyFeatures || "No Features");
+	    });
+	
+	    document.getElementById('modalOptions').innerText = heatingSystem.join(', ');
+	    document.getElementById('modalOptions').innerText = coolingSystem.join(', ');
+	    document.getElementById('modalOptions').innerText = livingFacilities.join(', ');
+	    document.getElementById('modalSecurity').innerText = securityFacilities.join(', ');
+	    document.getElementById('modalCharacteristics').innerText = propertyFeatures.join(', ');
 
         var modal = new bootstrap.Modal(document.getElementById('propertyModal'));
         modal.show();
@@ -161,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="card mb-3">
                     <img src="${imageUrl}" class="card-img-top" alt="Property Image">
                     <div class="card-body">
-                        <h5 class="card-title">${property.propertyNum}</h5>
+                        <h5 class="card-title">매물번호 : ${property.propertyId}</h5>
                         <p class="card-text">건물명: ${property.buildingName}</p>
                         <p class="card-text">주소: ${property.propertyAddress}</p>
                         <p class="card-text">가격: ${property.monthlyRent+" / "+property.deposit}</p>
