@@ -24,9 +24,11 @@ import com.nz.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PropertyService {
 
     
@@ -209,9 +211,11 @@ public class PropertyService {
         propertyIds.forEach(id -> {
             PropertyEntity property = propertyRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid property ID: " + id));
+            
+            log.info("Updating property ID {} to status {}", id, status); // 로그 추가
             property.setProcessingStatus(status);
             propertyRepository.save(property);
-        
+            log.info("Saved property ID {} with status {}", id, status); // 로그 추가
         
         UserEntity user = userRepository.findById(property.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid member ID: " + property.getMemberId()));
@@ -219,6 +223,7 @@ public class PropertyService {
             String title = "매물 상태 변경 알림";
             String message = "고객님의 매물(ID: " + property.getPropertyNum() + ")이 '" + status + "' 상태로 변경되었습니다.";
             alarmService.createNotificationForUser(user, title, message);
+            log.info("Notification sent to user ID {}", user.getMemberID()); // 로그 추가
         });
     }
     

@@ -9,7 +9,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     console.log('Properties Array:', properties); // properties 배열 확인
 
-    var positions = properties.map(function(property) {
+    var positions = properties
+    .filter(function(property) {
+        return property.processingStatus === '승인';
+    })
+    .map(function(property) {
         return {
             id: property.propertyId,
             title: property.propertyNum,
@@ -19,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
             propertyImageList: property.propertyImageList || []
         };
     });
+
 
     var markers = positions.map(function(position) {
         return new kakao.maps.Marker({
@@ -36,10 +41,14 @@ document.addEventListener('DOMContentLoaded', function() {
     clusterer.addMarkers(markers);
 
     function addPropertiesToList(properties) {
-        var listContainer = document.getElementById('list');
-        listContainer.innerHTML = ''; // 기존 리스트를 초기화합니다.
+    var listContainer = document.getElementById('list');
+    listContainer.innerHTML = ''; // 기존 리스트를 초기화합니다.
 
-        properties.forEach(function(property) {
+    properties
+        .filter(function(property) {
+            return property.processingStatus === '승인';
+        })
+        .forEach(function(property) {
             var imageUrl = property.propertyImageList.length > 0 ? "/display?filename=" + property.propertyImageList[0].imageStoredName : "/resource/image/defaultImage.png";
 
             var listItem = document.createElement('div');
@@ -59,7 +68,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             listContainer.appendChild(listItem);
         });
-    }
+}
+
 
     function showPropertyDetails(property) {
         document.getElementById('modalTitle').innerText = '매물번호 : ' +(property.propertyId || "No Title");
@@ -138,14 +148,18 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function updateMarkers() {
-        var bounds = map.getBounds();
-        var swLatLng = bounds.getSouthWest();
-        var neLatLng = bounds.getNorthEast();
+    var bounds = map.getBounds();
+    var swLatLng = bounds.getSouthWest();
+    var neLatLng = bounds.getNorthEast();
 
-        fetch(`/properties/within?southWestLat=${swLatLng.getLat()}&southWestLng=${swLatLng.getLng()}&northEastLat=${neLatLng.getLat()}&northEastLng=${neLatLng.getLng()}`)
-            .then(response => response.json())
-            .then(properties => {
-                var positions = properties.map(property => ({
+    fetch(`/properties/within?southWestLat=${swLatLng.getLat()}&southWestLng=${swLatLng.getLng()}&northEastLat=${neLatLng.getLat()}&northEastLng=${neLatLng.getLng()}`)
+        .then(response => response.json())
+        .then(properties => {
+            var positions = properties
+                .filter(function(property) {
+                    return property.processingStatus === '승인';
+                })
+                .map(property => ({
                     id: property.propertyId,
                     title: property.propertyNum,
                     latlng: new kakao.maps.LatLng(property.latitude, property.longitude),
@@ -154,22 +168,30 @@ document.addEventListener('DOMContentLoaded', function() {
                     propertyImageList: property.propertyImageList || []
                 }));
 
-                var markers = positions.map(position => new kakao.maps.Marker({
-                    position: position.latlng,
-                    title: position.title
-                }));
+            var markers = positions.map(position => new kakao.maps.Marker({
+                position: position.latlng,
+                title: position.title
+            }));
 
-                clusterer.clear();
-                clusterer.addMarkers(markers);
+            clusterer.clear();
+            clusterer.addMarkers(markers);
 
-                updateList(properties);
-            });
-    }
+            updateList(properties.filter(function(property) {
+                return property.processingStatus === '승인';
+            }));
+        });
+}
+
 
     function updateList(properties) {
-        var listContainer = document.getElementById('list');
-        listContainer.innerHTML = '';
-        properties.forEach(property => {
+    var listContainer = document.getElementById('list');
+    listContainer.innerHTML = '';
+
+    properties
+        .filter(function(property) {
+            return property.processingStatus === '승인';
+        })
+        .forEach(property => {
             var imageUrl = property.propertyImageList.length > 0 ? "/display?filename=" + property.propertyImageList[0].imageStoredName : "/resource/image/defaultImage.png";
 
             var listItem = document.createElement('div');
@@ -189,7 +211,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             listContainer.appendChild(listItem);
         });
-    }
+}
+
 
     updateMarkers();
 
