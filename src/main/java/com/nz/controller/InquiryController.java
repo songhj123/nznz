@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.nz.data.InquiryDTO;
 import com.nz.data.PaginationDTO;
@@ -58,14 +59,34 @@ public class InquiryController {
 	}
 	
 	@GetMapping("detail/{inquiryId}")
-	public String detail(@PathVariable("inquiryId") int inquiryId, Principal principal, Model model) {
+	public String detail(@PathVariable("inquiryId") int inquiryId, Principal principal,
+			Model model,RedirectAttributes redirectAttributes) {
 	    InquiryDTO inquiry = inquiryService.getInquiryWithRepliesById(inquiryId);
-	    model.addAttribute("inquiry", inquiry);
-
-	    if (principal != null) {
-	    	Long memberId = userService.getUserByMemberId(principal.getName());
-	        model.addAttribute("memberId",memberId);
+	    // 로그인되지 않은 경우
+	    if (principal == null) {
+	        // 에러 메시지를 RedirectAttributes에 추가
+	        redirectAttributes.addFlashAttribute("errorMessage", "문의 내용을 확인할 수 있는 권한이 아닙니다.");
+	        return "redirect:/inquiry/list";  // 리스트 페이지로 리다이렉트
 	    }
+
+	    // Principal을 Authentication으로 캐스팅하여 권한 확인
+	    Authentication authentication = (Authentication) principal;
+	    String username = authentication.getName();
+	    UserDTO user = userService.readUsername(username);
+
+	    boolean isAuthor = inquiry.getMemberId().equals(user.getMemberId());
+	    boolean isAdmin = authentication.getAuthorities().stream()
+	                                     .anyMatch(auth -> auth.getAuthority().equals("ROLE_MANAGER"));
+
+	    // 작성자도 아니고 관리자도 아닌 경우
+	    if (!isAuthor && !isAdmin) {
+	        // 에러 메시지를 RedirectAttributes에 추가
+	        redirectAttributes.addFlashAttribute("errorMessage", "문의 내용을 확인할 수 있는 권한이 아닙니다.");
+	        return "redirect:/inquiry/list";  // 리스트 페이지로 리다이렉트
+	    }
+
+	    model.addAttribute("inquiry", inquiry);
+	    model.addAttribute("memberId", user.getMemberId());
 	    return "inquiry/detail";
 	}
 

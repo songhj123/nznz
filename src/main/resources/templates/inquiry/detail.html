@@ -84,6 +84,10 @@
     <header th:replace="layout/navbar :: navUp"></header>
     <header th:replace="layout/navbar :: navbar"></header>
 
+	<!-- 에러 메시지가 있을 경우 표시 -->
+    <div th:if="${errorMessage != null}">
+        <p th:text="${errorMessage}" style="color: red; text-align: center;"></p>
+    </div>
     <main class="flex-fill">
         <div layout:fragment="content">
             <h1>문의 상세내용</h1>
