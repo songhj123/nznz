@@ -70,7 +70,7 @@ public class ContractController {
         return "redirect:/contract/stage/" + contractId.toString();
     }
 
-    @PostMapping("/contract/applyAutomaticTransfer/{contractId}")
+    @GetMapping("/contract/applyAutomaticTransfer/{contractId}")
     @PreAuthorize("isAuthenticated()")
     public String applyAutomaticTransfer(@PathVariable("contractId") Long contractId) {
         contractService.applyAutomaticTransfer(contractId);

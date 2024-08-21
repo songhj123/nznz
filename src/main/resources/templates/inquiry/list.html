@@ -85,7 +85,7 @@
                 <td th:text="${inquiry.inquiryId}"></td>
                 <td th:text="${inquiry.type}"></td>
                 <td><a th:href="@{/inquiry/detail/{inquiryId}(inquiryId=${inquiry.inquiryId})}" th:text="${inquiry.title}"></a></td>
-                <td th:text="${inquiry.content}"></td>
+                <td th:text="'비공개'"></td>
                 <td th:text="${#dates.format(inquiry.createdTime, 'yyyy-MM-dd')}"></td>
 
 
