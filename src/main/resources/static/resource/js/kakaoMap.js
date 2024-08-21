@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
         listContainer.innerHTML = ''; // 기존 리스트를 초기화합니다.
 
         properties.forEach(function(property) {
-            var imageUrl = property.propertyImageList.length > 0 ? "/resource/image/" + property.propertyImageList[0].imageStoredName : "/resource/image/defaultImage.png";
+            var imageUrl = property.propertyImageList.length > 0 ? "/display?filename=" + property.propertyImageList[0].imageStoredName : "/resource/image/defaultImage.png";
 
             var listItem = document.createElement('div');
             listItem.className = 'list-group-item';
@@ -48,9 +48,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="card mb-3">
                     <img src="${imageUrl}" class="card-img-top" alt="Property Image">
                     <div class="card-body">
-                        <h5 class="card-title">${property.title}</h5>
-                        <p class="card-text">주소: ${property.address}</p>
-                        <p class="card-text">가격: ${property.price}</p>
+                        <h5 class="card-title">${property.propertyNum}</h5>
+                        <p class="card-text">건물명: ${property.buildingName}</p>
+                        <p class="card-text">주소: ${property.propertyAddress}</p>
+                        <p class="card-text">가격: ${property.monthlyRent+" / "+property.deposit}</p>
                     </div>
                 </div>`;
             listItem.addEventListener('click', function() {
@@ -63,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function showPropertyDetails(property) {
         document.getElementById('modalTitle').innerText = property.propertyNum || "No Title";
         document.getElementById('modalAddress').innerText = '주소: ' + (property.propertyAddress || "No Address");
-        document.getElementById('modalPrice').innerText = '가격: ' + (property.price || "No Price");
+        document.getElementById('modalPrice').innerText = '가격: ' + (property.monthlyRent+" / "+property.deposit || "No Price");
         document.getElementById('propertyDetailsLink').href = `/property/${property.propertyId}`;
 
         // Carousel 이미지 추가
@@ -152,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var listContainer = document.getElementById('list');
         listContainer.innerHTML = '';
         properties.forEach(property => {
-            var imageUrl = property.propertyImageList.length > 0 ? "/resource/image/" + property.propertyImageList[0].imageStoredName : "/resource/image/defaultImage.png";
+            var imageUrl = property.propertyImageList.length > 0 ? "/display?filename=" + property.propertyImageList[0].imageStoredName : "/resource/image/defaultImage.png";
 
             var listItem = document.createElement('div');
             listItem.className = 'list-group-item';
@@ -161,8 +162,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     <img src="${imageUrl}" class="card-img-top" alt="Property Image">
                     <div class="card-body">
                         <h5 class="card-title">${property.propertyNum}</h5>
+                        <p class="card-text">건물명: ${property.buildingName}</p>
                         <p class="card-text">주소: ${property.propertyAddress}</p>
-                        <p class="card-text">가격: ${property.price}</p>
+                        <p class="card-text">가격: ${property.monthlyRent+" / "+property.deposit}</p>
                     </div>
                 </div>`;
             listItem.addEventListener('click', function() {
