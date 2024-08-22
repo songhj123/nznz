@@ -272,6 +272,7 @@ public class PropertyService {
         existingProperty.setStatus(propertyDTO.getStatus());
         existingProperty.setShortDescription(propertyDTO.getShortDescription());
         existingProperty.setLongDescription(propertyDTO.getLongDescription());
+        existingProperty.setProcessingStatus("승인대기");
 
         // 옵션 업데이트
         if (propertyDTO.getPropertyOption() != null && !propertyDTO.getPropertyOption().isEmpty()) {

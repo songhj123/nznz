@@ -186,7 +186,7 @@
                     <h5>사진 등록</h5>
                     <div id="fileInputContainer">
                         <div class="file-input-group">
-                            <input type="file" th:field="*{propertyImageList}" accept="image/*" multiple onchange="previewImages(event)">
+                            <input type="file" id="propertyImageList" name="propertyImageList" accept="image/*" multiple onchange="previewImages(event)">
                         </div>
                     </div>
                     <button type="button" onclick="addFileInput()">파일 추가</button>
@@ -212,7 +212,7 @@
                     <h5>월세: <span th:text="${property.monthlyRent != null ? property.monthlyRent : 'N/A'}"></span></h5>
                     <p><strong>방/욕실: </strong><span th:text="${property.roomInfo != null ? property.roomInfo : 'N/A'}"></span></p>
                     <p><strong>위치: </strong><span th:text="${property.propertyAddress != null ? property.propertyAddress : 'N/A'}"></span></p>  
-                    <button type="submit" class="btn btn-outline-secondary mt-2">저장</button>
+                    <button type="submit" class="btn btn-outline-secondary mt-2" onclick="confirmAndSubmit(event)">저장</button>
                 </div>
             </div>
         </div>
@@ -302,6 +302,17 @@
 
                 newFileInput.appendChild(fileInput);
                 fileInputContainer.appendChild(newFileInput);
+            }
+            
+            function confirmAndSubmit(event) {
+                event.preventDefault(); // 폼의 기본 제출 동작을 막음
+                
+                const userConfirmed = confirm("매물 정보를 저장하시겠습니까? 확인버튼을 누를시 승인대기 상태로 변경됩니다.");
+                
+                if (userConfirmed) {
+                    // 사용자가 확인 버튼을 누른 경우 폼을 제출함
+                    event.target.form.submit();
+                }
             }
         </script>
     </div>
