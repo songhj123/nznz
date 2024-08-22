@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -33,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("myProperty")
+@PreAuthorize("isAuthenticated()")
 public class MyPropertyController {
 
 	private final String uploadPath = "C:\\spring\\upload\\";
@@ -43,6 +45,11 @@ public class MyPropertyController {
 	public String myPropertyList(@RequestParam(value = "page", defaultValue = "0") int page,
 	   				             @RequestParam(value = "size", defaultValue = "10") int size,
 					            Model model, Principal principal) {
+		
+		 if (page < 0) {
+		        page = 0;  // 페이지 번호가 음수인 경우 0으로 설정
+		    }
+
 		Page<PropertyDTO> properties = propertyService.getPropertiesByMember(principal.getName(), PageRequest.of(page, size));
 		model.addAttribute("properties", properties);
 		return "user/myPropertyList";
