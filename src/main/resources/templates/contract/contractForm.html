@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko" layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>계약 진행</title>
+    <link rel="stylesheet" th:href="@{/resource/css/bootstrap.min.css}">
+</head>
+<body>
+<div layout:fragment="content" class="container mt-5">
+    <h2>계약 진행</h2>
+    <form action="/contract/contracts" method="post">
+        <input type="hidden" name="propertyId" th:value="${propertyId}">
+        <input type="hidden" name="tenantId" th:value="${tenantId}">
+
+        <div class="form-group">
+            <label for="contractDate">계약일</label>
+            <input type="date" class="form-control" id="contractDate" name="contractDate" required>
+        </div>
+        <div class="form-group">
+            <label for="expirationDate">만료일</label>
+            <input type="date" class="form-control" id="expirationDate" name="expirationDate" required>
+        </div>
+        <button type="submit" class="btn btn-primary">계약 진행</button>
+    </form>
+</div>
+</body>
+</html>

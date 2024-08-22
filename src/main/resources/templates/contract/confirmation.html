@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko"layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>계약 완료</title>
+    <link rel="stylesheet" th:href="@{/resource/css/bootstrap.min.css}">
+</head>
+<body>
+<div layout:fragment="content" >
+<div class="container mt-5" >
+    <h2>계약이 성공적으로 완료되었습니다!</h2>
+    <div class="alert alert-success">
+        <strong>계약 ID:</strong> <span th:text="${contract.contractId}"></span><br>
+        <strong>매물 ID:</strong> <span th:text="${contract.propertyId.propertyId}"></span><br>
+        <strong>임대인:</strong> <span th:text="${contract.landlordId.name}"></span><br>
+        <strong>임차인:</strong> <span th:text="${contract.tenantId.name}"></span><br>
+        <strong>계약일:</strong> <span th:text="${contract.contractDate}"></span><br>
+        <strong>계약 만료일:</strong> <span th:text="${contract.expirationDate}"></span><br>
+        <strong>계약 상태:</strong> <span th:text="${contract.stage}"></span>
+    </div>
+    <div class="mt-4">
+        <a href="/" class="btn btn-primary">홈으로 돌아가기</a>
+        <a href="/user/myContract" class="btn btn-secondary">다른 계약 보기</a>
+    </div>
+</div>
+</div>
+</body>
+</html>
