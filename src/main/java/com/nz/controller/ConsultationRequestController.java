@@ -77,4 +77,18 @@ public class ConsultationRequestController {
             return "redirect:/consultationRequest/list"; // 에러 발생 시 리디렉션할 페이지
         }
     }
+    
+    @GetMapping("/consultation/{id}/complete")
+    public String completeConsultation(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+        // 요청 정보를 가져와서 상태를 업데이트하고 propertyId를 얻습니다.
+        ConsultationRequestDTO consultationRequest = consultationRequestService.getConsultationRequestById(id);
+        Long propertyId = consultationRequest.getPropertyId(); // propertyId 추출
+
+        // 상태를 '방문상담완료'로 업데이트
+        consultationRequestService.updateStatus(List.of(id), "방문상담완료");
+
+        // 리다이렉트 할 때 propertyId를 사용
+        redirectAttributes.addFlashAttribute("message", "방문 상담이 완료되었습니다.");
+        return "redirect:/reservations/" + propertyId;
+    }
 }

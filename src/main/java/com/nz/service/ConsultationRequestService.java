@@ -10,13 +10,14 @@ import com.nz.entity.UserEntity;
 import com.nz.repository.ConsultationRequestRepository;
 import com.nz.repository.UserRepository;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -76,6 +77,23 @@ public class ConsultationRequestService {
             String message = "고객님의 방문 상담 신청이 '" + status + "' 상태로 변경되었습니다."; 
             alarmService.createNotificationForUser(user, title, message);
         });
+    }
+    
+    
+    
+    @Transactional(readOnly = true)
+    public List<ConsultationRequestDTO> getReservationsByPropertyId(Long propertyId) {
+        List<ConsultationRequestEntity> requests = consultationRequestRepository.findByPropertyId(propertyId);
+        return requests.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+    
+    @Transactional(readOnly = true)
+    public ConsultationRequestDTO getConsultationRequestById(Long id) {
+        ConsultationRequestEntity entity = consultationRequestRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("해당 ID의 상담 요청을 찾을 수 없습니다: " + id));
+        return convertToDTO(entity);
     }
 }
 
