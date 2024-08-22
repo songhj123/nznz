@@ -111,6 +111,18 @@ public class MyPropertyController {
 
 	    return "redirect:/myProperty/list"; 
 	}
+	
+	@GetMapping("deactivate/{id}")
+	public String myPropertyDeactivate(@PathVariable("id") List<Long> id) {
+		propertyService.updatePropertyStatus(id, "비활성화");
+		return "redirect:/myProperty/list";
+	}
+	
+	@GetMapping("activate/{id}")
+	public String myPropertyActivate(@PathVariable("id") List<Long> id) {
+		propertyService.updatePropertyStatus(id, "승인대기");
+		return "redirect:/myProperty/list";
+	}
 
 
 }
