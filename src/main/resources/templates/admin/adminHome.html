@@ -9,6 +9,7 @@
 			text-decoration: none;
 			transform: translateY(-5px);
 		}
+		
     </style>
 </head>
 <body>
@@ -30,16 +31,21 @@
                     </div>
                 </section>
                 <section class="row">
-                    <div class="col-md-6 mb-4">
+                    <div class="col-md-4 mb-4">
                         <a href="/admin/disinfectionStatus" class="card p-4 text-center d-block">방역 관리</a>
                     </div>
-                    <div class="col-md-6 mb-4">
+                    <div class="col-md-4 mb-4">
                         <a href="/admin/alarmPush" class="card p-4 text-center d-block">알림 전송</a>
                     </div>
-                    <div class="col-md-6 mb-4">
-                        <a href="/favorites" class="card p-4 text-center d-block">고객 지원</a>
+                    <div class="col-md-4 mb-4">
+                        <a th:href="@{/notice/list}" class="card p-4 text-center d-block">공지사항 목록</a>
                     </div>
-                    
+                    <div class="col-md-4 mb-4">
+                        <a th:href="@{/faq/list}" class="card p-4 text-center d-block">FAQ 목록</a>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <a th:href="@{/inquiry/list}" class="card p-4 text-center d-block">문의하기 목록</a>
+                    </div>
                 </section>
             </div>
         </main>

@@ -221,7 +221,7 @@ public class PropertyService {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid member ID: " + property.getMemberId()));
             
             String title = "매물 상태 변경 알림";
-            String message = "고객님의 매물(ID: " + property.getPropertyNum() + ")이 '" + status + "' 상태로 변경되었습니다.";
+            String message = "고객님의 매물(ID: " + property.getPropertyId() + ")이 '" + status + "' 상태로 변경되었습니다.";
             alarmService.createNotificationForUser(user, title, message);
             log.info("Notification sent to user ID {}", user.getMemberID()); // 로그 추가
         });

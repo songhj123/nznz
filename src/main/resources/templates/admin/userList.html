@@ -116,6 +116,7 @@
                         <option value="">전체</option>
                         <option value="ROLE_MANAGER" th:selected="${currentRole == 'ROLE_MANAGER'}">관리자</option>
                         <option value="ROLE_USER" th:selected="${currentRole == 'ROLE_USER'}">사용자</option>
+                        <option value="ROLE_SUSPENDED" th:selected="${currentRole == 'ROLE_SUSPENDED'}">활동제한</option>
                     </select>
                     <button type="submit" class="btn btn-primary" style="margin-right: 20px">필터 적용</button>
                 </form>

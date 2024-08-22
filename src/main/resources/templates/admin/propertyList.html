@@ -51,10 +51,8 @@
 					        
 					        <label for="filterField">검색 기준:</label>
 		                        <select id="filterField" name="filterField">
-		                            <option value="propertyNum" th:selected="${filterField == 'propertyNum'}">매물번호</option>
 		                            <option value="propertyAddress" th:selected="${filterField == 'propertyAddress'}">주소</option>
 		                            <option value="buildingName" th:selected="${filterField == 'buildingName'}">건물 이름</option>
-		                            <option value="roomInfo" th:selected="${filterField == 'roomInfo'}">방 정보</option>
 		                        </select>
 					            <input type="text" id="searchKeyword" name="searchKeyword" placeholder="키워드" th:value="${searchKeyword}">
 					        <button type="submit" class="btn btn-primary">필터 적용</button>
@@ -67,10 +65,9 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>번호</th>
+                                <th>매물번호</th>
                                 <th>매물유형</th>
                                 <th>등록 일시</th>
-                                <th>매물번호</th>
                                 <th>주소 / 건물 이름</th>
                                 <th>임대인(아이디)</th>
                                 <th>월세/보증금</th>
@@ -86,7 +83,6 @@
                                 <td th:text="${property.propertyId}"></td>
                                 <td th:text="${property.propertyType}"></td>
                                 <td th:text="${#dates.format(property.registrationDate, 'yyyy.MM.dd HH:mm')}"></td>
-                                <td th:text="${property.propertyNum}"></td>
                                 <td th:text="${property.propertyAddress}+' / '+${property.buildingName}"></td>
                                 <td th:text="${property.name}+'('+${property.username}+')'"></td>
                                 <td th:text="${property.monthlyRent}+' / '+${property.deposit}"></td>
