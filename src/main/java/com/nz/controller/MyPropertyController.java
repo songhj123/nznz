@@ -27,7 +27,9 @@ import com.nz.service.UserService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("myProperty")
@@ -56,29 +58,37 @@ public class MyPropertyController {
 	@PostMapping("/update/{id}")
 	public String editProperty(
 	    @PathVariable("id") Long id, 
-	    @ModelAttribute @Valid PropertyDTO propertyDTO, 
+	    @Valid PropertyDTO propertyDTO, 
 	    BindingResult bindingResult, 
 	    Model model, 
 	    @RequestParam("propertyImageList") List<MultipartFile> propertyImageList, 
 	    Principal principal) {
 
-//	    if (bindingResult.hasErrors()) {
-//	    	model.addAttribute("property", propertyDTO);
-//	        return "user/myPropertyUpdate"; 
-//	    }
+	    // 유효성 검사 오류가 있는지 확인하고, 있을 경우 업데이트 페이지로 다시 이동
+	    if (bindingResult.hasErrors()) {
+	        bindingResult.getAllErrors().forEach(error -> {
+	            log.error("Validation error: {}", error.getDefaultMessage());
+	        });
+	        model.addAttribute("property", propertyDTO);
+	        return "user/myPropertyUpdate"; 
+	    }
 
+	    // PropertyOption 초기화
 	    if (propertyDTO.getPropertyOption() == null) {
 	        propertyDTO.setPropertyOption(new ArrayList<>());
 	    }
 
+	    // PropertyImageList 초기화
 	    if (propertyDTO.getPropertyImageList() == null) {
 	        propertyDTO.setPropertyImageList(new ArrayList<>());
 	    }
 
+	    // MultipartFile 리스트를 PropertyImageDTO 리스트로 변환
 	    for (MultipartFile mf : propertyImageList) {
 	        if (!mf.isEmpty()) {
+	            String originalFilename = null;
 	            try {
-	                String originalFilename = mf.getOriginalFilename();
+	                originalFilename = mf.getOriginalFilename();
 	                Path filePath = Paths.get(uploadPath + originalFilename);
 	                Files.write(filePath, mf.getBytes());
 	                propertyDTO.getPropertyImageList().add(
@@ -88,7 +98,7 @@ public class MyPropertyController {
 	                        .build()
 	                );
 	            } catch (Exception e) {
-	                e.printStackTrace();
+	                log.error("Error saving image file: {}", originalFilename, e);
 	            }
 	        }
 	    }
@@ -96,6 +106,7 @@ public class MyPropertyController {
 	    Long memberId = userService.getUserByMemberId(principal.getName());
 	    propertyDTO.setMemberId(memberId);
 
+	    // 서비스에서 매물 업데이트
 	    propertyService.updateProperty(id, propertyDTO);
 
 	    return "redirect:/myProperty/list"; 
