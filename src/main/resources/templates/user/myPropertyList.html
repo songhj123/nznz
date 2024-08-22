@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <title>내 매물 목록</title>
     <link rel="stylesheet" th:href="@{/resource/css/bootstrap.min.css}">
+    <script th:inline="javascript">
+        function confirmAction(actionUrl, message) {
+            if (confirm(message)) {
+                window.location.href = actionUrl;
+            }
+        }
+    </script>
 </head>
 <body>
 <div layout:fragment="content">
@@ -33,7 +40,15 @@
                         <td>
                             <a th:href="@{/property/{id}(id=${property.propertyId})}" class="btn btn-primary btn-sm">보기</a>
                             <a th:href="@{/myProperty/update/{id}(id=${property.propertyId})}" class="btn btn-warning btn-sm">수정</a>
-                            <a th:href="@{/myProperty/delete/{id}(id=${property.propertyId})}" class="btn btn-danger btn-sm">삭제</a>
+                             <a th:if="${property.processingStatus == '비활성화'}" 
+                               href="javascript:void(0);" 
+                               class="btn btn-success btn-sm" 
+                               th:onclick="|confirmAction('@{/myProperty/activate/{id}(id=${property.propertyId})}', '승인요청을 하시겠습니까?')|">승인요청</a>
+
+                            <a th:if="${property.processingStatus != '비활성화'}" 
+                               href="javascript:void(0);" 
+                               class="btn btn-danger btn-sm" 
+                               th:onclick="|confirmAction('@{/myProperty/deactivate/{id}(id=${property.propertyId})}', '매물을 비활성화 하시겠습니까? 다시 활성화를 위해선 재승인이 필요합니다.')|">비활성화</a>
                         </td>
                     </tr>
                 </tbody>
