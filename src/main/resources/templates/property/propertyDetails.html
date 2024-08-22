@@ -111,8 +111,14 @@
                     <h5>월세: <span th:text="${property.monthlyRent != null ? property.monthlyRent : 'N/A'}"></span></h5>
                     <p><strong>방/욕실: </strong><span th:text="${property.roomInfo != null ? property.roomInfo : 'N/A'}"></span></p>
                     <p><strong>위치: </strong><span th:text="${property.propertyAddress != null ? property.propertyAddress : 'N/A'}"></span></p>  
-                    <button class="btn btn-outline-secondary mt-2" th:onclick="'goToConsultationRequest(' + ${property.propertyId} + ')'">방문상담예약</button>
-                </div>
+					<div th:title="${disinfectionStatus != null && disinfectionStatus.disinfectionLevel == 2 ? '방문상담이 제한된 상태입니다.' : ''}">
+					    <button class="btn btn-outline-secondary mt-2" 
+					            th:disabled="${disinfectionStatus != null && disinfectionStatus.disinfectionLevel == 2}"
+					            th:onclick="'goToConsultationRequest(' + ${property.propertyId} + ')'">
+					        방문상담예약
+					    </button>
+					</div>             
+				</div>
             </div>
         </div>
         <script th:src="@{/resource/js/bootstrap.bundle.min.js}"></script>

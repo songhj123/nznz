@@ -28,6 +28,11 @@ public class DisinfectionStatusService {
         return disinfectionStatusRepository.findAllByOrderByUpdatedAtDesc(pageRequest)
             .map(this::convertToDTO);
     }
+    
+    public DisinfectionStatusDTO getLatestDisinfectionStatus() {
+        DisinfectionStatusEntity entity = disinfectionStatusRepository.findTopByOrderByUpdatedAtDesc();
+        return convertToDTO(entity);
+    }
 
     private DisinfectionStatusDTO convertToDTO(DisinfectionStatusEntity entity) {
         return DisinfectionStatusDTO.builder()
@@ -50,4 +55,6 @@ public class DisinfectionStatusService {
             .build();
         disinfectionStatusRepository.save(entity);
     }
+    
+    
 }

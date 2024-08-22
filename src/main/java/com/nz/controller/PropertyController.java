@@ -27,26 +27,29 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.nz.data.DisinfectionStatusDTO;
 import com.nz.data.PropertyDTO;
 import com.nz.data.PropertyImageDTO;
 import com.nz.data.UserDTO;
+import com.nz.service.ContractService;
+import com.nz.service.DisinfectionStatusService;
 import com.nz.service.PropertyService;
 import com.nz.service.UserService;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
+@RequiredArgsConstructor
 public class PropertyController {
     // 파일 업로드 경로
     private final String uploadPath = "C:\\spring\\upload\\"; 
-
-    @Autowired
-    private PropertyService propertyService;
-
-    @Autowired
-    private UserService userService;
+    
+    private final PropertyService propertyService;
+    private final UserService userService;
+    private final DisinfectionStatusService disinfectionStatusService;
 
     @GetMapping("/properties")
     public String getProperties(Model model) {
@@ -78,6 +81,11 @@ public class PropertyController {
         if (property == null) {
             return "redirect:/properties";  // 매물을 찾을 수 없을 경우 목록 페이지로 리디렉션
         }
+        
+        // 최신 방역 상태를 가져와 모델에 추가
+        DisinfectionStatusDTO disinfectionStatus = disinfectionStatusService.getLatestDisinfectionStatus();
+        model.addAttribute("disinfectionStatus", disinfectionStatus);
+        
         model.addAttribute("property", property);
         return "property/propertyDetails"; // 변경된 경로로 수정
     }

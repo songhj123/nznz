@@ -12,4 +12,6 @@ public interface DisinfectionStatusRepository extends JpaRepository<Disinfection
     List<DisinfectionStatusEntity> findAllOrderByUpdatedAtDesc();
 
     Page<DisinfectionStatusEntity> findAllByOrderByUpdatedAtDesc(Pageable pageable);
+    
+    DisinfectionStatusEntity findTopByOrderByUpdatedAtDesc();
 }
