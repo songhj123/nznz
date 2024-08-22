@@ -23,7 +23,8 @@
                 <h3>계약 상태</h3>
                 <p><strong>단계:</strong> <span th:text="${contract.stage}"></span></p>
                 <div class="mt-4">
-                    <a th:href="@{/contract/stage/{contractId}(contractId=${contract.contractId})}" class="btn contract-btn-primary">계약 진행하기</a>
+                    <a th:if="${contract.stage != '계약완료'}" th:href="@{/contract/stage/{contractId}(contractId=${contract.contractId})}" class="btn contract-btn-primary">계약 진행하기</a>
+                    
                 </div>
             </div>
         </div>
