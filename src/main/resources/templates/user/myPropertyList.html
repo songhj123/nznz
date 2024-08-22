@@ -11,11 +11,25 @@
             }
         }
     </script>
+    <style>
+        .pagination {
+            margin-top: 20px;
+            justify-content: center; /* 페이지 번호를 중앙으로 정렬 */
+        }
+        .no-properties {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
 <div layout:fragment="content">
     <div class="container mt-5">
         <h2>내 매물 목록</h2>
+        
+        <!-- 테이블 헤더는 항상 출력 -->
         <div class="table-responsive">
             <table class="table table-striped">
                 <thead>
@@ -29,7 +43,9 @@
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>
+                
+                <!-- 매물이 있는 경우 리스트 출력 -->
+                <tbody th:if="${properties.content.size() > 0}">
                     <tr th:each="property : ${properties.content}">
                         <td th:text="${property.propertyId}"></td>
                         <td th:text="${property.propertyType}"></td>
@@ -40,7 +56,7 @@
                         <td>
                             <a th:href="@{/property/{id}(id=${property.propertyId})}" class="btn btn-primary btn-sm">보기</a>
                             <a th:href="@{/myProperty/update/{id}(id=${property.propertyId})}" class="btn btn-warning btn-sm">수정</a>
-                             <a th:if="${property.processingStatus == '비활성화'}" 
+                            <a th:if="${property.processingStatus == '비활성화'}" 
                                href="javascript:void(0);" 
                                class="btn btn-success btn-sm" 
                                th:onclick="|confirmAction('@{/myProperty/activate/{id}(id=${property.propertyId})}', '승인요청을 하시겠습니까?')|">승인요청</a>
@@ -52,17 +68,30 @@
                         </td>
                     </tr>
                 </tbody>
+                
             </table>
-        </div>
-        <div class="pagination">
-            <a th:href="@{/myPropertyList(page=${properties.number - 1}, size=${properties.size})}" th:if="${!properties.first}">&laquo;</a>
-            <a th:each="pageNum : ${#numbers.sequence(1, properties.totalPages)}"
-               th:href="@{/myPropertyList(page=${pageNum - 1}, size=${properties.size})}"
-               th:text="${pageNum}"
-               th:classappend="${pageNum == properties.number + 1} ? 'active'"></a>
-            <a th:href="@{/myPropertyList(page=${properties.number + 1}, size=${properties.size})}" th:if="${!properties.last}">&raquo;</a>
-        </div>
+            <div th:if="${properties.content.size() == 0}" class="no-properties">
+		            내가 등록한 매물이 없습니다.
+		    </div>
+        </div>    
     </div>
+    <!-- 페이지네이션을 중앙에 정렬 -->
+    <div class="d-flex justify-content-center pagination">
+    <!-- 이전 페이지 링크 (첫 페이지가 아닌 경우에만 표시) -->
+		    <a th:if="${properties.number > 0}" 
+		       th:href="@{/myProperty/list(page=${properties.number - 1}, size=${properties.size})}">&laquo;</a>
+		
+		    <!-- 페이지 번호 링크 -->
+		    <a th:each="pageNum : ${#numbers.sequence(1, properties.totalPages)}"
+		       th:if="${pageNum > 0}"
+		       th:href="@{/myProperty/list(page=${pageNum - 1}, size=${properties.size})}"
+		       th:text="${pageNum}"
+		       th:classappend="${pageNum == properties.number + 1} ? 'active'"></a>
+		
+		    <!-- 다음 페이지 링크 (마지막 페이지가 아닌 경우에만 표시) -->
+		    <a th:if="${properties.number + 1 < properties.totalPages}" 
+		       th:href="@{/myProperty/list(page=${properties.number + 1}, size=${properties.size})}">&raquo;</a>
+		</div>
 </div>
 </body>
 </html>
