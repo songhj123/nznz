@@ -45,15 +45,15 @@ public class SecurityConfig {
                     .defaultSuccessUrl("/home")
                     .failureUrl("/user/loginForm?error=true")
             )
-            .oauth2Login(oauth2Login -> 
-            oauth2Login
-                .loginPage("/user/login")
-                .userInfoEndpoint(userInfoEndpoint -> 
-                    userInfoEndpoint
-                        .userService(customOAuth2UserService)
-                )
-                .defaultSuccessUrl("/home", true)
-            )
+//            .oauth2Login(oauth2Login -> 
+//            oauth2Login
+//                .loginPage("/user/login")
+//                .userInfoEndpoint(userInfoEndpoint -> 
+//                    userInfoEndpoint
+//                        .userService(customOAuth2UserService)
+//                )
+//                .defaultSuccessUrl("/home", true)
+//            )
             .logout(logout -> 
                 logout
                     .logoutRequestMatcher(new AntPathRequestMatcher("/users/logout"))
@@ -63,7 +63,7 @@ public class SecurityConfig {
             .exceptionHandling(exceptionHandling -> 
 	            exceptionHandling
 	                .authenticationEntryPoint((request, response, authException) -> {
-	                    response.sendRedirect("/user/login?auth=required");
+	                    response.sendRedirect("/user/none?auth=required");
 	                })
 	        );
         return http.build();

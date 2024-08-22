@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,13 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/user")
 public class UserController {
 
+	@Value("${kakao.client_id}")
+	private String client_id;
+	
+	@Value("${kakao.redirect_uri}")
+	private String redirect_uri;
+	
+	
     private final UserService userService;
     private final ContractService contractService;
 
@@ -186,8 +194,10 @@ public class UserController {
     }
     
     // 비로그인 처리
-    @GetMapping("/login")
-    public String showLoginPage() {
+    @GetMapping("/none")
+    public String showLoginPage(Model model) {
+		String location = "http://kauth.kakao.com/oauth/authorize?response_type=code&client_id="+client_id+"&redirect_uri="+redirect_uri;
+		model.addAttribute("location", location);
         return "auth/loginForm"; // loginForm.html 뷰를 반환
     }
 
