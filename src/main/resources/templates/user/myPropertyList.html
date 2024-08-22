@@ -40,7 +40,7 @@
                         <th>월세</th>
                         <th>보증금</th>
                         <th>상태</th>
-                        <th></th>
+                        <th>작업</th>
                     </tr>
                 </thead>
                 
@@ -65,6 +65,7 @@
                                href="javascript:void(0);" 
                                class="btn btn-danger btn-sm" 
                                th:onclick="|confirmAction('@{/myProperty/deactivate/{id}(id=${property.propertyId})}', '매물을 비활성화 하시겠습니까? 다시 활성화를 위해선 재승인이 필요합니다.')|">비활성화</a>
+                            <a th:href="@{/reservations/{propertyId}(propertyId=${property.propertyId})}" class="btn btn-info btn-sm">예약 신청 보기</a>
                         </td>
                     </tr>
                 </tbody>
