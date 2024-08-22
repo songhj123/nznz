@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.nz.data.ContractDTO;
 import com.nz.data.UserDTO;
@@ -79,11 +80,21 @@ public class UserController {
 	
 	@PostMapping("/userDelete")
 	@PreAuthorize("isAuthenticated()")
-	public String userDelete(@RequestParam("password")String password, Principal principal) {
+	public String userDelete(@RequestParam("password")String password, Principal principal
+			,@RequestParam("confirmPassword") String confirmPassword,
+            RedirectAttributes redirectAttributes) {
+		if(!password.equals(confirmPassword)) {
+	        redirectAttributes.addFlashAttribute("error", "비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+			return "redirect:/user/userDelete";
+		}
 		
-		this.userService.userDelete(principal.getName(), password);
-		
-		return "redirect:/user/logout";
+	    int ch = this.userService.userDelete(principal.getName(), password);
+	    if(ch==1) {	
+	        redirectAttributes.addFlashAttribute("success", true);
+	    }else {
+	        redirectAttributes.addFlashAttribute("error", "비밀번호가 틀렸습니다.");
+	    }
+		return "redirect:/user/userDelete";
 	}
     
     @GetMapping("/myContract")
@@ -118,16 +129,17 @@ public class UserController {
         return "auth/findId";  // findId.html로 이동
     }
 
-    // 아이디 찾기 처리
+    // 아이디 찾기 처리   
     @PostMapping("/findIdResult")
-    public String findId(@RequestParam("email") String email, Model model) {
+    public String findId(@RequestParam("email") String email, RedirectAttributes redirectAttributes,Model model) {
         try {
             String username = userService.findUsernameByEmail(email);
             model.addAttribute("username", username);
+            return "auth/findIdResult";  // 성공 시 결과 페이지로 리다이렉트
         } catch (RuntimeException e) {
-            model.addAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/user/findId";  // 실패 시 아이디 찾기 페이지로 리다이렉트
         }
-        return "auth/findIdResult";  // findIdResult.html로 이동
     }
 
     // 비밀번호 재설정 페이지
@@ -172,4 +184,11 @@ public class UserController {
         }
         return "auth/changePasswordResult";  // changePasswordResult.html로 이동
     }
+    
+    // 비로그인 처리
+    @GetMapping("/login")
+    public String showLoginPage() {
+        return "auth/loginForm"; // loginForm.html 뷰를 반환
+    }
+
 }
