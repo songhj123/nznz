@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ko" layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>예약 신청 목록</title>
+    <link rel="stylesheet" th:href="@{/resource/css/bootstrap.min.css}">
+</head>
+<body>
+<div layout:fragment="content">
+<div class="container mt-5" >
+    <h2>예약 신청 목록</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>신청 ID</th>
+                    <th>사용자 ID</th>
+                    <th>방문 일자</th>
+                    <th>방문 시간</th>
+                    <th>상태</th>
+                    <th>작업</th> <!-- 작업 컬럼 추가 -->
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="reservation : ${reservations}">
+                    <td th:text="${reservation.requestId}"></td>
+                    <td th:text="${reservation.memberId}"></td>
+                    <td th:text="${reservation.visitDate}"></td>
+                    <td th:text="${reservation.visitTime}"></td>
+                    <td th:text="${reservation.status}"></td>
+                    <td>
+                        <!-- 상태가 '신청중'일 때만 '방문 상담 완료' 버튼 표시 -->
+                        <a th:if="${reservation.status == '신청중'}" 
+                           th:href="@{/consultation/{id}/complete(id=${reservation.requestId})}" 
+                           class="btn btn-success btn-sm">방문 상담 완료</a>
+                        
+                        <!-- 상태가 '방문상담완료'일 때만 '계약 진행' 버튼 표시 -->
+                        <form th:if="${reservation.status == '방문상담완료'}" 
+								th:action="@{/contract/new}" 
+								method="post" 
+								style="display:inline;">
+							<input type="hidden" name="propertyId" th:value="${reservation.propertyId}" />
+							<input type="hidden" name="tenantId" th:value="${reservation.memberId}" />
+							<button type="submit" class="btn btn-primary btn-sm">계약 진행</button>
+						</form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+</body>
+</html>

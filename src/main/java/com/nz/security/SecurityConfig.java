@@ -1,5 +1,7 @@
 package com.nz.security;
 
+import java.net.URLEncoder;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,7 +32,7 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
            .csrf(csrf -> csrf
-              .ignoringRequestMatchers("/user/login")  // 특정 경로에서만 CSRF 비활성화
+              .ignoringRequestMatchers("/user/login","/contract/**")  // 특정 경로에서만 CSRF 비활성화
             )
             .authorizeHttpRequests(authorizeHttpRequests -> 
                 authorizeHttpRequests
@@ -41,6 +43,7 @@ public class SecurityConfig {
                 formLogin
                     .loginPage("/user/login")
                     .defaultSuccessUrl("/home")
+                    .failureUrl("/user/loginForm?error=true")
             )
             .oauth2Login(oauth2Login -> 
             oauth2Login
@@ -56,7 +59,13 @@ public class SecurityConfig {
                     .logoutRequestMatcher(new AntPathRequestMatcher("/users/logout"))
                     .logoutSuccessUrl("/home")
                     .invalidateHttpSession(true)
-            );
+            )
+            .exceptionHandling(exceptionHandling -> 
+	            exceptionHandling
+	                .authenticationEntryPoint((request, response, authException) -> {
+	                    response.sendRedirect("/user/login?auth=required");
+	                })
+	        );
         return http.build();
     }
 

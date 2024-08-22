@@ -132,6 +132,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var modal = new bootstrap.Modal(document.getElementById('propertyModal'));
         modal.show();
+        
+	    // 닫기 버튼("x")과 "Close 버튼"에 클릭 이벤트 추가
+	    document.querySelector('.btn-close').addEventListener('click', function() {
+	        modal.hide();
+	    });
+	
+	    document.querySelector('.btn-secondary').addEventListener('click', function() {
+	        modal.hide();
+	    });
     }
 
     // 초기 상태에서 모든 매물을 리스트에 추가합니다.

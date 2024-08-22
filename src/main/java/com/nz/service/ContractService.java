@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.nz.data.ContractDTO;
 import com.nz.data.PropertyDTO;
@@ -22,16 +23,19 @@ import com.nz.entity.PropertyImageEntity;
 import com.nz.entity.PropertyOptionEntity;
 import com.nz.entity.UserEntity;
 import com.nz.repository.ContractRepository;
+import com.nz.repository.PropertyRepository;
 import com.nz.repository.UserRepository;
 
+import lombok.RequiredArgsConstructor;
+@RequiredArgsConstructor
 @Service
 public class ContractService {
 	
-	@Autowired
-	private ContractRepository contractRepository;
-	@Autowired
-    private UserRepository userRepository;
-
+	private final ContractRepository contractRepository;
+    private final UserRepository userRepository;
+    private final PropertyRepository propertyRepository;
+    
+    
 	public ContractDTO getContractByPropertyId(Long propertyId) {
 		Optional<ContractEntity> op = contractRepository.findByPropertyPropertyId(propertyId);
 		if(op.isPresent()) {
@@ -234,6 +238,55 @@ public class ContractService {
         contractEntity.setStage(status);
         contractRepository.save(contractEntity);
     }
+    
+    
+    @Transactional
+    public Long createContract(ContractDTO contractDTO) {
+        // 계약 생성 전에 검증 로직 추가
+        validateContractCreation(contractDTO);
+
+        // PropertyEntity에서 임대인 정보 가져오기 (memberId를 통해)
+        PropertyEntity property = propertyRepository.findById(contractDTO.getPropertyId().getPropertyId())
+                .orElseThrow(() -> new RuntimeException("매물을 찾을 수 없습니다: " + contractDTO.getPropertyId().getPropertyId()));
+        
+        // 임대인 정보가 PropertyEntity의 memberId와 연결되어 있다고 가정
+        UserEntity landlord = userRepository.findById(property.getMemberId())
+                .orElseThrow(() -> new RuntimeException("임대인을 찾을 수 없습니다: " + property.getMemberId()));
+        
+        // 임차인 정보 가져오기
+        UserEntity tenant = userRepository.findById(contractDTO.getTenantId().getMemberId())
+                .orElseThrow(() -> new RuntimeException("임차인을 찾을 수 없습니다: " + contractDTO.getTenantId().getMemberId()));
+
+        // ContractEntity 생성 및 저장
+        ContractEntity contract = ContractEntity.builder()
+                .property(property)
+                .landlord(landlord)
+                .tenant(tenant)
+                .contractDate(contractDTO.getContractDate())
+                .expirationDate(contractDTO.getExpirationDate())
+                .stage("방문상담완료")
+                .build();
+
+        contractRepository.save(contract);
+        return contract.getContractId();
+    }
+
+
+    private void validateContractCreation(ContractDTO contractDTO) {
+        if (contractDTO.getContractDate() == null) {
+            throw new IllegalArgumentException("계약일이 설정되지 않았습니다.");
+        }
+        if (contractDTO.getExpirationDate() == null) {
+            throw new IllegalArgumentException("만료일이 설정되지 않았습니다.");
+        }
+        if (contractDTO.getTenantId() == null) {
+            throw new IllegalArgumentException("임차인 정보가 누락되었습니다.");
+        }
+        if (contractDTO.getPropertyId() == null) {
+            throw new IllegalArgumentException("매물 정보가 누락되었습니다.");
+        }
+    }
+    
 }
 
 

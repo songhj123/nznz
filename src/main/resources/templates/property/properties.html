@@ -8,12 +8,12 @@
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f17be299f721e9cfc06f28d83b05f036&libraries=clusterer"></script>
     <link rel="stylesheet" th:href="@{/resource/css/bootstrap.min.css}">
     <style type="text/css">
-		html, body {
-		    height: 100%;
-		    overflow: hidden;
-		    font-family: Arial, sans-serif;
-		}
-	 </style>
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+     </style>
 </head>
 <body>
 <div layout:fragment="content">
@@ -109,6 +109,8 @@
 
     <script th:inline="javascript">
         var properties = /*[[${properties}]]*/ [];
+        var initialLatitude = /*[[${latitude}]]*/ 37.5665;
+        var initialLongitude = /*[[${longitude}]]*/ 126.9780;
         console.log('Properties Array:', properties); // properties 배열 확인
     </script>
     <script th:src="@{/resource/js/kakaoMap.js}"></script>

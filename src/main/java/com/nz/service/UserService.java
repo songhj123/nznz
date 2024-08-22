@@ -138,11 +138,14 @@ public class UserService {
 		this.userRepository.save(ue);
 	}
 	
-	public void userDelete(String username, String password) {
+	public int userDelete(String username, String password) {
 		UserEntity ue = this.userRepository.findByUsername(username).get();
+		int ch = 0;
 		if(passwordEncoder.matches(password, ue.getPassword())) {
 			this.userRepository.delete(ue);
+			ch = 1;
 		}
+		return ch;
 	}
 
     // 모든 회원을 페이징 처리하여 가져오는 메서드
