@@ -37,7 +37,7 @@ public class MyPropertyController {
 	private final PropertyService propertyService;
 	private final UserService userService;
 	
-	@GetMapping("List")
+	@GetMapping("list")
 	public String myPropertyList(@RequestParam(value = "page", defaultValue = "0") int page,
 	   				             @RequestParam(value = "size", defaultValue = "10") int size,
 					            Model model, Principal principal) {
@@ -62,10 +62,10 @@ public class MyPropertyController {
 	    @RequestParam("propertyImageList") List<MultipartFile> propertyImageList, 
 	    Principal principal) {
 
-	    if (bindingResult.hasErrors()) {
-	    	model.addAttribute("property", propertyDTO);
-	        return "user/myPropertyUpdate"; 
-	    }
+//	    if (bindingResult.hasErrors()) {
+//	    	model.addAttribute("property", propertyDTO);
+//	        return "user/myPropertyUpdate"; 
+//	    }
 
 	    if (propertyDTO.getPropertyOption() == null) {
 	        propertyDTO.setPropertyOption(new ArrayList<>());
@@ -98,7 +98,7 @@ public class MyPropertyController {
 
 	    propertyService.updateProperty(id, propertyDTO);
 
-	    return "redirect:/myProperty/List"; 
+	    return "redirect:/myProperty/list"; 
 	}
 
 

@@ -34,8 +34,10 @@ import com.nz.service.PropertyService;
 import com.nz.service.UserService;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
+@Slf4j
 public class PropertyController {
     // 파일 업로드 경로
     private final String uploadPath = "C:\\spring\\upload\\"; 
@@ -178,6 +180,11 @@ public class PropertyController {
     public String updatePropertyStatus(@RequestParam("selectedProperties") List<Long> propertyIds, 
                                        @RequestParam("action") String action, 
                                        RedirectAttributes redirectAttributes) {
+    	
+    	// 로그 추가
+        log.info("Received propertyIds: {}", propertyIds);
+        log.info("Received action: {}", action);
+        
         try {
             if ("approve".equals(action)) {
                 propertyService.updatePropertyStatus(propertyIds, "승인");

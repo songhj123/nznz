@@ -3,6 +3,35 @@
 <head>
     <title>전체 매물 관리</title>
     <link rel="stylesheet" th:href="@{/resource/css/propertyListStyles.css}">
+    <script th:inline="javascript">
+        function toggleAll(source) {
+            const checkboxes = document.querySelectorAll('input[name="selectedProperties"]');
+            checkboxes.forEach(cb => cb.checked = source.checked);
+            checkButtons();
+        }
+
+        function toggleCheckbox(event, checkboxId) {
+            if (event.target.tagName.toLowerCase() !== 'input') {
+                const checkbox = document.getElementById(checkboxId);
+                checkbox.checked = !checkbox.checked;
+            }
+            checkButtons();
+        }
+
+        function checkButtons() {
+            const checkboxes = document.querySelectorAll('input[name="selectedProperties"]:checked');
+            const buttons = document.querySelectorAll('.button-container button');
+            if (checkboxes.length === 0) {
+                buttons.forEach(button => button.disabled = true);
+            } else {
+                buttons.forEach(button => button.disabled = false);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkButtons(); // 초기 상태에서 버튼 비활성화 여부 확인
+        });
+    </script>
 </head>
 <body>
     <div layout:fragment="content">
@@ -47,11 +76,13 @@
                                 <th>월세/보증금</th>
                                 <th>거주현황</th>
                                 <th>처리상태</th>
-                                <th>선택</th>
+                                <th>
+                                    <input type="checkbox" onclick="toggleAll(this)">
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="property : ${properties.content}">
+                            <tr th:each="property : ${properties.content}" th:onclick="|toggleCheckbox(event, 'checkbox-${property.propertyId}')|">
                                 <td th:text="${property.propertyId}"></td>
                                 <td th:text="${property.propertyType}"></td>
                                 <td th:text="${#dates.format(property.registrationDate, 'yyyy.MM.dd HH:mm')}"></td>
@@ -61,14 +92,16 @@
                                 <td th:text="${property.monthlyRent}+' / '+${property.deposit}"></td>
                                 <td th:text="${property.status}"></td>
                                 <td th:text="${property.processingStatus}"></td>
-                                <td><input type="checkbox" name="selectedProperties" th:value="${property.propertyId}"></td>
+                                <td>
+                                    <input type="checkbox" name="selectedProperties" th:id="'checkbox-' + ${property.propertyId}" th:value="${property.propertyId}" onchange="checkButtons()">
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                     <div class="button-container">
-                        <button type="submit" name="action" value="approve" class="btn btn-success">승인</button>
-                        <button type="submit" name="action" value="reject" class="btn btn-danger">반려</button>
-                        <button type="submit" name="action" value="delete" class="btn btn-warning">비활성화</button>
+                        <button type="submit" name="action" value="approve" class="btn btn-success" disabled>승인</button>
+                        <button type="submit" name="action" value="reject" class="btn btn-danger" disabled>반려</button>
+                        <button type="submit" name="action" value="delete" class="btn btn-warning" disabled>비활성화</button>
                     </div>
                 </form>
             </div>

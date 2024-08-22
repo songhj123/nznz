@@ -17,10 +17,14 @@ document.addEventListener('DOMContentLoaded', function() {
         var swLatLng = bounds.getSouthWest();
         var neLatLng = bounds.getNorthEast();
 
-        fetch(`/properties/within?southWestLat=${swLatLng.getLat()}&southWestLng=${swLatLng.getLng()}&northEastLat=${neLatLng.getLat()}&northEastLng=${neLatLng.getLng()}`)
-            .then(response => response.json())
-            .then(properties => {
-                var positions = properties.map(property => ({
+    fetch(`/properties/within?southWestLat=${swLatLng.getLat()}&southWestLng=${swLatLng.getLng()}&northEastLat=${neLatLng.getLat()}&northEastLng=${neLatLng.getLng()}`)
+        .then(response => response.json())
+        .then(properties => {
+            var positions = properties
+                .filter(function(property) {
+                    return property.processingStatus === '승인';
+                })
+                .map(property => ({
                     id: property.propertyId,
                     title: property.propertyNum,
                     latlng: new kakao.maps.LatLng(property.latitude, property.longitude),
@@ -29,23 +33,31 @@ document.addEventListener('DOMContentLoaded', function() {
                     propertyImageList: property.propertyImageList || []
                 }));
 
-                var markers = positions.map(position => new kakao.maps.Marker({
-                    position: position.latlng,
-                    title: position.title
-                }));
+            var markers = positions.map(position => new kakao.maps.Marker({
+                position: position.latlng,
+                title: position.title
+            }));
 
-                clusterer.clear();
-                clusterer.addMarkers(markers);
+            clusterer.clear();
+            clusterer.addMarkers(markers);
 
-                updateList(properties);
-            });
-    }
+            updateList(properties.filter(function(property) {
+                return property.processingStatus === '승인';
+            }));
+        });
+}
+
 
     function updateList(properties) {
-        var listContainer = document.getElementById('list');
-        listContainer.innerHTML = '';
-        properties.forEach(property => {
-            var imageUrl = property.propertyImageList.length > 0 ? "/resource/image/" + property.propertyImageList[0].imageStoredName : "/resource/image/defaultImage.png";
+    var listContainer = document.getElementById('list');
+    listContainer.innerHTML = '';
+
+    properties
+        .filter(function(property) {
+            return property.processingStatus === '승인';
+        })
+        .forEach(property => {
+            var imageUrl = property.propertyImageList.length > 0 ? "/display?filename=" + property.propertyImageList[0].imageStoredName : "/resource/image/defaultImage.png";
 
             var listItem = document.createElement('div');
             listItem.className = 'list-group-item';
@@ -53,9 +65,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="card mb-3">
                     <img src="${imageUrl}" class="card-img-top" alt="Property Image">
                     <div class="card-body">
-                        <h5 class="card-title">${property.propertyNum}</h5>
+                        <h5 class="card-title">매물번호 : ${property.propertyId}</h5>
+                        <p class="card-text">건물명: ${property.buildingName}</p>
                         <p class="card-text">주소: ${property.propertyAddress}</p>
-                        <p class="card-text">가격: ${property.price}</p>
+                        <p class="card-text">가격: ${property.monthlyRent+" / "+property.deposit}</p>
                     </div>
                 </div>`;
             listItem.addEventListener('click', function() {
@@ -63,7 +76,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             listContainer.appendChild(listItem);
         });
-    }
+}
+
 
     function showPropertyDetails(property) {
         document.getElementById('modalTitle').innerText = property.propertyNum || "No Title";
