@@ -21,6 +21,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
+
 @Entity
 @Getter
 @Setter
@@ -29,7 +30,8 @@ import java.util.UUID;
 @Builder
 public class PropertyEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "property_seq_generator")
+    @SequenceGenerator(name = "property_seq_generator", sequenceName = "property_seq", allocationSize = 1)
     private Long propertyId;
 
     @Column(unique = true)
@@ -57,13 +59,12 @@ public class PropertyEntity {
 
     @OneToMany(mappedBy = "property", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private List<PropertyImageEntity> propertyImageList;
-    
+
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PropertyOptionEntity> propertyOptions;
-    
+
     @PrePersist
     public void generatePropertyNum() {
         this.propertyNum = "PROP-" + this.propertyId;
     }
 }
-
