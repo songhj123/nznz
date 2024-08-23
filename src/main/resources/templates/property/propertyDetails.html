@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Property Details</title>
+    <title>상세보기</title>
     <link rel="stylesheet" th:href="@{/resource/css/bootstrap.min.css}">
     <link rel="stylesheet" th:href="@{/resource/css/propertyDetails.css}">
     <link rel="stylesheet" th:href="@{/resource/css/scrollStyle.css}">
@@ -15,9 +15,9 @@
     <div class="container mt-5">
         <div class="row">
             <!-- Left Column -->
-            <div class="col-md-8 left-column">
+            <div class="col-md-8 order-md-1 left-column">
                 <!-- Image Slider -->
-                <div id="imageSlider" class="mb-4">
+                <div th:if="${property.propertyImageList != null and !property.propertyImageList.isEmpty()}" id="imageSlider" class="mb-4">
                     <div class="main-image-container position-relative">
                         <button id="prevImage" class="carousel-control-prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -104,7 +104,7 @@
             </div>
 
             <!-- Right Column -->
-            <div class="col-md-4 right-column">
+            <div class="col-md-4 order-md-2 right-column">
                 <div class="sticky-top card details-container">
                     <h5>매물 번호: <span th:text="${property.propertyId != null ? property.propertyId : 'N/A'}"></span></h5>
                     <h5>보증금: <span th:text="${property.deposit != null ? property.deposit : 'N/A'}"></span></h5>

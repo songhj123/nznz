@@ -13,10 +13,10 @@
     padding-right: 15px;
 }
 .right-column {
-    width: 300px;
-    position: sticky;
-    top: 20px;
-    height: fit-content;
+    width: 300px !important;
+    position: sticky !important;
+    top: 20px !important;
+    height: fit-content !important;
 }
 #imageSlider {
     position: relative;
