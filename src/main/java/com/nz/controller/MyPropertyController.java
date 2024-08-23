@@ -77,7 +77,7 @@ public class MyPropertyController {
 	            log.error("Validation error: {}", error.getDefaultMessage());
 	        });
 	        model.addAttribute("property", propertyDTO);
-	        return "user/myPropertyUpdate"; 
+	        return "redirect:/myProperty/update/{id}"; 
 	    }
 
 	    // PropertyOption 초기화
