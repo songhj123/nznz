@@ -36,9 +36,11 @@
                 <button type="submit">로그인</button>	
             </form>
             
-            <a th:href="${location}" style="margin-top:10px; background-color: #f9e000; color:black;">
-                카카오 계정으로 로그인
-            </a>
+            <button style="background-color: #f9e000; margin-top:10px;">
+	            <a th:href="${location}" style="margin-top:10px; background-color: #f9e000; color:black;">
+	                카카오 계정으로 로그인
+	            </a>	
+	        </button>
             
             <div class="options">
                 <a th:href="@{/user/join01}" th:text="회원가입"></a>
