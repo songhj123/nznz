@@ -31,7 +31,7 @@
                     </div>
                     <div class="thumbnail-container">
                         <div th:each="image : ${property.propertyImageList}">
-                            <img th:src="@{/resource/image/{imageName}(imageName=${image.imageStoredName})}" class="thumbnail" alt="Property Thumbnail">
+                            <img th:src="@{/display?filename={imageName}(imageName=${image.imageStoredName})}" class="thumbnail" alt="Property Thumbnail">
                         </div>
                     </div>
                 </div>

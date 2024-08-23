@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
             property.propertyImageList.forEach((image, index) => {
                 var div = document.createElement('div');
                 div.className = 'carousel-item' + (index === 0 ? ' active' : '');
-                div.innerHTML = `<img src="/resource/image/${image.imageStoredName}" class="d-block w-100" alt="Property Image">`;
+                div.innerHTML = `<img src="/display?filename=${image.imageStoredName}" class="d-block w-100" alt="Property Image">`;
                 carouselInner.appendChild(div);
             });
         } else {
