@@ -4,6 +4,7 @@ import java.security.Principal;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import com.nz.service.DisinfectionStatusService;
 
 @Controller
 @RequestMapping("/admin/*")
+@PreAuthorize("hasRole('ROLE_MANAGER')")
 public class DisinfectionStatusController {
     @Autowired
     private DisinfectionStatusService disinfectionStatusService;
