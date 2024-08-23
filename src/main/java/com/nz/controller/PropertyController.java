@@ -132,7 +132,7 @@ public class PropertyController {
         propertyDTO.setMemberId(memberId);
         this.propertyService.createProperty(propertyDTO);
         model.addAttribute("property", propertyDTO);
-        return "property/sellPro"; // 변경된 경로로 수정
+        return "redirect:/myProperty/list"; // 변경된 경로로 수정
     }
     
     @GetMapping("/display")
