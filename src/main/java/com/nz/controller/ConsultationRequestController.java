@@ -60,6 +60,7 @@ public class ConsultationRequestController {
     }
 
     @GetMapping("/consultationRequest/list")
+	@PreAuthorize("hasRole('ROLE_MANAGER')")
     public String consultationRequestList(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "size", defaultValue = "10") int size, Model model) {
         Page<ConsultationRequestDTO> consultationRequestPage = consultationRequestService.getAllConsultationRequests(PageRequest.of(page, size));
         model.addAttribute("consultationRequestPage", consultationRequestPage);
